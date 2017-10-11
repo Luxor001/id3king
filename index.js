@@ -2,7 +2,7 @@ const Hapi = require('hapi');
 const cron = require('cron');
 const Inert = require('inert');
 //carica tutte le routes di routes.js
-var publicApi = require('./publicApi/public.js');
+var controller = require('./backend/controller.js');
 
 const Path = require('path');
 const server = new Hapi.Server({
@@ -26,4 +26,4 @@ server.start((err) => {
     console.log('Server avviato su:', server.info.uri);
 });
 
-server.route(publicApi);
+server.route(controller);
