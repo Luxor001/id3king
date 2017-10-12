@@ -49,6 +49,15 @@ module.exports = [
       }
   },
 
+  /// API per registrare un utente
+  {
+      method: 'POST',
+      path: '/register',
+      handler: function (request, reply) {
+
+      }
+  },
+
   /// API per salvare i filtri su DB
   {
       method: 'POST',
