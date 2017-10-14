@@ -4,7 +4,6 @@
   "description": "id3KingServer, written in nodejs with <3",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Luxor001",
   "license": "ISC",
