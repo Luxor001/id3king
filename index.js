@@ -6,24 +6,29 @@ var controller = require('./backend/controller.js');
 
 const Path = require('path');
 const server = new Hapi.Server({
-    connections: {
-        routes: {
-            files: {
-                relativeTo: Path.join(__dirname, 'frontEnd')
-            }
-        }
+  connections: {
+    routes: {
+      files: {
+        relativeTo: Path.join(__dirname, 'frontEnd')
+      }
     }
+  }
 });
 
-server.connection({ port: 8081 });
+server.connection({
+  port: 8081,
+  routes: {
+    cors: true
+  }
+});
 server.register(Inert, () => {});
 server.start((err) => {
 
-    if (err) {
-        throw err;
-    }
+  if (err) {
+    throw err;
+  }
 
-    console.log('Server avviato su:', server.info.uri);
+  console.log('Server avviato su:', server.info.uri);
 });
 
 server.route(controller);

@@ -1,7 +1,6 @@
 const BaseResult = require('./code/BaseResult.js');
 const dbHandler = require('./dbHandler/dbHandler.js');
 
-console.log(dbHandler.getRoutes());
 class GetDataResult extends BaseResult {
     constructor() {
         super();
@@ -31,6 +30,16 @@ module.exports = [
             result.Return = true; // segnaliamo al client che è andato tutto come previsto
         }
         reply(routes); // response della chiamata HTTP POST
+      }
+  },
+
+  /// API per salvare i filtri su DB
+  {
+      method: 'GET',
+      path: '/getRoutes',
+      handler: function (request, reply) {
+          var routes = dbHandler.getRoutes();
+          reply(routes);
       }
   },
 
@@ -81,5 +90,5 @@ module.exports = [
            index: true
        }
    }
- }
+ },
 ];
