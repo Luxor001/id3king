@@ -1,1 +1,111 @@
-/* You can add global styles to this file, and also import other style files */
+* {
+  font-family: 'Lato', sans-serif;
+}
+
+app-header {
+    display: block;
+    height: 75px;
+    border-bottom: 1px solid #eee;
+}
+
+div.mainContainer {
+  max-width: calc(100% - 320px);
+  height: 100vh;
+}
+app-header .title {
+  display: table-row;
+  height: 50px;
+}
+app-header .title > h1 {
+    padding: 0;
+    margin: 0;
+    display: table-cell;
+    vertical-align: middle;
+}
+app-header .caption {
+    font-size: 16px;
+    font-style: italic;
+}
+
+app-toolbar {
+  float:right;
+  width: 320px;
+}
+
+app-main {
+  display: block;
+  height: calc(100% - 50px);
+  padding-top: 10px;
+}
+
+body {
+  height: 100vh;
+  overflow-y: hidden;
+  padding-left: 15px;
+}
+
+.w0 {
+  width: 0px !important;
+  min-width: 0px !important;
+}
+
+.w5 {
+  width: 20px !important;
+  min-width: 20px !important;
+}
+
+.w10 {
+  width: 40px !important;
+  min-width: 40px !important;
+}
+
+.w15 {
+  width: 60px !important;
+  min-width: 60px !important;
+}
+
+.w18 {
+  width: 72px !important;
+  min-width: 72px !important;
+}
+
+.w20 {
+  width: 80px !important;
+  min-width: 80px !important;
+}
+
+.w25 {
+  width: 100px !important;
+  min-width: 100px !important;
+}
+
+.w30 {
+  width: 120px !important;
+  min-width: 120px !important;
+}
+
+.w35 {
+  width: 140px !important;
+  min-width: 140px !important;
+}
+
+.w40 {
+  width: 160px !important;
+  min-width: 160px !important;
+}
+
+.w45 {
+  width: 180px !important;
+  min-width: 180px !important;
+}
+
+.w50 {
+  width: 200px !important;
+  min-width: 200px !important;
+}
+
+.w100 {
+  width: 400px !important;
+  max-width: 400px !important;
+  min-width: 400px !important;
+}
