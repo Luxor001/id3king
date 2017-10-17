@@ -1,6 +1,6 @@
 <!-- da inserire tutto il template per la tabella principale -->
-<div>
-  <p-dataTable [value]="routes" scrollable="true" scrollHeight="350px">
+<div style="height: 100%; overflow:hidden">
+  <p-dataTable [value]="routes" scrollable="true" scrollHeight="100%">
         <p-column field="id" header="ID" [sortable]="true"></p-column>
         <p-column field="lunghezza" header="LUNGHEZZA" [sortable]="true"></p-column>
         <p-column field="dislivello" header="DISLIVELLO" [sortable]="true"></p-column>

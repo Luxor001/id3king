@@ -15,7 +15,7 @@ var dummyValues = [
   new Route(113, 1334, 555, 'E', "Proin eget tortor risus. Donec rutrum congue leo eget malesuada. "),
   new Route(114, 5555, 666, 'E', "Praesent sapien massa, convallis a pellentesque nec, egestas non nisi.")
 ];
-
+dummyValues = dummyValues.concat(dummyValues, dummyValues, dummyValues);
 module.exports = {
   getRoutes: function() {
     // ottenimento dei valori da DB

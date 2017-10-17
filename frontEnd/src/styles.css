@@ -34,9 +34,15 @@ app-toolbar {
 
 app-main {
   display: block;
-  height: calc(100% - 50px);
+  height: calc(100% - 95px);
   padding-top: 10px;
 }
+
+app-main > div {
+  height: 100%;
+  overflow-y: hidden;
+}
+
 
 body {
   height: 100vh;
@@ -108,4 +114,9 @@ body {
   width: 400px !important;
   max-width: 400px !important;
   min-width: 400px !important;
+}
+
+.ui-widget-header {
+  border: initial !important;
+  background: white !important;
 }
