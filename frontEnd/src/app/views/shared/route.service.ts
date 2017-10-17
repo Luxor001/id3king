@@ -20,7 +20,6 @@ export class RouteService {
   getAllRoutes(): Observable<Route[]> {
     return this.http.get(this.appBaseUrl + '/getRoutes')
       .map(response => {
-        console.log(response);
         return response;
       })
   }

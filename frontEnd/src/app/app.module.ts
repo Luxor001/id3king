@@ -1,11 +1,13 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import {HttpClient, HttpClientModule} from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { ToolbarComponent } from './views/toolbar/toolbar.component';
 import { MainComponent } from './views/main/main.component';
 import { HeaderComponent } from './views/header/header.component';
+
+import { DataTableModule, SharedModule } from 'primeng/primeng';
 
 import { RouteService } from './views/shared/route.service';
 
@@ -18,7 +20,9 @@ import { RouteService } from './views/shared/route.service';
   ],
   imports: [
     BrowserModule,
-    HttpClientModule
+    HttpClientModule,
+    DataTableModule,
+    SharedModule
   ],
   providers: [RouteService],
   bootstrap: [AppComponent]
