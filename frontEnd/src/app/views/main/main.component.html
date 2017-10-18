@@ -1,9 +1,13 @@
 <!-- da inserire tutto il template per la tabella principale -->
-<div style="height: 100%; overflow:hidden">
+<div>
   <p-dataTable [value]="routes" scrollable="true" scrollHeight="100%">
-        <p-column field="id" header="ID" [sortable]="true"></p-column>
-        <p-column field="lunghezza" header="LUNGHEZZA" [sortable]="true"></p-column>
-        <p-column field="dislivello" header="DISLIVELLO" [sortable]="true"></p-column>
-        <p-column field="descrizione" header="DESCRIZIONE"></p-column>
+    <p-column field="id" [style]="{'width':'80px'}" header="ID" [sortable]="true"></p-column>
+    <p-column field="data" header="DATA" [sortable]="true"></p-column>
+    <p-column field="durata" header="DURATA" [sortable]="true"></p-column>
+    <p-column field="lunghezza" header="LUNGHEZZA" [sortable]="true"></p-column>
+    <p-column field="dislivello" header="DISLIVELLO" [sortable]="true"></p-column>
+    <p-column field="difficolta" header="DIFFICOLTA" [sortable]="true"></p-column>
+    <p-column field="luogo" header="LUOGO"></p-column>
+    <p-column field="descrizione" header="DESCRIZIONE"></p-column>
   </p-dataTable>
 </div>
