@@ -1,34 +1,71 @@
 * {
   font-family: 'Lato', sans-serif;
+  font-size: 14px;
+}
+
+h1 {
+  font-size: 36px;
+}
+
+p-datatable tbody {
+  border: 0 !important;
+}
+
+p-datatable th {
+  height: 35px;
+  text-align: center;
+  border: 0 !important;
+}
+
+p-datatable td {
+  height: 25px;
+  text-align: center;
+  border: 0 !important;
+}
+
+p-datatable tr {
+  border-left: 0 !important;
+  border-right: 0 !important;
+}
+
+p-datatable tr:nth-of-type(even) {
+  background-color: white;
+}
+
+p-datatable thead {
+  border-bottom: 1px solid #d4d4d4;
 }
 
 app-header {
-    display: block;
-    height: 75px;
-    border-bottom: 1px solid #eee;
+  display: block;
+  height: 75px;
+  border-bottom: 1px solid #eee;
 }
 
 div.mainContainer {
   max-width: calc(100% - 320px);
   height: 100vh;
 }
+
 app-header .title {
   display: table-row;
   height: 50px;
 }
-app-header .title > h1 {
-    padding: 0;
-    margin: 0;
-    display: table-cell;
-    vertical-align: middle;
+
+app-header .title>h1 {
+  padding: 0;
+  margin: 0;
+  display: table-cell;
+  vertical-align: middle;
 }
+
 app-header .caption {
-    font-size: 16px;
-    font-style: italic;
+  font-size: 16px;
+  font-style: italic;
 }
 
 app-toolbar {
-  float:right;
+  float: right;
   width: 320px;
 }
 
@@ -38,16 +75,15 @@ app-main {
   padding-top: 10px;
 }
 
-app-main > div {
+app-main>div {
   height: 100%;
   overflow-y: hidden;
 }
 
-
 body {
   height: 100vh;
   overflow-y: hidden;
-  padding-left: 15px;
+  padding-left: 10px;
 }
 
 .w0 {
