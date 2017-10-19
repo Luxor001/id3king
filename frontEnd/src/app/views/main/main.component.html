@@ -1,13 +1,15 @@
 <!-- da inserire tutto il template per la tabella principale -->
-<div>
   <p-dataTable [value]="routes" scrollable="true" scrollHeight="100%">
-    <p-column field="id" [style]="{'width':'80px'}" header="ID" [sortable]="true"></p-column>
-    <p-column field="data" header="DATA" [sortable]="true"></p-column>
-    <p-column field="durata" header="DURATA" [sortable]="true"></p-column>
-    <p-column field="lunghezza" header="LUNGHEZZA" [sortable]="true"></p-column>
-    <p-column field="dislivello" header="DISLIVELLO" [sortable]="true"></p-column>
-    <p-column field="difficolta" header="DIFFICOLTA" [sortable]="true"></p-column>
-    <p-column field="luogo" header="LUOGO"></p-column>
-    <p-column field="descrizione" header="DESCRIZIONE"></p-column>
+    <p-column field="id" [style]="{'width':'70px'}" header="ID" [sortable]="true"></p-column>
+    <p-column field="data" [style]="{'width':'100px'}" header="DATA" [sortable]="true">
+      <ng-template let-data="rowData" pTemplate="body">
+        <span>{{data.data | date:'dd-MM-y'}}</span>
+      </ng-template>
+    </p-column>
+    <p-column field="durata" [style]="{'width':'130px'}" header="DURATA" [sortable]="true"></p-column>
+    <p-column field="lunghezza" [style]="{'width':'130px'}" header="LUNGHEZZA" [sortable]="true"></p-column>
+    <p-column field="dislivello" [style]="{'width':'130px'}" header="DISLIVELLO" [sortable]="true"></p-column>
+    <p-column field="difficolta" [style]="{'width':'130px'}" header="DIFFICOLTA" [sortable]="true"></p-column>
+    <p-column field="luogo" [style]="{'width':'150px'}" header="LUOGO" [sortable]="true"></p-column>
+    <p-column field="descrizione" [style]="{'width':'700px'}" header="DESCRIZIONE"></p-column>
   </p-dataTable>
-</div>

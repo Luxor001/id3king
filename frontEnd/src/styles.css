@@ -45,6 +45,8 @@ app-header {
 div.mainContainer {
   max-width: calc(100% - 320px);
   height: 100vh;
+  display: flex;
+  flex-flow: column;
 }
 
 app-header .title {
@@ -70,20 +72,22 @@ app-toolbar {
 }
 
 app-main {
-  display: block;
-  height: calc(100% - 95px);
-  padding-top: 10px;
+  flex: 2 ;
+  margin-top: 10px;
 }
 
-app-main>div {
+app-main > p-datatable {
   height: 100%;
   overflow-y: hidden;
+  display:block;
 }
 
 body {
   height: 100vh;
-  overflow-y: hidden;
-  padding-left: 10px;
+  overflow: hidden;
+  padding-left: 15px;
+  padding-top: 10px;
+  margin: 0;
 }
 
 .w0 {
