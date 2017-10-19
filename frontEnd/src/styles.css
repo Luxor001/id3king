@@ -72,14 +72,19 @@ app-toolbar {
 }
 
 app-main {
-  flex: 2 ;
-  margin-top: 10px;
+  flex: 2;
+  padding-top: 10px;
 }
 
-app-main > p-datatable {
-  height: 100%;
+app-main>p-datatable {
   overflow-y: hidden;
-  display:block;
+  display: block;
+}
+
+app-toolbar {
+  float: right;
+  width: 300px;
+  height: 100%;
 }
 
 body {
