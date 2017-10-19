@@ -8,7 +8,7 @@ import { MainComponent } from './views/main/main.component';
 import { HeaderComponent } from './views/header/header.component';
 
 import { DataTableModule, SharedModule } from 'primeng/primeng';
-
+import * as $ from 'jquery';
 import { RouteService } from './views/shared/route.service';
 
 @NgModule({
@@ -22,7 +22,7 @@ import { RouteService } from './views/shared/route.service';
     BrowserModule,
     HttpClientModule,
     DataTableModule,
-    SharedModule
+    SharedModule,
   ],
   providers: [RouteService],
   bootstrap: [AppComponent]

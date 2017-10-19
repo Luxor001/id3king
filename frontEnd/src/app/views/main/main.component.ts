@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Route } from '../shared/route.model';
 import { RouteService } from '../shared/route.service';
 import { DataTableModule, SharedModule } from 'primeng/primeng';
+import * as $ from 'jquery';
 
 @Component({
   selector: 'app-main',
@@ -28,4 +29,11 @@ export class MainComponent implements OnInit {
       err => console.log(err)
       );
   }
+
+  /*resizeToParent(elementParam: any): any {
+      var parentHeight = elementParam.parent().outerHeight(true);
+      var offset = elementParam.offset().top - elementParam.parent().offset().top;
+      height = parentHeight - offset;
+      elementParam.height(height);
+  }*/
 }
