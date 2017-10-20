@@ -21,8 +21,12 @@
       <ng-template let-itinerario="rowData" pTemplate="body">
         <span>{{itinerario.dislivello}} <span>m</span></span>
       </ng-template></p-column>
-    <p-column field="difficolta" [style]="{'width':'130px'}" header="DIFFICOLTA" [sortable]="true"></p-column>
+    <p-column field="difficolta" [style]="{'width':'130px'}" header="DIFFICOLTA" [sortable]="true" filterMatchMode="in">
+        <ng-template pTemplate="filter" let-col>
+              <p-multiSelect [options]="difficulties" defaultLabel="Difficoltà" (onChange)="dt.filter($event.value,col.field,col.filterMatchMode)" styleClass="ui-column-filter"></p-multiSelect>
+          </ng-template>
+    </p-column>
     <p-column field="luogo" [style]="{'width':'150px'}" header="LUOGO" [sortable]="true"></p-column>
-    <p-column field="descrizione" [style]="{'width':'700px'}" header="DESCRIZIONE"></p-column>
+    <p-column field="descrizione" header="DESCRIZIONE"></p-column>
   </p-dataTable>
 </div>

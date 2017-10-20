@@ -16,7 +16,7 @@ import { RouteService } from './shared/route.service';
 import { UtilityService } from './shared/utility.service';
 
 /// DIPENDENZE ESTERNE
-import { DataTableModule, SharedModule } from 'primeng/primeng';
+import { DataTableModule, MultiSelectModule, SharedModule } from 'primeng/primeng';
 import * as $ from 'jquery';
 
 @NgModule({
@@ -32,6 +32,7 @@ import * as $ from 'jquery';
     HttpClientModule,
     DataTableModule,
     SharedModule,
+    MultiSelectModule
   ],
   providers: [
     RouteService,
