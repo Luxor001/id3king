@@ -17,6 +17,9 @@ p-datatable th {
   border: 0 !important;
 }
 
+p-datatable .ui-widget-header, p-datatable th{
+  overflow: visible !important;
+}
 p-datatable td {
   height: 25px;
   text-align: center;
@@ -26,10 +29,6 @@ p-datatable td {
 p-datatable tr {
   border-left: 0 !important;
   border-right: 0 !important;
-}
-
-p-datatable tr:nth-of-type(even) {
-  background-color: white;
 }
 
 p-datatable thead {
@@ -76,10 +75,6 @@ app-main {
   padding-top: 10px;
 }
 
-app-main>p-datatable {
-  overflow-y: hidden;
-  display: block;
-}
 
 app-toolbar {
   float: right;
@@ -91,6 +86,7 @@ body {
   height: 100vh;
   overflow: hidden;
   padding-left: 15px;
+  padding-right: 15px;
   padding-top: 10px;
   margin: 0;
 }
@@ -159,9 +155,4 @@ body {
   width: 400px !important;
   max-width: 400px !important;
   min-width: 400px !important;
-}
-
-.ui-widget-header {
-  border: initial !important;
-  background: white !important;
 }

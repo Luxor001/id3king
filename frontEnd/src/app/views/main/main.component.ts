@@ -15,11 +15,13 @@ export class MainComponent implements OnInit {
 
   loading: boolean;
   routes: Route[];
+
+  filtroDislivello: number;
   difficulties: SelectItem[] = [
-    new DifficultySelectionItem('T', 'Turistica'),
-    new DifficultySelectionItem('E', 'Escursionistica'),
-    new DifficultySelectionItem('EE', 'Escursionistica-Impegnativa'),
-    new DifficultySelectionItem('EAI', 'Escursionistica-Con Attrezzatura')
+    new DifficultySelectionItem('T', 'T'),
+    new DifficultySelectionItem('E', 'E'),
+    new DifficultySelectionItem('EE', 'EE'),
+    new DifficultySelectionItem('EAI', 'EAI')
   ];
 
   constructor(private routeService: RouteService) { }

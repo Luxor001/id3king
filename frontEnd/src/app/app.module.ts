@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 /// COMPONENTI
@@ -16,7 +17,10 @@ import { RouteService } from './shared/route.service';
 import { UtilityService } from './shared/utility.service';
 
 /// DIPENDENZE ESTERNE
-import { DataTableModule, MultiSelectModule, SharedModule } from 'primeng/primeng';
+import { DataTableModule,
+         MultiSelectModule,
+         SliderModule,
+         SharedModule } from 'primeng/primeng';
 import * as $ from 'jquery';
 
 @NgModule({
@@ -29,9 +33,11 @@ import * as $ from 'jquery';
   ],
   imports: [
     BrowserModule,
+    FormsModule,
     HttpClientModule,
     DataTableModule,
     SharedModule,
+    SliderModule,
     MultiSelectModule
   ],
   providers: [

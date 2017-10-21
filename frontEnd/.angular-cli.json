@@ -21,7 +21,7 @@
         "styles.css",
         "../node_modules/font-awesome/css/font-awesome.css",
         "../node_modules/primeui/primeui-ng-all.min.css",
-        "../node_modules/primeng/resources/themes/ludvig/theme.css"
+        "../node_modules/primeng/resources/themes/omega/theme.css"
       ],
       "scripts": [],
       "environmentSource": "environments/environment.ts",
