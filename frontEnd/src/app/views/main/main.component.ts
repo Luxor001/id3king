@@ -17,8 +17,8 @@ export class MainComponent implements OnInit {
   routes: Route[];
 
   filtroDislivello: number;
-  difficulties: SelectItem[] = [];
-  places: SelectItem[] = [];
+  filtroDate: Date[];
+  filtersValue: FiltersValue = new FiltersValue();
 
   constructor(private routeService: RouteService) { }
 
@@ -29,7 +29,7 @@ export class MainComponent implements OnInit {
       .subscribe(
       (routes: Array<Route>) => {
         this.routes = routes;
-        root.getFilterValues(routes);
+        this.filtersValue = root.getFilterValues(routes);
       },
       err => console.log(err)
       );
@@ -37,16 +37,22 @@ export class MainComponent implements OnInit {
     UtilityService.resizeToParent($('.tableContainer'));
   }
 
-  getFilterValues(routes: Route[]): void {
+  getFilterValues(routes: Route[]): FiltersValue {
     var root = this;
-
+    var filtersValue = new FiltersValue();
     var dictionary;
     // Ottenimento dei possibili valori dei luoghi da visitare
-    dictionary = routes.reduce((dictionary, rotta) => dictionary.add(rotta.luogo), new Set<string>());
-    dictionary.forEach(place => this.places.push(new ConcreteSelectItem(place, place)));
+    dictionary = routes.reduce((dictionary, route) => dictionary.add(route.luogo), new Set<string>());
+    dictionary.forEach(place => filtersValue.places.push(new ConcreteSelectItem(place, place)));
 
-    dictionary = routes.reduce((dictionary, rotta) => dictionary.add(rotta.difficolta), new Set<string>());
-    dictionary.forEach(difficolta => this.difficulties.push(new ConcreteSelectItem(difficolta, difficolta)));
+    // Ottenimento dei possibili valori delle difficoltà degli itinerari
+    dictionary = routes.reduce((dictionary, route) => dictionary.add(route.difficolta), new Set<string>());
+    dictionary.forEach(difficulty => filtersValue.difficulties.push(new ConcreteSelectItem(difficulty, difficulty)));
+
+    var sorted = routes.sort((a, b) => { return (a.id - b.id) });
+    filtersValue.minDate = new Date(sorted[0].data);
+    filtersValue.maxDate = new Date(sorted[sorted.length - 1].data);
+    return filtersValue;
   }
 }
 
@@ -55,4 +61,11 @@ class ConcreteSelectItem implements SelectItem {
     public value: string,
     public label: string) {
   }
+}
+
+class FiltersValue {
+  places: SelectItem[] = [];
+  difficulties: SelectItem[] = [];
+  minDate: Date;
+  maxDate: Date;
 }

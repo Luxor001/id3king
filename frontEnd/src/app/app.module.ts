@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 /// COMPONENTI
 import { AppComponent } from './app.component';
@@ -18,9 +19,11 @@ import { UtilityService } from './shared/utility.service';
 
 /// DIPENDENZE ESTERNE
 import { DataTableModule,
-         MultiSelectModule,
-         SliderModule,
-         SharedModule } from 'primeng/primeng';
+  MultiSelectModule,
+  SliderModule,
+  SharedModule,
+  CalendarModule } from 'primeng/primeng';
+
 import * as $ from 'jquery';
 
 @NgModule({
@@ -38,7 +41,9 @@ import * as $ from 'jquery';
     DataTableModule,
     SharedModule,
     SliderModule,
-    MultiSelectModule
+    MultiSelectModule,
+    CalendarModule,
+    BrowserAnimationsModule
   ],
   providers: [
     RouteService,

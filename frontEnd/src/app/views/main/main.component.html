@@ -1,13 +1,18 @@
 <!-- da inserire tutto il template per la tabella principale -->
-<div class="ui-widget-header" style="padding:4px 10px;border-bottom: 0 none">
-  <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
-  <input #globalFilter type="text" pInputText size="50" placeholder="Global Filter">
+<div class="ui-widget-header" style="padding:4px 10px;border-bottom: 0 none; text-align:left">
+  <div>
+    <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+    <input #globalFilter type="text" pInputText size="50" placeholder="Ricerca itinerario">
+  </div>
 </div>
 <div class="tableContainer">
   <p-dataTable [value]="routes" scrollable="true" [globalFilter]="globalFilter" scrollHeight="100%" #dataTableIstance>
     <p-header>ITINERARI</p-header>
     <p-column field="id" [style]="{'width':'70px'}" header="ID" [sortable]="true"></p-column>
     <p-column field="data" [style]="{'width':'100px'}" header="DATA" [sortable]="true">
+      <!--<ng-template pTemplate="filter" let-col>
+        <p-calendar [(ngModel)]="filtroDate" [minDate]="filtersValue.minDate" [maxDate]="filtersValue.maxDate" selectionMode="range" readonlyInput="true"></p-calendar>
+      </ng-template>-->
       <ng-template let-itinerario="rowData" pTemplate="body">
         <span>{{itinerario.data | date:'dd-MM-y'}}</span>
       </ng-template>
@@ -33,12 +38,12 @@
     </p-column>
     <p-column field="difficolta" [style]="{'width':'130px'}" header="DIFFICOLTA" [sortable]="true" [filter]="true" filterMatchMode="in">
       <ng-template pTemplate="filter" let-col>
-        <p-multiSelect [options]="difficulties" defaultLabel="Tutte" selectedItemsLabel="{0} Difficoltà" maxSelectedLabels="1" (onChange)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)" styleClass="ui-column-filter"></p-multiSelect>
+        <p-multiSelect [options]="filtersValue.difficulties" defaultLabel="Tutte" selectedItemsLabel="{0} Difficoltà" maxSelectedLabels="1" (onChange)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)" styleClass="ui-column-filter"></p-multiSelect>
       </ng-template>
     </p-column>
     <p-column field="luogo" [style]="{'width':'150px'}" header="LUOGO" [sortable]="true" filterMatchMode="in">
       <ng-template pTemplate="filter" let-col>
-        <p-multiSelect [options]="places" defaultLabel="Tutti" selectedItemsLabel="{0} Luoghi" maxSelectedLabels="0" (onChange)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)" styleClass="ui-column-filter"></p-multiSelect>
+        <p-multiSelect [options]="filtersValue.places" defaultLabel="Tutti" selectedItemsLabel="{0} Luoghi" maxSelectedLabels="0" (onChange)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)" styleClass="ui-column-filter"></p-multiSelect>
       </ng-template>
     </p-column>
     <p-column field="descrizione" [style]="{'min-width':'500px'}" header="DESCRIZIONE"></p-column>

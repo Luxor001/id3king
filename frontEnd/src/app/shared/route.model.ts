@@ -1,6 +1,6 @@
 export class Route {
   constructor(public id: number,
-              public data: number,
+              public data: Date ,
               public durata: number,
               public lunghezza: number,
               public dislivello: number,
