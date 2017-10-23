@@ -17,29 +17,40 @@ export class MainComponent implements OnInit {
   routes: Route[];
 
   filtroDislivello: number;
-  difficulties: SelectItem[] = [
-    new DifficultySelectionItem('T', 'T'),
-    new DifficultySelectionItem('E', 'E'),
-    new DifficultySelectionItem('EE', 'EE'),
-    new DifficultySelectionItem('EAI', 'EAI')
-  ];
+  difficulties: SelectItem[] = [];
+  places: SelectItem[] = [];
 
   constructor(private routeService: RouteService) { }
 
   ngOnInit() {
     this.loading = true;
-
+    var root = this;
     this.routeService.getAllRoutes()
       .subscribe(
-      (routes: Array<Route>) => { this.routes = routes },
+      (routes: Array<Route>) => {
+        this.routes = routes;
+        root.getFilterValues(routes);
+      },
       err => console.log(err)
       );
 
     UtilityService.resizeToParent($('.tableContainer'));
   }
+
+  getFilterValues(routes: Route[]): void {
+    var root = this;
+
+    var dictionary;
+    // Ottenimento dei possibili valori dei luoghi da visitare
+    dictionary = routes.reduce((dictionary, rotta) => dictionary.add(rotta.luogo), new Set<string>());
+    dictionary.forEach(place => this.places.push(new ConcreteSelectItem(place, place)));
+
+    dictionary = routes.reduce((dictionary, rotta) => dictionary.add(rotta.difficolta), new Set<string>());
+    dictionary.forEach(difficolta => this.difficulties.push(new ConcreteSelectItem(difficolta, difficolta)));
+  }
 }
 
-class DifficultySelectionItem implements SelectItem{
+class ConcreteSelectItem implements SelectItem {
   constructor(
     public value: string,
     public label: string) {

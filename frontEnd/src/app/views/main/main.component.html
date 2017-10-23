@@ -1,10 +1,10 @@
 <!-- da inserire tutto il template per la tabella principale -->
 <div class="ui-widget-header" style="padding:4px 10px;border-bottom: 0 none">
-    <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
-    <input #gb type="text" pInputText size="50" placeholder="Global Filter">
+  <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+  <input #globalFilter type="text" pInputText size="50" placeholder="Global Filter">
 </div>
 <div class="tableContainer">
-  <p-dataTable [value]="routes" scrollable="true" scrollHeight="100%" #dataTableIstance>
+  <p-dataTable [value]="routes" scrollable="true" [globalFilter]="globalFilter" scrollHeight="100%" #dataTableIstance>
     <p-header>ITINERARI</p-header>
     <p-column field="id" [style]="{'width':'70px'}" header="ID" [sortable]="true"></p-column>
     <p-column field="data" [style]="{'width':'100px'}" header="DATA" [sortable]="true">
@@ -23,19 +23,24 @@
       </ng-template>
     </p-column>
     <p-column field="dislivello" [style]="{'width':'130px'}" header=" (DISLIVELLO {{filtroDislivello}})" [sortable]="true" [filter]="true" filterMatchMode="equals">
-        <ng-template pTemplate="filter" let-col>
-            <i class="fa fa-close" (click)="yearFilter=null;dataTableIstance.filter(null,col.field,col.filterMatchMode)"></i>
-            <p-slider [style]="{'width':'100%','margin-top':'8px'}" [(ngModel)]="filtroDislivello" [min]="0" [max]="500" (onSlideEnd)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)"></p-slider>
-        </ng-template>
+      <ng-template pTemplate="filter" let-col>
+        <i class="fa fa-close" (click)="yearFilter=null;dataTableIstance.filter(null,col.field,col.filterMatchMode)"></i>
+        <p-slider [(ngModel)]="filtroDislivello" [min]="0" [max]="500" [range]="true" (onSlideEnd)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)"></p-slider>
+      </ng-template>
       <ng-template let-itinerario="rowData" pTemplate="body">
         <span>{{itinerario.dislivello}} <span>m</span></span>
-      </ng-template></p-column>
-    <p-column field="difficolta" [style]="{'width':'130px'}" header="DIFFICOLTA" [sortable]="true"  [filter]="true" filterMatchMode="in">
-        <ng-template pTemplate="filter" let-col>
-              <p-multiSelect [options]="difficulties" defaultLabel="Tutte" selectedItemsLabel="{0} Difficoltà" maxSelectedLabels="1" (onChange)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)" styleClass="ui-column-filter"></p-multiSelect>
-          </ng-template>
+      </ng-template>
     </p-column>
-    <p-column field="luogo" [style]="{'width':'150px'}" header="LUOGO" [sortable]="true"></p-column>
-    <p-column field="descrizione" [style]="{'min-width':'500px'}"header="DESCRIZIONE"></p-column>
+    <p-column field="difficolta" [style]="{'width':'130px'}" header="DIFFICOLTA" [sortable]="true" [filter]="true" filterMatchMode="in">
+      <ng-template pTemplate="filter" let-col>
+        <p-multiSelect [options]="difficulties" defaultLabel="Tutte" selectedItemsLabel="{0} Difficoltà" maxSelectedLabels="1" (onChange)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)" styleClass="ui-column-filter"></p-multiSelect>
+      </ng-template>
+    </p-column>
+    <p-column field="luogo" [style]="{'width':'150px'}" header="LUOGO" [sortable]="true" filterMatchMode="in">
+      <ng-template pTemplate="filter" let-col>
+        <p-multiSelect [options]="places" defaultLabel="Tutti" selectedItemsLabel="{0} Luoghi" maxSelectedLabels="0" (onChange)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)" styleClass="ui-column-filter"></p-multiSelect>
+      </ng-template>
+    </p-column>
+    <p-column field="descrizione" [style]="{'min-width':'500px'}" header="DESCRIZIONE"></p-column>
   </p-dataTable>
 </div>
