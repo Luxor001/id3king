@@ -6,46 +6,59 @@
   </div>
 </div>
 <div class="tableContainer">
-  <p-dataTable [value]="routes" scrollable="true" [globalFilter]="globalFilter" scrollHeight="100%" #dataTableIstance>
+  <p-dataTable [value]="routes" scrollable="true" [globalFilter]="globalFilter" scrollHeight="100%" expandableRows="true" #dataTableIstance>
     <p-header>ITINERARI</p-header>
+    <p-column expander="true" [style]="{'width':'30px'}" styleClass="col-icon"></p-column>
     <p-column field="id" [style]="{'width':'70px'}" header="ID" [sortable]="true"></p-column>
+
     <p-column field="data" [style]="{'width':'100px'}" header="DATA" [sortable]="true">
-      <!--<ng-template pTemplate="filter" let-col>
+      <!--
+      <ng-template pTemplate="filter" let-col>
         <p-calendar [(ngModel)]="filtroDate" [minDate]="filtersValue.minDate" [maxDate]="filtersValue.maxDate" selectionMode="range" readonlyInput="true"></p-calendar>
       </ng-template>-->
       <ng-template let-itinerario="rowData" pTemplate="body">
         <span>{{itinerario.data | date:'dd-MM-y'}}</span>
       </ng-template>
     </p-column>
+
     <p-column field="durata" [style]="{'width':'120px'}" header="DURATA" [sortable]="true">
       <ng-template let-itinerario="rowData" pTemplate="body">
         <span>{{itinerario.durata | time}}</span>
       </ng-template>
     </p-column>
+
     <p-column field="lunghezza" [style]="{'width':'130px'}" header="LUNGHEZZA" [sortable]="true">
       <ng-template let-itinerario="rowData" pTemplate="body">
         <span>{{itinerario.lunghezza}} <span>km</span></span>
       </ng-template>
     </p-column>
+
     <p-column field="dislivello" [style]="{'width':'130px'}" header=" (DISLIVELLO {{filtroDislivello}})" [sortable]="true" [filter]="true" filterMatchMode="equals">
       <ng-template pTemplate="filter" let-col>
         <i class="fa fa-close" (click)="yearFilter=null;dataTableIstance.filter(null,col.field,col.filterMatchMode)"></i>
-        <p-slider [(ngModel)]="filtroDislivello" [min]="0" [max]="500" [range]="true" (onSlideEnd)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)"></p-slider>
+        <p-slider [(ngModel)]="filtroDislivello" [min]="0" [max]="500" (onSlideEnd)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)"></p-slider>
       </ng-template>
       <ng-template let-itinerario="rowData" pTemplate="body">
         <span>{{itinerario.dislivello}} <span>m</span></span>
       </ng-template>
     </p-column>
+
     <p-column field="difficolta" [style]="{'width':'130px'}" header="DIFFICOLTA" [sortable]="true" [filter]="true" filterMatchMode="in">
       <ng-template pTemplate="filter" let-col>
         <p-multiSelect [options]="filtersValue.difficulties" defaultLabel="Tutte" selectedItemsLabel="{0} Difficoltà" maxSelectedLabels="1" (onChange)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)" styleClass="ui-column-filter"></p-multiSelect>
       </ng-template>
     </p-column>
+
     <p-column field="luogo" [style]="{'width':'150px'}" header="LUOGO" [sortable]="true" filterMatchMode="in">
       <ng-template pTemplate="filter" let-col>
         <p-multiSelect [options]="filtersValue.places" defaultLabel="Tutti" selectedItemsLabel="{0} Luoghi" maxSelectedLabels="0" (onChange)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)" styleClass="ui-column-filter"></p-multiSelect>
       </ng-template>
     </p-column>
+
     <p-column field="descrizione" [style]="{'min-width':'500px'}" header="DESCRIZIONE"></p-column>
+
+    <ng-template let-car pTemplate="rowexpansion">
+       rowExpansion template!
+    </ng-template>
   </p-dataTable>
 </div>

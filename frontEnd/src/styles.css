@@ -17,9 +17,10 @@ p-datatable th {
   border: 0 !important;
 }
 
-p-datatable .ui-widget-header, p-datatable th{
+p-datatable .ui-widget-header, p-datatable th {
   overflow: visible !important;
 }
+
 p-datatable td {
   height: 25px;
   text-align: center;
@@ -33,6 +34,15 @@ p-datatable tr {
 
 p-datatable thead {
   border-bottom: 1px solid #d4d4d4;
+}
+
+p-header {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.ui-datatable th.ui-state-active {
+  background: gray !important;
 }
 
 app-header {
@@ -74,7 +84,6 @@ app-main {
   flex: 2;
   padding-top: 10px;
 }
-
 
 app-toolbar {
   float: right;
