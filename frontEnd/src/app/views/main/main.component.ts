@@ -1,9 +1,9 @@
 import 'rxjs/add/operator/map'
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Route } from '../../shared/route.model';
 import { RouteService } from '../../shared/route.service';
 import { UtilityService } from '../../shared/utility.service';
-import { SelectItem } from 'primeng/primeng';
+import { SelectItem, DataTable } from 'primeng/primeng';
 import * as $ from 'jquery';
 
 @Component({
@@ -17,11 +17,14 @@ export class MainComponent implements OnInit {
   routes: Route[];
 
   filtroDislivello: number;
+  filtroLunghezza: number;
+  filtroDurata: number;
   filtroDate: Date[];
   filtersValue: FiltersValue = new FiltersValue();
 
   constructor(private routeService: RouteService) { }
 
+  @ViewChild('dataTableIstance') dt: DataTable;
   ngOnInit() {
     this.loading = true;
     var root = this;
@@ -35,6 +38,22 @@ export class MainComponent implements OnInit {
       );
 
     UtilityService.resizeToParent($('.tableContainer'));
+
+    this.dt.filterConstraints['GreaterThan'] = function GreaterThan(value: number, filter: any): boolean {
+      // thanks to https://stackoverflow.com/a/46370483/1306679
+
+      // value = array of data from the current row
+      // filter = value from the filter that will be searched in the value-array
+
+      if (filter === undefined || filter === null) {
+        return true;
+      }
+
+      if (value == null)
+        return false;
+
+      return value <= filter;
+    }
   }
 
   getFilterValues(routes: Route[]): FiltersValue {
@@ -53,6 +72,10 @@ export class MainComponent implements OnInit {
     filtersValue.minDate = new Date(sorted[0].data);
     filtersValue.maxDate = new Date(sorted[sorted.length - 1].data);
     return filtersValue;
+  }
+
+  prova(hey: any): void {
+    debugger;
   }
 }
 

@@ -27,15 +27,19 @@
       </ng-template>
     </p-column>
 
-    <p-column field="lunghezza" [style]="{'width':'130px'}" header="LUNGHEZZA" [sortable]="true">
+    <p-column field="lunghezza" [style]="{'width':'130px'}" header="LUNGHEZZA {{filtroLunghezza == null ? '' : filtroLunghezza+'km'}}" [sortable]="true" filterMatchMode="GreaterThan">
+      <ng-template pTemplate="filter" let-col>
+        <i class="fa fa-close" (click)="filtroLunghezza=null;dataTableIstance.filter(null,col.field,col.filterMatchMode)"></i>
+        <p-slider [(ngModel)]="filtroLunghezza" [min]="0" [max]="500" (onSlideEnd)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)"></p-slider>
+      </ng-template>
       <ng-template let-itinerario="rowData" pTemplate="body">
         <span>{{itinerario.lunghezza}} <span>km</span></span>
       </ng-template>
     </p-column>
 
-    <p-column field="dislivello" [style]="{'width':'130px'}" header=" (DISLIVELLO {{filtroDislivello}})" [sortable]="true" [filter]="true" filterMatchMode="equals">
+    <p-column field="dislivello" [style]="{'width':'130px'}" header=" DISLIVELLO {{filtroDislivello == null ? '' : filtroDislivello+'m'}}" [sortable]="true" [filter]="true" filterMatchMode="GreaterThan">
       <ng-template pTemplate="filter" let-col>
-        <i class="fa fa-close" (click)="yearFilter=null;dataTableIstance.filter(null,col.field,col.filterMatchMode)"></i>
+        <i class="fa fa-close" (click)="filtroDislivello=null;dataTableIstance.filter(null,col.field,col.filterMatchMode)"></i>
         <p-slider [(ngModel)]="filtroDislivello" [min]="0" [max]="500" (onSlideEnd)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)"></p-slider>
       </ng-template>
       <ng-template let-itinerario="rowData" pTemplate="body">
