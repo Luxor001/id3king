@@ -11,17 +11,16 @@
     <p-column expander="true" [style]="{'width':'30px'}" styleClass="col-icon"></p-column>
     <p-column field="id" [style]="{'width':'70px'}" header="ID" [sortable]="true"></p-column>
 
-    <p-column field="data" [style]="{'width':'100px'}" header="DATA" [sortable]="true">
-      <!--
+    <p-column field="data" [style]="{'width':'120px'}" header="DATA" [sortable]="true">
       <ng-template pTemplate="filter" let-col>
-        <p-calendar [(ngModel)]="filtroDate" [minDate]="filtersValue.minDate" [maxDate]="filtersValue.maxDate" selectionMode="range" readonlyInput="true"></p-calendar>
-      </ng-template>-->
+        <p-multiSelect [options]="filtersValue.places" defaultLabel="Tutti" selectedItemsLabel="{0} Periodi" maxSelectedLabels="0" (onChange)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)" styleClass="ui-column-filter"></p-multiSelect>
+      </ng-template>
       <ng-template let-itinerario="rowData" pTemplate="body">
         <span>{{itinerario.data | date:'dd-MM-y'}}</span>
       </ng-template>
     </p-column>
 
-    <p-column field="durata" [style]="{'width':'110px'}" header="DURATA"  header="DURATA {{filtroDurata == null ? '' : (filtroDurata | time)}}" [sortable]="true" filterMatchMode="atMost">
+    <p-column field="durata" [style]="{'width':'110px'}" header="DURATA" header="DURATA {{filtroDurata == null ? '' : (filtroDurata | time)}}" [sortable]="true" filterMatchMode="atMost">
       <ng-template pTemplate="filter" let-col>
         <i class="fa fa-close" (click)="filtroDurata=null;dataTableIstance.filter(null,col.field,col.filterMatchMode)"></i>
         <p-slider [(ngModel)]="filtroDurata" [min]="filtersValue.minDuration" [max]="filtersValue.maxDuration" (onSlideEnd)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)"></p-slider>
