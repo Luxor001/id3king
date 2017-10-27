@@ -39,16 +39,10 @@ export class MainComponent implements OnInit {
 
     UtilityService.resizeToParent($('.tableContainer'));
 
-    this.dt.filterConstraints['GreaterThan'] = function GreaterThan(value: number, filter: any): boolean {
-      // thanks to https://stackoverflow.com/a/46370483/1306679
-
-      // value = array of data from the current row
-      // filter = value from the filter that will be searched in the value-array
-
-      if (filter === undefined || filter === null) {
+    // thanks to https://stackoverflow.com/a/46370483/1306679
+    this.dt.filterConstraints['atMost'] = function atMost(value: number, filter: any): boolean {
+      if (filter === undefined || filter === null)
         return true;
-      }
-
       if (value == null)
         return false;
 
@@ -64,18 +58,25 @@ export class MainComponent implements OnInit {
     dictionary = routes.reduce((dictionary, route) => dictionary.add(route.luogo), new Set<string>());
     dictionary.forEach(place => filtersValue.places.push(new ConcreteSelectItem(place, place)));
 
-    // Ottenimento dei possibili valori delle difficoltà degli itinerari
+    // Possibili valori delle difficoltà degli itinerari
     dictionary = routes.reduce((dictionary, route) => dictionary.add(route.difficolta), new Set<string>());
     dictionary.forEach(difficulty => filtersValue.difficulties.push(new ConcreteSelectItem(difficulty, difficulty)));
 
+    // Data minima e massima
     var sorted = routes.sort((a, b) => { return (a.id - b.id) });
     filtersValue.minDate = new Date(sorted[0].data);
     filtersValue.maxDate = new Date(sorted[sorted.length - 1].data);
-    return filtersValue;
-  }
 
-  prova(hey: any): void {
-    debugger;
+    // Bounds di lunghezza
+    sorted = routes.sort((a, b) => { return (a.lunghezza - b.lunghezza) });
+    filtersValue.minRouteLength = sorted[0].lunghezza;
+    filtersValue.maxRouteLength = sorted[sorted.length - 1].lunghezza
+
+    // Bounds di durata
+    sorted = routes.sort((a, b) => { return (a.durata - b.durata) });
+    filtersValue.minDuration = sorted[0].durata;
+    filtersValue.maxDuration = sorted[sorted.length - 1].durata
+    return filtersValue;
   }
 }
 
@@ -89,6 +90,10 @@ class ConcreteSelectItem implements SelectItem {
 class FiltersValue {
   places: SelectItem[] = [];
   difficulties: SelectItem[] = [];
+  maxRouteLength: number;
+  minRouteLength: number;
+  minDuration: number;
+  maxDuration: number;
   minDate: Date;
   maxDate: Date;
 }
