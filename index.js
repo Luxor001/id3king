@@ -9,7 +9,7 @@ const server = new Hapi.Server({
   connections: {
     routes: {
       files: {
-        relativeTo: Path.join(__dirname, 'frontEnd')
+        relativeTo: Path.join(__dirname, 'app')
       }
     }
   }
