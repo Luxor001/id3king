@@ -6,7 +6,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 /// COMPONENTI
 import { AppComponent } from './app.component';
-import { ToolbarComponent } from './views/toolbar/toolbar.component';
 import { MainComponent } from './views/main/main.component';
 import { HeaderComponent } from './views/header/header.component';
 
@@ -29,7 +28,6 @@ import * as $ from 'jquery';
 @NgModule({
   declarations: [
     AppComponent,
-    ToolbarComponent,
     MainComponent,
     HeaderComponent,
     MinutesToHoursPipe
