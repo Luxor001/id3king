@@ -6,7 +6,7 @@
   </div>
 </div>
 <div class="tableContainer">
-  <p-dataTable [value]="routes" scrollable="true" [globalFilter]="globalFilter" scrollHeight="100%" expandableRows="true" #dataTableIstance>
+  <p-dataTable [value]="routes" scrollable="true" [globalFilter]="globalFilter" [emptyMessage]="'Nessun itinerario corrispondente ai filtri indicati'" scrollHeight="100%" expandableRows="true" #dataTableIstance>
     <p-header>ITINERARI</p-header>
     <p-column expander="true" [style]="{'width':'30px'}" styleClass="col-icon"></p-column>
     <p-column field="id" [style]="{'width':'70px'}" header="ID" [sortable]="true"></p-column>
@@ -20,7 +20,7 @@
       </ng-template>
     </p-column>
 
-    <p-column field="durata" [style]="{'width':'110px'}" header="DURATA" header="DURATA {{filtroDurata == null ? '' : (filtroDurata | time)}}" [sortable]="true" filterMatchMode="atMost">
+    <p-column field="durata" [style]="{'width':'110px'}" header="DURATA {{filtroDurata == null ? '' : (filtroDurata | time)}}" [sortable]="true" filterMatchMode="atMost">
       <ng-template pTemplate="filter" let-col>
         <i class="fa fa-close" (click)="filtroDurata=null;dataTableIstance.filter(null,col.field,col.filterMatchMode)"></i>
         <p-slider [(ngModel)]="filtroDurata" [min]="filtersValue.minDuration" [max]="filtersValue.maxDuration" (onSlideEnd)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)"></p-slider>
