@@ -82,6 +82,10 @@ export class MainComponent implements OnInit {
     filtersValue.maxDuration = sorted[sorted.length - 1].durata
     return filtersValue;
   }
+
+    test(a:any, b:any):any{
+      debugger;
+    }
 }
 
 class ConcreteSelectItem implements SelectItem {
