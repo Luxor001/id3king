@@ -65,7 +65,14 @@
     <p-column field="descrizione" [style]="{'min-width':'500px'}" header="DESCRIZIONE"></p-column>
 
     <ng-template let-car pTemplate="rowexpansion">
-      rowExpansion template!
+      <div class="routeDetail">
+        <aside>
+          <button pButton type="button" class="w40 ui-button-secondary" label="Vai al sito"></button>
+          <button pButton type="button" class="w40 ui-button-secondary" label="Salva nei preferiti"></button>
+          <button pButton type="button" class="w40 ui-button-secondary" label="Download mappa"></button>
+          <button pButton type="button" class="w40 ui-button-secondary" label="Download traccia"></button>
+        </aside>
+      </div>
     </ng-template>
   </p-dataTable>
 </div>

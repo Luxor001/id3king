@@ -75,20 +75,9 @@ app-header .caption {
   font-style: italic;
 }
 
-app-toolbar {
-  float: right;
-  width: 320px;
-}
-
 app-main {
   flex: 2;
   padding-top: 10px;
-}
-
-app-toolbar {
-  float: right;
-  width: 300px;
-  height: 100%;
 }
 
 body {
@@ -102,6 +91,21 @@ body {
 
 i.fa.fa-close:hover {
     opacity: 0.5;
+}
+
+div.routeDetail {
+  height: 200px;
+}
+
+div.routeDetail aside{
+  padding-top:10px;
+  float: left;
+}
+
+div.routeDetail button{
+  margin-top:15px;
+  text-align: left;
+  display: block;
 }
 
 .w0 {
