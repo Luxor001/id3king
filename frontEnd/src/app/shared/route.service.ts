@@ -4,7 +4,7 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {AppConfig} from '../config/app.config'
 import {seasonsService} from './utility.service';
 
-import {Route} from './route.model';
+import {Route, RouteDetail} from './route.model';
 import {Observable} from 'rxjs/Observable';
 
 
@@ -29,7 +29,11 @@ export class RouteService {
       })
   }
 
-  getRouteDetails(id: number): any{
-    // da inserire richiesta dettagli route...
+  getRouteDetails(id: number): any {
+    return this.http.get(this.appBaseUrl + '/getRouteDetail')
+      .map((response: RouteDetail) => {
+        // aggiungi all'array di itinerari il periodo
+        return response;
+      })
   }
 }
