@@ -90,22 +90,38 @@ body {
 }
 
 i.fa.fa-close:hover {
-    opacity: 0.5;
+  opacity: 0.5;
 }
 
 div.routeDetail {
-  height: 200px;
+  height: auto;
 }
 
-div.routeDetail aside{
-  padding-top:10px;
+div.routeDetail aside {
+  padding-top: 10px;
+  padding-bottom: 10px;
   float: left;
 }
 
-div.routeDetail button{
-  margin-top:15px;
+div.routeDetail aside button {
   text-align: left;
   display: block;
+}
+
+div.routeDetail aside button:not(:first-child) {
+  margin-top: 15px;
+}
+
+.ui-button {
+  background-color: #fff !important;
+  border-color: #ccc !important;
+  color: #373a3c !important;
+}
+
+.ui-button:hover {
+  background-color: #f2f2f2 !important;
+  border-color: #ccc !important;
+  color: #373a3c !important;
 }
 
 .w0 {
