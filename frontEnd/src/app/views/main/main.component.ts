@@ -1,8 +1,8 @@
 import 'rxjs/add/operator/map'
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Route } from '../../shared/route.model';
-import { RouteService } from '../../shared/route.service';
-import { UtilityService } from '../../shared/utility.service';
+import { Route } from '@shared/route.model';
+import { RouteService } from '@shared/route.service';
+import { UtilityService } from '@shared/utility.service';
 import { SelectItem, DataTable } from 'primeng/primeng';
 import * as $ from 'jquery';
 
@@ -13,7 +13,6 @@ import * as $ from 'jquery';
 
 export class MainComponent implements OnInit {
 
-  loading: boolean;
   routes: Route[];
 
   filtroDislivello: number;
@@ -26,7 +25,6 @@ export class MainComponent implements OnInit {
 
   @ViewChild('dataTableIstance') dt: DataTable;
   ngOnInit() {
-    this.loading = true;
     var root = this;
     this.routeService.getAllRoutes()
       .subscribe(

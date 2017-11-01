@@ -28,4 +28,8 @@ export class RouteService {
         });
       })
   }
+
+  getRouteDetails(id: number): any{
+    // da inserire richiesta dettagli route...
+  }
 }

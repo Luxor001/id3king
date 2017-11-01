@@ -93,22 +93,23 @@ i.fa.fa-close:hover {
   opacity: 0.5;
 }
 
-div.routeDetail {
+route-detail {
+  display: block;
   height: auto;
 }
 
-div.routeDetail aside {
+route-detail aside {
   padding-top: 10px;
   padding-bottom: 10px;
   float: left;
 }
 
-div.routeDetail aside button {
-  text-align: left;
-  display: block;
+route-detail aside button {
+  text-align: left !important;
+  display: block !important;
 }
 
-div.routeDetail aside button:not(:first-child) {
+route-detail aside button:not(:first-child) {
   margin-top: 15px;
 }
 

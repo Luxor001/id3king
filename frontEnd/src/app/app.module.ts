@@ -7,14 +7,15 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 /// COMPONENTI
 import { AppComponent } from './app.component';
 import { MainComponent } from './views/main/main.component';
+import { RouteDetail } from './views/main/routeDetail/routeDetail.component';
 import { HeaderComponent } from './views/header/header.component';
 
 /// PIPES
-import { MinutesToHoursPipe } from './shared/minutes.pipe';
+import { MinutesToHoursPipe } from '@shared/minutes.pipe';
 
 /// SERVIZI
-import { RouteService } from './shared/route.service';
-import { UtilityService } from './shared/utility.service';
+import { RouteService } from '@shared/route.service';
+import { UtilityService } from '@shared/utility.service';
 
 /// DIPENDENZE ESTERNE
 import { DataTableModule,
@@ -29,6 +30,7 @@ import * as $ from 'jquery';
   declarations: [
     AppComponent,
     MainComponent,
+    RouteDetail,
     HeaderComponent,
     MinutesToHoursPipe
   ],

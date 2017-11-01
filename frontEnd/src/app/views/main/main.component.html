@@ -64,15 +64,8 @@
 
     <p-column field="descrizione" [style]="{'min-width':'500px'}" header="DESCRIZIONE"></p-column>
 
-    <ng-template let-car pTemplate="rowexpansion">
-      <div class="routeDetail">
-        <aside>
-          <button pButton type="button" class="w40 ui-button-secondary" icon="fa-external-link" iconPos="left" label="Vai al sito"></button>
-          <button pButton type="button" class="w40 ui-button-secondary" icon="fa-star-o" iconPos="left" label="Salva nei preferiti"></button>
-          <button pButton type="button" class="w40 ui-button-secondary" icon="fa-map-o" iconPos="left" label="Download mappa"></button>
-          <button pButton type="button" class="w40 ui-button-secondary" icon="fa-arrows" iconPos="left" label="Download traccia"></button>
-        </aside>
-      </div>
+    <ng-template let-routeSelezionato pTemplate="rowexpansion">
+      <route-detail [ruoteSelezionato]="routeSelezionato"> </route-detail>
     </ng-template>
   </p-dataTable>
 </div>
