@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 
 import {AppConfig} from '../config/app.config'
-import {seasonsService} from './utility.service';
+import {SeasonsService} from './utility.service';
 
 import {Route, RouteDetail} from './route.model';
 import {Observable} from 'rxjs/Observable';
@@ -23,17 +23,17 @@ export class RouteService {
       .map((response: Route[]) => {
         // aggiungi all'array di itinerari il periodo
         return response.map(route => {
-          route.periodo = seasonsService.getSeason(new Date(route.data));
+          route.periodo = SeasonsService.getSeason(new Date(route.data));
           return route;
         });
       })
   }
 
-  getRouteDetails(id: number): any {
-    return this.http.get(this.appBaseUrl + '/getRouteDetail')
-      .map((response: RouteDetail) => {
-        // aggiungi all'array di itinerari il periodo
-        return response;
-      })
+  getRouteDetails(routeId: number): Observable<RouteDetail> {
+    return this.http.post(this.appBaseUrl + '/getRouteDetails', { routeId: routeId });
+  }
+
+  saveRoute(routeId: number): Observable<RouteDetail> {
+    return this.http.post(this.appBaseUrl + '/saveRoute',  { routeId: routeId });
   }
 }

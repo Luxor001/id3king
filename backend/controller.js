@@ -33,13 +33,33 @@ module.exports = [
     }
   },
 
-  /// API per salvare i filtri su DB
+  /// API per ottenere tutte le routes del DB
   {
     method: 'GET',
     path: '/getRoutes',
     handler: function(request, reply) {
       var routes = dbHandler.getRoutes();
       reply(routes);
+    }
+  },
+
+  /// API per ottenere i dettagli di una certa route
+  {
+    method: 'POST',
+    path: '/getRouteDetails',
+    handler: function(request, reply) {
+      let routeDetail = dbHandler.getRouteDetails(request.payload.routeId);
+      reply(routeDetail);
+    }
+  },
+
+  /// API per salvare tra i preferiti la route corrente
+  {
+    method: 'POST',
+    path: '/saveRoute',
+    handler: function(request, reply) {
+      let result = dbHandler.saveRoute(request.payload.routeId);
+      reply(result);
     }
   },
 

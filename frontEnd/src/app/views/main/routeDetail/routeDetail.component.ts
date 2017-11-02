@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Route } from '@shared/route.model';
+import { Route, RouteDetail } from '@shared/route.model';
 import { RouteService } from '@shared/route.service';
+import { UtilityService } from '@shared/utility.service';
 import * as $ from 'jquery';
 
 @Component({
@@ -8,29 +9,38 @@ import * as $ from 'jquery';
   templateUrl: './routeDetail.component.html'
 })
 
-export class RouteDetail implements OnInit {
+export class RouteDetailComponent implements OnInit {
   @Input() routeSelezionato: Route;
+  routeDetail: RouteDetail;
 
   constructor(private routeService: RouteService) { }
   ngOnInit() {
     this.routeService.getRouteDetails(this.routeSelezionato.id)
       .subscribe(
-      (info: any) => {
-        // da inserire popolamento dettagli route
+      (routeDetail: RouteDetail) => {
+        this.routeDetail = routeDetail;
       },
-      err => console.log(err)
-      );
+      err => console.log(err));
   }
 
-  goToSite(route: Route): void {
-
+  goToSite(route: RouteDetail) {
+    window.open(route.url, route.descrizione);
   }
 
-  saveBookmark(route: Route): void {
-
+  saveBookmark(route: RouteDetail) {
+    this.routeService.saveRoute(route.id)
+      .subscribe(
+      (routeDetail: RouteDetail) => {
+          this.routeDetail = routeDetail;
+      },
+      err => console.log(err));
   }
 
-  download(route: Route): void {
+  downloadMap(route: RouteDetail) {
+    UtilityService.downloadFile(route.mapUrl);
+  }
 
+  downloadTrack(route: RouteDetail) {
+    UtilityService.downloadFile(route.trackUrl);
   }
 }

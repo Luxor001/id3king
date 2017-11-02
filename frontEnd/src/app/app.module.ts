@@ -7,7 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 /// COMPONENTI
 import { AppComponent } from './app.component';
 import { MainComponent } from './views/main/main.component';
-import { RouteDetail } from './views/main/routeDetail/routeDetail.component';
+import { RouteDetailComponent } from './views/main/routeDetail/routeDetail.component';
 import { HeaderComponent } from './views/header/header.component';
 
 /// PIPES
@@ -30,7 +30,7 @@ import * as $ from 'jquery';
   declarations: [
     AppComponent,
     MainComponent,
-    RouteDetail,
+    RouteDetailComponent,
     HeaderComponent,
     MinutesToHoursPipe
   ],

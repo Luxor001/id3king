@@ -60,10 +60,12 @@ export class MainComponent implements OnInit {
     dictionary = routes.reduce((dictionary, route) => dictionary.add(route.difficolta), new Set<string>());
     dictionary.forEach(difficulty => filtersValue.difficulties.push(new ConcreteSelectItem(difficulty, difficulty)));
 
-    filtersValue.periods = [new ConcreteSelectItem('Inverno', 'Inverno'),
+    filtersValue.periods = [
+      new ConcreteSelectItem('Inverno', 'Inverno'),
       new ConcreteSelectItem('Primavera', 'Primavera'),
       new ConcreteSelectItem('Estate', 'Estate'),
-      new ConcreteSelectItem('Autunno', 'Autunno')];
+      new ConcreteSelectItem('Autunno', 'Autunno')
+    ];
     // Data minima e massima
     var sorted = routes.sort((a, b) => { return (a.id - b.id) });
     filtersValue.minDate = new Date(sorted[0].data);
