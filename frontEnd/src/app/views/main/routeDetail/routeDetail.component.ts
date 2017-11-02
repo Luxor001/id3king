@@ -1,7 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { Route, RouteDetail } from '@shared/route.model';
-import { RouteService } from '@shared/route.service';
-import { UtilityService } from '@shared/utility.service';
+import {Component, OnInit, Input} from '@angular/core';
+import {Route} from '@shared/route.model';
+import {RouteDetail} from '@shared/routedetail.model'
+import {RouteService} from '@shared/route.service';
+import {UtilityService} from '@shared/utility.service';
 import * as $ from 'jquery';
 
 @Component({
@@ -13,7 +14,7 @@ export class RouteDetailComponent implements OnInit {
   @Input() routeSelezionato: Route;
   routeDetail: RouteDetail;
 
-  constructor(private routeService: RouteService) { }
+  constructor(private routeService: RouteService) {}
   ngOnInit() {
     this.routeService.getRouteDetails(this.routeSelezionato.id)
       .subscribe(
@@ -31,7 +32,7 @@ export class RouteDetailComponent implements OnInit {
     this.routeService.saveRoute(route.id)
       .subscribe(
       (routeDetail: RouteDetail) => {
-          this.routeDetail = routeDetail;
+        this.routeDetail = routeDetail;
       },
       err => console.log(err));
   }

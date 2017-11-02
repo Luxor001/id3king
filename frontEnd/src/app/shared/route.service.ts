@@ -4,7 +4,8 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {AppConfig} from '../config/app.config'
 import {SeasonsService} from './utility.service';
 
-import {Route, RouteDetail} from './route.model';
+import {Route} from './route.model';
+import {RouteDetail} from '@shared/routedetail.model'
 import {Observable} from 'rxjs/Observable';
 
 
@@ -34,6 +35,6 @@ export class RouteService {
   }
 
   saveRoute(routeId: number): Observable<RouteDetail> {
-    return this.http.post(this.appBaseUrl + '/saveRoute',  { routeId: routeId });
+    return this.http.post(this.appBaseUrl + '/saveRoute', { routeId: routeId });
   }
 }

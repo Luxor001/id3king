@@ -4,3 +4,6 @@
   <button pButton type="button" class="w40 ui-button-secondary" (click)="downloadMap(routeSelezionato)" icon="fa-map-o" iconPos="left" label="Download mappa"></button>
   <button pButton type="button" class="w40 ui-button-secondary" (click)="downloadTrack(routeSelezionato)" icon="fa-arrows" iconPos="left" label="Download traccia"></button>
 </aside>
+<section *ngIf="routeDetail != null">
+  <h2>{{routeDetail.titolo}}</h2>
+</section>

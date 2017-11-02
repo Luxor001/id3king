@@ -1,6 +1,7 @@
 module.exports = class Route {
-  constructor(id, data, durata, lunghezza, dislivello, difficolta, luogo, descrizione) {
+  constructor(id, titolo, data, durata, lunghezza, dislivello, difficolta, luogo, descrizione) {
     this.id = id;
+    this.titolo = titolo;
     this.data = data;
     this.durata = durata;
     this.lunghezza = lunghezza;

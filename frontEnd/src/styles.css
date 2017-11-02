@@ -113,6 +113,11 @@ route-detail aside button:not(:first-child) {
   margin-top: 15px;
 }
 
+route-detail section {
+  float: left;
+  text-align: left;
+  margin-left: 10px;
+}
 .ui-button {
   background-color: #fff !important;
   border-color: #ccc !important;

@@ -1,5 +1,6 @@
 export class Route {
   constructor(public id: number,
+    public titolo: string,
     public data: Date,
     public durata: number,
     public lunghezza: number,
@@ -8,23 +9,5 @@ export class Route {
     public luogo: string,
     public descrizione: string,
     public periodo: string) {
-  }
-}
-
-export class RouteDetail extends Route {
-  constructor(id: number,
-    data: Date,
-    durata: number,
-    lunghezza: number,
-    dislivello: number,
-    difficolta: string,
-    luogo: string,
-    descrizione: string,
-    periodo: string,
-    public url: string,
-    public mapUrl: string,
-    public trackUrl: string,
-    public saved: boolean) {
-    super(id, data, durata, lunghezza, dislivello, difficolta, luogo, descrizione, periodo);
   }
 }
