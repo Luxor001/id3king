@@ -132,6 +132,32 @@ route-detail section .date {
   padding-top: 5px;
 }
 
+route-detail section .info {
+  float: left;
+  text-align: left;
+  padding-left: 15px;
+  padding-top: 10px;
+}
+
+route-detail section .tailInfo {
+  margin-left: 15px;
+  max-width: 300px;
+}
+
+route-detail section .info div{
+  padding-bottom: 15px;
+}
+
+route-detail section .headInfo span:first-child {
+  width: 130px;
+  display: inline-block;
+}
+
+route-detail section .tailInfo span:first-child {
+  width: 80px;
+  display: inline-block;
+}
+
 .ui-button {
   background-color: #fff !important;
   border-color: #ccc !important;
@@ -208,4 +234,8 @@ route-detail section .date {
   width: 400px !important;
   max-width: 400px !important;
   min-width: 400px !important;
+}
+
+.bold {
+  font-weight: bold;
 }

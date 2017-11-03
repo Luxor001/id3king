@@ -7,4 +7,18 @@
 <section *ngIf="routeDetail != null">
   <div class="title">{{routeDetail.titolo}}</div>
   <div class="date">{{routeDetail.data | date:'d LLLL yyyy' | capitalize:true}}</div>
+  <div class="info headInfo">
+    <div><span>Luogo itinerario:</span>&nbsp;<span class="bold">{{routeDetail.luogo}}</span></div>
+    <div><span>Durata percorso:</span>&nbsp;<span class="bold">{{routeDetail.durata | time}}</span></div>
+    <div><span>Lunghezza percorso:</span>&nbsp;<span class="bold">{{routeDetail.lunghezza}}&nbsp;Km</span></div>
+    <div><span>Dislivello cumulato:</span>&nbsp;<span class="bold">{{routeDetail.dislivello}}&nbsp;m</span></div>
+  </div>
+  <div class="info tailInfo">
+    <div>
+      <span>Difficolta:</span>&nbsp;<span class="bold">{{routeDetail.difficolta}}</span>
+    </div>
+    <div>
+      <span>Descrizione:</span>&nbsp;<span>{{routeDetail.descrizione}}</span>
+    </div>
+  </div>
 </section>
