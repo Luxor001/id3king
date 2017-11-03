@@ -94,13 +94,16 @@ i.fa.fa-close:hover {
 }
 
 route-detail {
-  display: block;
+  display: flex;
+  flex-direction: row;
   height: auto;
 }
 
 route-detail aside {
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-right: 15px;
+  border-right: 1px solid lightgray;
   float: left;
 }
 
@@ -115,9 +118,20 @@ route-detail aside button:not(:first-child) {
 
 route-detail section {
   float: left;
-  text-align: left;
-  margin-left: 10px;
+  text-align: center;
+  flex: 1 1 auto;
 }
+
+route-detail section .title {
+  margin-top: 5px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+route-detail section .date {
+  padding-top: 5px;
+}
+
 .ui-button {
   background-color: #fff !important;
   border-color: #ccc !important;
