@@ -13,8 +13,8 @@ Download [NodeJS](https://nodejs.org) and install in your system.
 ## Author
 
 * **Stefano Belli** - [GitHub](https://github.com/Luxor001) - [Stackoverflow](http://stackoverflow.com/users/1306679/luxor001)
-* **Eugenio Severi**
+* **Eugenio Severi** - [GitHub](https://github.com/eugenioseveri) - [Bitbucket](https://bitbucket.org/eugenioseveri/)
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the GNU GPL v3 license - see the [LICENSE](LICENSE) file for details
