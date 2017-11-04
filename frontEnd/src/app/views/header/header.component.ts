@@ -6,5 +6,8 @@ import { Component } from '@angular/core';
 })
 
 export class HeaderComponent {
-
+  displayModal = false;
+  signIn() {
+    this.displayModal = true;
+  }
 }

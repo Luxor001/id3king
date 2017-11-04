@@ -1,8 +1,8 @@
 <!-- da inserire tutto il template per l'header -->
 <div>
-  <!--<div style="float:right">
-    Accedi Registrati
-  </div>-->
+  <div style="float:right">
+    <span (click)="signIn()">Accedi</span> o <span>Registrati</span>
+  </div>
 
   <div class="title">
       <h1>id3king JS</h1>
@@ -11,3 +11,4 @@
       Most famous trekking group made easy. Written in NodeJs, Angular and with <span class="normalFont">&#10084;</span>
   </div>
 </div>
+<login-modal [(displayModal)]="displayModal"></login-modal>

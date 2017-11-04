@@ -1,6 +1,8 @@
 /// In questo file va posta tutta la logica di input-output per il dbHandler
 const Route = require('../code/Route.js');
 const RouteDetail = require('../code/RouteDetail.js');
+let Bcrypt = require('bcrypt'); // use bcrypt to hash passwords.
+const $q = require('q');
 
 var dummyValues = [
   new RouteDetail(102, "S. Piero in Bagno, Bagno di Romagna e il versante West del Monte Comero", new Date('01/01/2017'), 100, 20, 367, 'E', "La Lama", "percorso molto bello nella lama", "http://www.id3king.it/Uscite/U2002/Uscita102/indice_102.htm", "http://www.id3king.it/Uscite/U2002/Uscita100/Images100/mappa100.jpg", "http://www.id3king.it/Tracce/U100%20FalterBagnoPoppiBadiaP.rar"),
@@ -27,15 +29,29 @@ module.exports = {
     // ottenimento dei valori da DB
     return dummyValues.find(route => route.id == routeId);
   },
-  saveRoute: function(routeId){
+  saveRoute: function(routeId, loginToken) {
+    // TODO: if(loginExist(loginToken)) (controllare se il token di login utente esiste)
     let route = dummyValues.find(route => route.id == routeId);
     route.saved = !route.saved;
+    // TODO: UPDATE... (inserire nella tabella delle route salvate dell'utente la corrente (routeId))
     return route;
   },
   login: function(username, passwd) {
-    // effettuazione della login
+    let storedPassword = getUserPassword(username);
+    if (storedPassword == null)
+      return $q.reject();
+
+    return Bcrypt.compare(passwd, storedPassword).then(function(result) {
+      // generazione del token
+      return result;
+    })
   },
   insertFilters: function(loginToken, routes) {
     // inserimento dei filtri salvati
   }
+}
+
+function loginExist(username) {
+  // TODO: SELECT...
+  return "asdsa";
 }

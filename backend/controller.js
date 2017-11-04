@@ -65,7 +65,7 @@ module.exports = [
 
   /// API per effettuare la login utente
   /// cercare come fare per https://hapijs.com/tutorials/auth
-  {
+/*  {
     method: 'POST',
     path: '/login',
     handler: function(request, reply) {
@@ -76,7 +76,7 @@ module.exports = [
       result.loginToken = "asdjasdioa2231sid992e2pij22poj"
       result.lastRouteSearched = new Route();
     }
-  },
+  },*/
 
   /// API per registrare un utente
   {

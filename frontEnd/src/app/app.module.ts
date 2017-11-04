@@ -4,12 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-
 /// COMPONENTI
 import { AppComponent } from './app.component';
 import { MainComponent } from './views/main/main.component';
 import { RouteDetailComponent } from './views/main/routeDetail/routeDetail.component';
 import { HeaderComponent } from './views/header/header.component';
+import { LoginComponent } from './views/header/login/login.component';
 
 /// PIPES
 import { MinutesToHoursPipe } from '@shared/minutes.pipe';
@@ -25,7 +25,8 @@ import { DataTableModule,
   MultiSelectModule,
   SliderModule,
   SharedModule,
-  CalendarModule } from 'primeng/primeng';
+  ButtonModule,
+  DialogModule } from 'primeng/primeng';
 
 import * as $ from 'jquery';
 
@@ -35,6 +36,7 @@ import * as $ from 'jquery';
     MainComponent,
     RouteDetailComponent,
     HeaderComponent,
+    LoginComponent,
     MinutesToHoursPipe,
     CapitalizePipe
   ],
@@ -46,7 +48,8 @@ import * as $ from 'jquery';
     SharedModule,
     SliderModule,
     MultiSelectModule,
-    CalendarModule,
+    DialogModule,
+    ButtonModule,
     BrowserAnimationsModule
   ],
   providers: [

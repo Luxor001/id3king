@@ -3,18 +3,20 @@
   "version": "1.0.0",
   "description": "id3KingServer, written in nodejs with <3",
   "main": "index.js",
-  "scripts": {
-  },
+  "scripts": {},
   "author": "Luxor001",
   "license": "ISC",
   "dependencies": {
-    "hapi": "^13.4.1",
-    "request-promise": "^4.1.0",
-    "cron": "*",
-    "sqlite3": "*",
-    "inert": "*",
+    "bcrypt": "^1.0.3",
     "cheerio": "*",
+    "cron": "*",
+    "hapi": "^13.4.1",
+    "hapi-login": "^1.2.2",
+    "inert": "*",
+    "joi": "^13.0.1",
+    "q": "^1.5.1",
     "request": "*",
-    "q": "*"
+    "request-promise": "^4.1.0",
+    "sqlite3": "*"
   }
 }
