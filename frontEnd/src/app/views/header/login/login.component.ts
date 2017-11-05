@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter} from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'login-modal',
@@ -9,6 +9,8 @@ export class LoginComponent {
   @Input() displayModal: boolean;
   @Output() displayModalChange: EventEmitter<boolean> = new EventEmitter<boolean>();
 
+  login() {
+  }
   closeModal() {
     this.displayModal = false;
     this.displayModalChange.emit(this.displayModal); //rendiamo la variabile nel component "padre" false

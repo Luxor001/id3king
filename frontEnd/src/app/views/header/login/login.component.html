@@ -1,5 +1,10 @@
 <p-dialog header="Login" [draggable]="false" modal="modal" [responsive]="true" [(visible)]="displayModal">
+  <label>Username</label>
+  <input autocapitalize="off" autocorrect="off" autofocus="autofocus" id="login_field" name="login" tabindex="1" type="text">
+  <label>Password</label>
+  <input autocapitalize="off" autocorrect="off" autofocus="autofocus" id="login_field" name="login" tabindex="1" type="password">
   <p-footer>
+    <button type="button" pButton icon="fa-sign-in" (click)="login()" label="Accedi"></button>
     <button type="button" pButton icon="fa-close" (click)="closeModal()" label="Annulla"></button>
   </p-footer>
 </p-dialog>
