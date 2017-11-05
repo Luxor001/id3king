@@ -93,7 +93,7 @@ app-main {
 }
 
 login-modal label {
-  margin-bottom: 7px;
+  margin-bottom: 5px;
   font-weight: bold;
   display: block;
 }
@@ -115,7 +115,23 @@ login-modal input {
   display: block;
   width: 100%;
   box-sizing: border-box;
-  margin-bottom:15px;
+  margin-bottom: 10px;
+}
+
+login-modal .ui-dialog-footer {
+  text-align: right;
+}
+
+login-modal p-footer button:first-child {
+    background-color: #5cb85c !important;
+    border-color: #5cb85c !important;
+    color: #fff !important;
+}
+
+login-modal p-footer button:first-child:hover {
+    background-color: #4cae4c !important;
+    border-color: #5cb85c !important;
+    color: #fff !important;
 }
 
 body {
