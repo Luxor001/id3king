@@ -1,8 +1,18 @@
 <p-dialog header="Login" [draggable]="false" modal="modal" [responsive]="true" [(visible)]="displayModal">
-  <label>Username</label>
-  <input autocapitalize="off" autocorrect="off" autofocus="autofocus" id="login_field" name="login" tabindex="1" type="text">
-  <label>Password</label>
-  <input autocapitalize="off" autocorrect="off" autofocus="autofocus" id="login_field" name="login" tabindex="1" type="password">
+
+  <form #f="ngForm" novalidate>
+    <label>Username</label>
+    <input type="text" name="username" [ngModel]="user.username" required minlength="5" #username="ngModel">
+    <small [hidden]="username.valid || (username.pristine && !f.submitted)">
+     L'username deve essere almeno di 5 caratteri
+   </small>
+
+    <label>Password</label>
+    <input autocapitalize="off" autocorrect="off" autofocus="autofocus" id="login_field" name="login" tabindex="1" type="password">
+
+    <label *ngIf="modalType == MODALTYPEENUM.REGISTRATION">Conferma password</label>
+    <input *ngIf="modalType == MODALTYPEENUM.REGISTRATION" autocapitalize="off" autocorrect="off" autofocus="autofocus" id="login_field" name="login" tabindex="1" type="password">
+  </form>
   <p-footer>
     <button type="button" pButton icon="fa-sign-in" (click)="login()" label="Accedi"></button>
     <button type="button" pButton icon="fa-close" (click)="closeModal()" label="Annulla"></button>

@@ -299,3 +299,7 @@ route-detail section .tailInfo span:first-child {
   font-weight: bold;
   cursor: pointer;
 }
+
+.link:hover {
+  opacity: 0.7;
+}

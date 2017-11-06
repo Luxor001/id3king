@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { UserLogin } from './userlogin.model'
 
 @Component({
   selector: 'login-modal',
@@ -7,12 +8,24 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 export class LoginComponent {
   @Input() displayModal: boolean;
+  @Input() modalType: MODALTYPE;
   @Output() displayModalChange: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  login() {
+  public user: UserLogin;
+  MODALTYPEENUM = MODALTYPE;
+
+  constructor() {
+    this.user = new UserLogin();
   }
+  login() { }
+
   closeModal() {
     this.displayModal = false;
     this.displayModalChange.emit(this.displayModal); //rendiamo la variabile nel component "padre" false
   }
+}
+
+export enum MODALTYPE {
+  LOGIN,
+  REGISTRATION
 }
