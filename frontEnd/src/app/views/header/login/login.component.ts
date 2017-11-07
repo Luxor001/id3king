@@ -12,17 +12,20 @@ export class LoginComponent {
   @Input() modalType: MODALTYPE;
   @Output() displayModalChange: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  public user: UserLogin;
+  user = new UserLogin('','','');
   MODALTYPEENUM = MODALTYPE;
 
-  constructor(private loginService: LoginService) {
-    this.user = new UserLogin();
-  }
+  constructor(private loginService: LoginService) {}
   login() {
 
   }
-  signUp() {
-    this.loginService.signUp(this.user);
+  signUp(userCredentials: UserLogin) {
+    this.loginService.signUp(userCredentials).subscribe(
+      (prova: any) => {
+
+      },
+      err => console.log(err)
+    );
   }
 
   closeModal() {

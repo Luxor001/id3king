@@ -65,26 +65,26 @@ module.exports = [
 
   /// API per effettuare la login utente
   /// cercare come fare per https://hapijs.com/tutorials/auth
-/*  {
-    method: 'POST',
-    path: '/login',
-    handler: function(request, reply) {
-      var result = new LoginResult();
+  /*  {
+      method: 'POST',
+      path: '/login',
+      handler: function(request, reply) {
+        var result = new LoginResult();
 
-      result.Return = dbHandler.login(request.payload.username, request.payload.password);
+        result.Return = dbHandler.login(request.payload.username, request.payload.password);
 
-      result.loginToken = "asdjasdioa2231sid992e2pij22poj"
-      result.lastRouteSearched = new Route();
-    }
-  },*/
+        result.loginToken = "asdjasdioa2231sid992e2pij22poj"
+        result.lastRouteSearched = new Route();
+      }
+    },*/
 
   /// API per registrare un utente
   {
     method: 'POST',
     path: '/signup',
     handler: function(request, reply) {
-        let result = dbHandler.signup(request.payload.userLogin);
-        reply(result);
+      let result = dbHandler.signup(request.payload.userLogin);
+      reply(result);
     }
   },
 

@@ -47,7 +47,28 @@ module.exports = {
     })
   },
   signup: function(userLogin) {
-    
+    return $q(function(resolve, reject) {
+
+      //TODO: SANITIZZAZIONE SQL!
+      if (userLogin.password == null || userLogin.password.length < 5 || userLogin.passwordConfirm != userLogin.password)
+        return reject('Password di lunghezza non corretta');
+      if (userLogin.passwordConfirm != userLogin.password)
+        return reject('Password non uguali');
+
+      //TODO: check se esiste già un user con lo stesso nome
+      if (userLogin.username == "ciao")
+        return reject('Utente già esistente');
+
+      // ritorna una promise. fare .then dall'altra parte
+      Bcrypt.hash(UserLogin.password).then(function(err, hash) {
+        //TODO: save in DB la password hashata e l'username
+
+        //TODO: GENERARE TOKEN!
+        //segnaliamo che è andato tutto a buon fine...
+        resolve();
+      });
+
+    })
   },
   insertFilters: function(loginToken, routes) {
     // inserimento dei filtri salvati

@@ -15,6 +15,6 @@ export class LoginService {
   }
 
   signUp(userLogin: UserLogin): Observable<boolean> {
-    return this.http.post(this.appBaseUrl + '/signup', userLogin);
+    return this.http.post(this.appBaseUrl + '/signup', {userLogin: userLogin});
   }
 }

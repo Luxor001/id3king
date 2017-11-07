@@ -1,20 +1,28 @@
 <p-dialog header="Login" [draggable]="false" modal="modal" [responsive]="true" [(visible)]="displayModal">
 
   <form #f="ngForm" novalidate>
-    <label>Username</label>
-    <input type="text" name="username" [ngModel]="user.username" required minlength="5" #username="ngModel">
+
+    <label for="username">Username</label>
+    <input type="text" class="form-control" id="username" required name="username" [(ngModel)]="user.username" minlength="5" #username="ngModel" tabindex="1">
     <small [hidden]="username.valid || (username.pristine && !f.submitted)">
      L'username deve essere almeno di 5 caratteri
    </small>
 
     <label>Password</label>
-    <input autocapitalize="off" autocorrect="off" autofocus="autofocus" id="login_field" name="login" tabindex="1" type="password">
+    <input type="password" class="form-control" id="password" required name="password" [(ngModel)]="user.password" minlength="5" autocapitalize="off" autocorrect="off" autofocus="autofocus" #password="ngModel" tabindex="2">
+    <small [hidden]="password.valid || (password.pristine && !f.submitted)">
+      Le password deve essere di almeno 5 caratteri
+    </small>
 
-    <label *ngIf="modalType == MODALTYPEENUM.REGISTRATION">Conferma password</label>
-    <input *ngIf="modalType == MODALTYPEENUM.REGISTRATION" autocapitalize="off" autocorrect="off" autofocus="autofocus" id="login_field" name="login" tabindex="1" type="password">
+    <label *ngIf="modalType == MODALTYPEENUM.REGISTRATION" for="confirmPassword">Conferma password</label>
+    <small [hidden]="!(user.confirmPassword != '' && user.password != '' && user.confirmPassword != user.password)">
+      Le password non corrispondono
+    </small>
+    <input *ngIf="modalType == MODALTYPEENUM.REGISTRATION" class="form-control" id="confirmPassword" required name="confirmPassword" [(ngModel)]="user.confirmPassword" minlength="5" autocapitalize="off" autocorrect="off" tabindex="3" type="password">
+
   </form>
   <p-footer>
-    <button *ngIf="modalType == MODALTYPEENUM.REGISTRATION" type="button" pButton icon="fa-sign-in" (click)="signUp()" label="Registrati"></button>
+    <button *ngIf="modalType == MODALTYPEENUM.REGISTRATION" type="button" pButton icon="fa-sign-in" (click)="signUp(user)" label="Registrati"></button>
     <button *ngIf="modalType == MODALTYPEENUM.LOGIN" type="button" pButton icon="fa-sign-in" (click)="login()" label="Accedi"></button>
     <button type="button" pButton icon="fa-close" (click)="closeModal()" label="Annulla"></button>
   </p-footer>
