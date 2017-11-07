@@ -18,6 +18,7 @@ import { CapitalizePipe } from '@shared/capitalize.pipe';
 /// SERVIZI
 import { RouteService } from '@shared/route.service';
 import { UtilityService } from '@shared/utility.service';
+import { LoginService } from '@shared/login.service';
 
 
 /// DIPENDENZE ESTERNE
@@ -55,6 +56,7 @@ import * as $ from 'jquery';
   providers: [
     RouteService,
     UtilityService,
+    LoginService,
     { provide: LOCALE_ID, useValue: 'it' }
   ],
   bootstrap: [AppComponent]

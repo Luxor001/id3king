@@ -46,6 +46,9 @@ module.exports = {
       return result;
     })
   },
+  signup: function(userLogin) {
+    
+  },
   insertFilters: function(loginToken, routes) {
     // inserimento dei filtri salvati
   }

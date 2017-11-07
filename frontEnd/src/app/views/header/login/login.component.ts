@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { UserLogin } from './userlogin.model'
+import { UserLogin } from '@shared/userlogin.model'
+import { LoginService } from '@shared/login.service'
 
 @Component({
   selector: 'login-modal',
@@ -14,10 +15,15 @@ export class LoginComponent {
   public user: UserLogin;
   MODALTYPEENUM = MODALTYPE;
 
-  constructor() {
+  constructor(private loginService: LoginService) {
     this.user = new UserLogin();
   }
-  login() { }
+  login() {
+
+  }
+  signUp() {
+    this.loginService.signUp(this.user);
+  }
 
   closeModal() {
     this.displayModal = false;

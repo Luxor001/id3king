@@ -3,7 +3,5 @@ export class UserLogin {
  public password: string;
  public confirmPassword: string;
 
- constructor(){
-   
- }
+ constructor(){}
 }

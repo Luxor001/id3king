@@ -5,7 +5,7 @@ import {AppConfig} from '../config/app.config'
 import {SeasonsService} from './utility.service';
 
 import {Route} from './route.model';
-import {RouteDetail} from '@shared/routedetail.model'
+import {RouteDetail} from './routedetail.model'
 import {Observable} from 'rxjs/Observable';
 
 

@@ -81,9 +81,10 @@ module.exports = [
   /// API per registrare un utente
   {
     method: 'POST',
-    path: '/register',
+    path: '/signup',
     handler: function(request, reply) {
-
+        let result = dbHandler.signup(request.payload.userLogin);
+        reply(result);
     }
   },
 

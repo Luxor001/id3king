@@ -14,7 +14,8 @@
     <input *ngIf="modalType == MODALTYPEENUM.REGISTRATION" autocapitalize="off" autocorrect="off" autofocus="autofocus" id="login_field" name="login" tabindex="1" type="password">
   </form>
   <p-footer>
-    <button type="button" pButton icon="fa-sign-in" (click)="login()" label="Accedi"></button>
+    <button *ngIf="modalType == MODALTYPEENUM.REGISTRATION" type="button" pButton icon="fa-sign-in" (click)="signUp()" label="Registrati"></button>
+    <button *ngIf="modalType == MODALTYPEENUM.LOGIN" type="button" pButton icon="fa-sign-in" (click)="login()" label="Accedi"></button>
     <button type="button" pButton icon="fa-close" (click)="closeModal()" label="Annulla"></button>
   </p-footer>
 </p-dialog>
