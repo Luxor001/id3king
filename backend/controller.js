@@ -1,3 +1,8 @@
+const {
+  IncorrectPasswordLengthException,
+  PasswordsNotEqualsException,
+  UsernameAlreadyExistException
+} = require('./dbHandler/dbHandlerExceptions.js');
 const BaseResult = require('./code/BaseResult.js');
 const dbHandler = require('./dbHandler/dbHandler.js');
 
@@ -83,8 +88,19 @@ module.exports = [
     method: 'POST',
     path: '/signup',
     handler: function(request, reply) {
-      let result = dbHandler.signup(request.payload.userLogin);
-      reply(result);
+      dbHandler.signup(request.payload.userLogin).then(function onSuccess(loginToken) {
+
+        //TODO: creare oggetto di scambio server-client che contiene il token
+        reply('registrazione effettuata' + loginToken);
+      }, function onFail(Exception) {
+        //TODO: migliorare comunicazione errore a utente
+        if (Exception instanceof IncorrectPasswordLengthException)
+          reply('password troppo corta');
+        if (Exception instanceof PasswordsNotEqualsException)
+          reply('password non uguali');
+        if (Exception instanceof UsernameAlreadyExistException)
+          reply('utente già esistente');
+      });
     }
   },
 

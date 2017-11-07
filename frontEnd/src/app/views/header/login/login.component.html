@@ -14,11 +14,11 @@
       Le password deve essere di almeno 5 caratteri
     </small>
 
-    <label *ngIf="modalType == MODALTYPEENUM.REGISTRATION" for="confirmPassword">Conferma password</label>
-    <small [hidden]="!(user.confirmPassword != '' && user.password != '' && user.confirmPassword != user.password)">
+    <label *ngIf="modalType == MODALTYPEENUM.REGISTRATION" for="passwordConfirm">Conferma password</label>
+    <small [hidden]="!(user.passwordConfirm != '' && user.password != '' && user.passwordConfirm != user.password)">
       Le password non corrispondono
     </small>
-    <input *ngIf="modalType == MODALTYPEENUM.REGISTRATION" class="form-control" id="confirmPassword" required name="confirmPassword" [(ngModel)]="user.confirmPassword" minlength="5" autocapitalize="off" autocorrect="off" tabindex="3" type="password">
+    <input *ngIf="modalType == MODALTYPEENUM.REGISTRATION" class="form-control" id="passwordConfirm" required name="passwordConfirm" [(ngModel)]="user.passwordConfirm" minlength="5" autocapitalize="off" autocorrect="off" tabindex="3" type="password">
 
   </form>
   <p-footer>

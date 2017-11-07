@@ -1,8 +1,15 @@
 /// In questo file va posta tutta la logica di input-output per il dbHandler
+const {
+  IncorrectPasswordLengthException,
+  PasswordsNotEqualsException,
+  UsernameAlreadyExistException
+} = require('./dbHandlerExceptions.js');
 const Route = require('../code/Route.js');
 const RouteDetail = require('../code/RouteDetail.js');
+
+const PASSWORD_MIN_LENGTH = 5;
+const DEFAULT_SALTROUNDS = 10;
 let Bcrypt = require('bcrypt'); // use bcrypt to hash passwords.
-const $q = require('q');
 
 var dummyValues = [
   new RouteDetail(102, "S. Piero in Bagno, Bagno di Romagna e il versante West del Monte Comero", new Date('01/01/2017'), 100, 20, 367, 'E', "La Lama", "percorso molto bello nella lama", "http://www.id3king.it/Uscite/U2002/Uscita102/indice_102.htm", "http://www.id3king.it/Uscite/U2002/Uscita100/Images100/mappa100.jpg", "http://www.id3king.it/Tracce/U100%20FalterBagnoPoppiBadiaP.rar"),
@@ -46,29 +53,29 @@ module.exports = {
       return result;
     })
   },
-  signup: function(userLogin) {
-    return $q(function(resolve, reject) {
 
-      //TODO: SANITIZZAZIONE SQL!
-      if (userLogin.password == null || userLogin.password.length < 5 || userLogin.passwordConfirm != userLogin.password)
-        return reject('Password di lunghezza non corretta');
+  signup: function(userLogin) {
+    return new Promise(function(resolve, reject) {
+      //TODO: SANITIZZAZIONE SQL!. Vedere https://stackoverflow.com/a/15778841/1306679
+
+      if (userLogin.password == null || userLogin.password.length < PASSWORD_MIN_LENGTH)
+        throw new IncorrectPasswordLengthException();
       if (userLogin.passwordConfirm != userLogin.password)
-        return reject('Password non uguali');
+        throw new PasswordsNotEqualsException();
 
       //TODO: check se esiste già un user con lo stesso nome
-      if (userLogin.username == "ciao")
-        return reject('Utente già esistente');
+      if (userLogin.username == "prova")
+        throw new UsernameAlreadyExistException();
 
       // ritorna una promise. fare .then dall'altra parte
-      Bcrypt.hash(UserLogin.password).then(function(err, hash) {
+      Bcrypt.hash(userLogin.password, DEFAULT_SALTROUNDS).then(function(err, hash) {
         //TODO: save in DB la password hashata e l'username
 
         //TODO: GENERARE TOKEN!
         //segnaliamo che è andato tutto a buon fine...
         resolve();
       });
-
-    })
+    });
   },
   insertFilters: function(loginToken, routes) {
     // inserimento dei filtri salvati
