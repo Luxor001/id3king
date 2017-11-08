@@ -14,10 +14,15 @@ class GetDataResult extends BaseResult {
 }
 
 class LoginResult extends BaseResult {
-  constructor() {
+  constructor(loginToken) {
     super();
-    this.loginToken = null;
+    this.loginToken = loginToken;
   }
+}
+const LoginResultERRORS = {
+  INCORRECT_PASSWORD_LENGTH: 'INCORRECT_PASSWORD_LENGTH',
+  PASSWORD_NOT_MATCHING: 'PASSWORD_NOT_MATCHING',
+  USER_ALREADY_EXIST: 'USER_ALREADY_EXIST'
 }
 
 module.exports = [
@@ -70,36 +75,41 @@ module.exports = [
 
   /// API per effettuare la login utente
   /// cercare come fare per https://hapijs.com/tutorials/auth
-  /*  {
-      method: 'POST',
-      path: '/login',
-      handler: function(request, reply) {
-        var result = new LoginResult();
+  {
+    method: 'POST',
+    path: '/signin',
+    handler: function(request, reply) {
+      var result = new LoginResult();
 
-        result.Return = dbHandler.login(request.payload.username, request.payload.password);
-
-        result.loginToken = "asdjasdioa2231sid992e2pij22poj"
-        result.lastRouteSearched = new Route();
-      }
-    },*/
+      dbHandler.signin(request.payload.userLogin).then(function(loginToken) {
+        result.Return = true;
+        result.loginToken = loginToken;
+        //result.lastRouteSearched = new Route();
+        reply(result);
+      }, function onFail(Exception) {
+        if (Exception instanceof PasswordsNotEqualsException)
+          reply(result.setError(LoginResultERRORS.PASSWORD_NOT_MATCHING));
+      })
+    }
+  },
 
   /// API per registrare un utente
   {
     method: 'POST',
     path: '/signup',
     handler: function(request, reply) {
+      let result = new LoginResult();
       dbHandler.signup(request.payload.userLogin).then(function onSuccess(loginToken) {
-
-        //TODO: creare oggetto di scambio server-client che contiene il token
-        reply('registrazione effettuata' + loginToken);
+        result.Return = true;
+        result.loginToken = loginToken;
+        reply(result);
       }, function onFail(Exception) {
-        //TODO: migliorare comunicazione errore a utente
         if (Exception instanceof IncorrectPasswordLengthException)
-          reply('password troppo corta');
+          reply(result.setError(LoginResultERRORS.PASSWORD_MIN_LENGTH));
         if (Exception instanceof PasswordsNotEqualsException)
-          reply('password non uguali');
+          reply(result.setError(LoginResultERRORS.PASSWORD_NOT_MATCHING));
         if (Exception instanceof UsernameAlreadyExistException)
-          reply('utente già esistente');
+          reply(result.setError(LoginResultERRORS.USER_ALREADY_EXIST));
       });
     }
   },

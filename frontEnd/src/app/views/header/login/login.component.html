@@ -11,7 +11,7 @@
     <label>Password</label>
     <input type="password" class="form-control" id="password" required name="password" [(ngModel)]="user.password" minlength="5" autocapitalize="off" autocorrect="off" autofocus="autofocus" #password="ngModel" tabindex="2">
     <small [hidden]="password.valid || (password.pristine && !f.submitted)">
-      Le password deve essere di almeno 5 caratteri
+      La password deve essere di almeno 5 caratteri
     </small>
 
     <label *ngIf="modalType == MODALTYPEENUM.REGISTRATION" for="passwordConfirm">Conferma password</label>
@@ -23,7 +23,7 @@
   </form>
   <p-footer>
     <button *ngIf="modalType == MODALTYPEENUM.REGISTRATION" type="button" pButton icon="fa-sign-in" (click)="signUp(user)" label="Registrati"></button>
-    <button *ngIf="modalType == MODALTYPEENUM.LOGIN" type="button" pButton icon="fa-sign-in" (click)="login()" label="Accedi"></button>
+    <button *ngIf="modalType == MODALTYPEENUM.LOGIN" type="button" pButton icon="fa-sign-in" (click)="signIn(user)" label="Accedi"></button>
     <button type="button" pButton icon="fa-close" (click)="closeModal()" label="Annulla"></button>
   </p-footer>
 </p-dialog>

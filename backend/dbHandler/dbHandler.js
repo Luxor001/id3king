@@ -7,9 +7,14 @@ const {
 const Route = require('../code/Route.js');
 const RouteDetail = require('../code/RouteDetail.js');
 
+//FIXME: da cancellare
+const hashed_prova_pass = "$2a$10$sqfzhsD1waUvTFKFApoki./Fio5YOqFm75jHW0OvAfwRg5LXJqkCK";
+
+let Bcrypt = require('bcrypt'); // use bcrypt to hash passwords.
+let randtoken = require('rand-token');
+
 const PASSWORD_MIN_LENGTH = 5;
 const DEFAULT_SALTROUNDS = 10;
-let Bcrypt = require('bcrypt'); // use bcrypt to hash passwords.
 
 var dummyValues = [
   new RouteDetail(102, "S. Piero in Bagno, Bagno di Romagna e il versante West del Monte Comero", new Date('01/01/2017'), 100, 20, 367, 'E', "La Lama", "percorso molto bello nella lama", "http://www.id3king.it/Uscite/U2002/Uscita102/indice_102.htm", "http://www.id3king.it/Uscite/U2002/Uscita100/Images100/mappa100.jpg", "http://www.id3king.it/Tracce/U100%20FalterBagnoPoppiBadiaP.rar"),
@@ -32,10 +37,12 @@ module.exports = {
     // ottenimento dei valori da DB
     return dummyValues;
   },
+
   getRouteDetails: function(routeId) {
     // ottenimento dei valori da DB
     return dummyValues.find(route => route.id == routeId);
   },
+
   saveRoute: function(routeId, loginToken) {
     // TODO: if(loginExist(loginToken)) (controllare se il token di login utente esiste)
     let route = dummyValues.find(route => route.id == routeId);
@@ -43,15 +50,19 @@ module.exports = {
     // TODO: UPDATE... (inserire nella tabella delle route salvate dell'utente la corrente (routeId))
     return route;
   },
-  login: function(username, passwd) {
-    let storedPassword = getUserPassword(username);
-    if (storedPassword == null)
-      return $q.reject();
 
-    return Bcrypt.compare(passwd, storedPassword).then(function(result) {
-      // generazione del token
-      return result;
-    })
+
+  signin: function(userLogin) {
+    // TODO: ricavare password dell'utente in base all'username fornito
+    // let hashedPasswordOnDb = "";
+    return Bcrypt.compare(userLogin.password, hashed_prova_pass).then(function(result) {
+      if (!result)
+        throw new PasswordsNotEqualsException();
+
+      // TODO: salvare il token su DB!
+      let loginToken = randtoken.generate(16);
+      return loginToken;
+    });
   },
 
   signup: function(userLogin) {
@@ -68,12 +79,12 @@ module.exports = {
         throw new UsernameAlreadyExistException();
 
       // ritorna una promise. fare .then dall'altra parte
-      Bcrypt.hash(userLogin.password, DEFAULT_SALTROUNDS).then(function(err, hash) {
+      Bcrypt.hash(userLogin.password, DEFAULT_SALTROUNDS).then(function(hash) {
         //TODO: save in DB la password hashata e l'username
 
-        //TODO: GENERARE TOKEN!
-        //segnaliamo che è andato tutto a buon fine...
-        resolve();
+        let loginToken = randtoken.generate(16);
+        //TODO: salvare il token su DB!
+        resolve(loginToken);
       });
     });
   },
