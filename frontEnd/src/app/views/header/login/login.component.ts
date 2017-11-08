@@ -1,6 +1,9 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { UserLogin } from '@shared/userlogin.model'
 import { LoginService } from '@shared/login.service'
+const PASSWORD_MIN_LENGTH_ERROR = "La password deve essere di almeno 5 caratteri";
+const PASSWORD_NOT_MATCHING_ERROR = "Le password non corrispondono"
+const USER_ALREADY_EXIST_ERROR = "Nome utente non disponibile"
 
 @Component({
   selector: 'login-modal',
@@ -16,9 +19,6 @@ export class LoginComponent {
   MODALTYPEENUM = MODALTYPE;
 
   erroreCorrente = "";
-  const PASSWORD_MIN_LENGTH_ERROR = "La password deve essere di almeno 5 caratteri";
-  const PASSWORD_NOT_MATCHING_ERROR = "Le password non corrispondono"
-  const USER_ALREADY_EXIST_ERROR = "Nome utente non disponibile"
 
   constructor(private loginService: LoginService) { }
   signIn(userCredentials: UserLogin) {
@@ -34,16 +34,16 @@ export class LoginComponent {
   }
 
   signUp(userCredentials: UserLogin) {
-    erroreCorrente = "";
+    this.erroreCorrente = "";
     this.loginService.signUp(userCredentials).subscribe(
       (result: any) => {
         if (!result.Return) {
           if (result.error == "PASSWORD_MIN_LENGTH")
-            this.erroreCorrente = this.PASSWORD_MIN_LENGTH_ERROR;
+            this.erroreCorrente = PASSWORD_MIN_LENGTH_ERROR;
           if (result.error == "PASSWORD_NOT_MATCHING")
-            this.erroreCorrente = this.PASSWORD_NOT_MATCHING_ERROR;
+            this.erroreCorrente = PASSWORD_NOT_MATCHING_ERROR;
           if (result.error == "USER_ALREADY_EXIST")
-            this.erroreCorrente = this.USER_ALREADY_EXIST_ERROR;
+            this.erroreCorrente = USER_ALREADY_EXIST_ERROR;
         }
         // TODO: settare token per utente
       },
