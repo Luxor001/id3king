@@ -3,6 +3,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Route } from '@shared/route.model';
 import { RouteService } from '@shared/route.service';
 import { UtilityService } from '@shared/utility.service';
+import { LoginService } from '@shared/login.service';
 import { SelectItem, DataTable } from 'primeng/primeng';
 import * as $ from 'jquery';
 
@@ -21,7 +22,8 @@ export class MainComponent implements OnInit {
   filtroDate: Date[];
   filtersValue: FiltersValue = new FiltersValue();
 
-  constructor(private routeService: RouteService) { }
+  constructor(private routeService: RouteService,
+    private loginService: LoginService) { }
 
   @ViewChild('dataTableIstance') dt: DataTable;
   ngOnInit() {
@@ -43,7 +45,6 @@ export class MainComponent implements OnInit {
         return true;
       if (value == null)
         return false;
-
       return value <= filter;
     }
   }

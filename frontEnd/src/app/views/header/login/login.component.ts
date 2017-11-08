@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { UserLogin } from '@shared/userlogin.model'
 import { LoginService } from '@shared/login.service'
+import { UserSession } from '@shared/usersession.model'
 const PASSWORD_MIN_LENGTH_ERROR = "La password deve essere di almeno 5 caratteri";
 const PASSWORD_NOT_MATCHING_ERROR = "Le password non corrispondono"
 const USER_ALREADY_EXIST_ERROR = "Nome utente non disponibile"
@@ -26,8 +27,11 @@ export class LoginComponent {
       (result: any) => {
         if (!result.Return) {
           // TODO: gestione errore...
+          return;
         }
-        // TODO: settare token per utente
+        // TODO: da spostare nella loginService
+        this.loginService.userSession = new UserSession("", result.loginToken);
+        this.closeModal();
       },
       err => console.log(err)
     );
@@ -45,7 +49,9 @@ export class LoginComponent {
           if (result.error == "USER_ALREADY_EXIST")
             this.erroreCorrente = USER_ALREADY_EXIST_ERROR;
         }
-        // TODO: settare token per utente
+        // TODO: da spostare nella loginService
+        this.loginService.userSession = new UserSession("", result.loginToken);
+        this.closeModal();
       },
       err => console.log(err)
     );

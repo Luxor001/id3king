@@ -3,11 +3,13 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { AppConfig } from '../config/app.config'
 import { UserLogin } from './userlogin.model'
+import { UserSession } from './usersession.model'
 
 @Injectable()
 export class LoginService {
   private headers: HttpHeaders;
   private appBaseUrl: string;
+  public userSession: UserSession;
 
   constructor(private http: HttpClient) {
     this.appBaseUrl = AppConfig.appBaseUrl;
