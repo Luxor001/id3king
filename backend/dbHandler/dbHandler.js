@@ -6,6 +6,7 @@ const {
 } = require('./dbHandlerExceptions.js');
 const Route = require('../code/Route.js');
 const RouteDetail = require('../code/RouteDetail.js');
+const User = require('../code/User.js');
 
 //FIXME: da cancellare
 const hashed_prova_pass = "$2a$10$sqfzhsD1waUvTFKFApoki./Fio5YOqFm75jHW0OvAfwRg5LXJqkCK";
@@ -60,7 +61,7 @@ module.exports = {
         throw new PasswordsNotEqualsException();
 
       // TODO: salvare il token su DB!
-      let loginToken = randtoken.generate(16);
+      let loginToken = randtoken.generate(32);
       return loginToken;
     });
   },
@@ -82,12 +83,18 @@ module.exports = {
       Bcrypt.hash(userLogin.password, DEFAULT_SALTROUNDS).then(function(hash) {
         //TODO: save in DB la password hashata e l'username
 
-        let loginToken = randtoken.generate(16);
+        let loginToken = randtoken.generate(32);
         //TODO: salvare il token su DB!
         resolve(loginToken);
       });
     });
   },
+
+  getUserInfo: function(username) {
+    //TODO: richiedere al DB info sull'utente
+    return new User('Luxor001', '101', [], []);
+  },
+
   insertFilters: function(loginToken, routes) {
     // inserimento dei filtri salvati
   }

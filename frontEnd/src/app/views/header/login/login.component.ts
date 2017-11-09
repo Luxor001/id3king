@@ -1,7 +1,8 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { UserLogin } from '@shared/userlogin.model'
 import { LoginService } from '@shared/login.service'
-import { UserSession } from '@shared/usersession.model'
+import { SessionService, UserSession } from '@shared/session.service';
+//import { UserSession } from '@shared/usersession.model'
 const PASSWORD_MIN_LENGTH_ERROR = "La password deve essere di almeno 5 caratteri";
 const PASSWORD_NOT_MATCHING_ERROR = "Le password non corrispondono"
 const USER_ALREADY_EXIST_ERROR = "Nome utente non disponibile"
@@ -14,23 +15,22 @@ const USER_ALREADY_EXIST_ERROR = "Nome utente non disponibile"
 export class LoginComponent {
   @Input() displayModal: boolean;
   @Input() modalType: MODALTYPE;
-  @Output() displayModalChange: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() modalClosed: EventEmitter<UserSession> = new EventEmitter<UserSession>();
 
   user = new UserLogin('', '', '');
   MODALTYPEENUM = MODALTYPE;
 
   erroreCorrente = "";
 
-  constructor(private loginService: LoginService) { }
+  constructor(private loginService: LoginService, private sessionService: SessionService) { }
   signIn(userCredentials: UserLogin) {
     this.loginService.signIn(userCredentials).subscribe(
       (result: any) => {
         if (!result.Return) {
-          // TODO: gestione errore...
+          // TODO: gestione errore...\
           return;
         }
-        // TODO: da spostare nella loginService
-        this.loginService.userSession = new UserSession("", result.loginToken);
+        this.sessionService.login(result.user.username, result.loginToken);
         this.closeModal();
       },
       err => console.log(err)
@@ -49,8 +49,7 @@ export class LoginComponent {
           if (result.error == "USER_ALREADY_EXIST")
             this.erroreCorrente = USER_ALREADY_EXIST_ERROR;
         }
-        // TODO: da spostare nella loginService
-        this.loginService.userSession = new UserSession("", result.loginToken);
+        this.sessionService.login(result.user.username, result.loginToken);
         this.closeModal();
       },
       err => console.log(err)
@@ -59,7 +58,7 @@ export class LoginComponent {
 
   closeModal() {
     this.displayModal = false;
-    this.displayModalChange.emit(this.displayModal); //rendiamo la variabile nel component "padre" false
+    this.modalClosed.emit(this.sessionService.getSession());
   }
 }
 

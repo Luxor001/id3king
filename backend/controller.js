@@ -4,6 +4,7 @@ const {
   UsernameAlreadyExistException
 } = require('./dbHandler/dbHandlerExceptions.js');
 const BaseResult = require('./code/BaseResult.js');
+const User = require('./code/User.js');
 const dbHandler = require('./dbHandler/dbHandler.js');
 
 class GetDataResult extends BaseResult {
@@ -14,9 +15,10 @@ class GetDataResult extends BaseResult {
 }
 
 class LoginResult extends BaseResult {
-  constructor(loginToken) {
+  constructor(loginToken, userInfo) {
     super();
     this.loginToken = loginToken;
+    this.user = userInfo;
   }
 }
 const LoginResultERRORS = {
@@ -84,7 +86,7 @@ module.exports = [
       dbHandler.signin(request.payload.userLogin).then(function(loginToken) {
         result.Return = true;
         result.loginToken = loginToken;
-        //result.lastRouteSearched = new Route();
+        result.user = dbHandler.getUserInfo(request.payload.userLogin);
         reply(result);
       }, function onFail(Exception) {
         if (Exception instanceof PasswordsNotEqualsException)
@@ -102,6 +104,7 @@ module.exports = [
       dbHandler.signup(request.payload.userLogin).then(function onSuccess(loginToken) {
         result.Return = true;
         result.loginToken = loginToken;
+        result.user = dbHandler.getUserInfo(request.payload.userLogin);
         reply(result);
       }, function onFail(Exception) {
         if (Exception instanceof IncorrectPasswordLengthException)

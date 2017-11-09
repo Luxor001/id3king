@@ -1,16 +1,24 @@
 <!-- da inserire tutto il template per l'header -->
 <div>
   <div class="login">
-    <span class="link" (click)="signIn()">Accedi</span>
-    <span> o </span>
-    <span class="link" (click)="signUp()">Registrati</span>
+    <div *ngIf="!userSession">
+      <span class="link" (click)="signIn()">Accedi</span>
+      <span> o </span>
+      <span class="link" (click)="signUp()">Registrati</span>
+    </div>
+    <div *ngIf="userSession">
+      <span>Bentornato, {{userSession.username}} </span>
+      <div>
+        <span class="link" (click)="logout()">Disconnetti</span>
+      </div>
+    </div>
   </div>
 
   <div class="title">
-      <h1>id3king JS</h1>
+    <h1>id3king JS</h1>
   </div>
   <div class="caption">
-      Most famous trekking group made easy. Written in NodeJs, Angular and with <span class="normalFont">&#10084;</span>
+    Most famous trekking group made easy. Written in NodeJs, Angular and with <span class="normalFont">&#10084;</span>
   </div>
 </div>
-<login-modal [(displayModal)]="displayModal" [(modalType)]="modalType"></login-modal>
+<login-modal [(displayModal)]="displayModal" [(modalType)]="modalType" (modalClosed)="modalClosed($event)"></login-modal>

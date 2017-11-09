@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { MODALTYPE } from './login/login.component'
+import { SessionService, UserSession } from '@shared/session.service';
 
 @Component({
   selector: 'app-header',
@@ -8,8 +9,12 @@ import { MODALTYPE } from './login/login.component'
 
 export class HeaderComponent {
   displayModal = false;
-  public modalType: MODALTYPE;
+  modalType: MODALTYPE;
+  userSession: UserSession;
 
+  constructor(private sessionService: SessionService) {
+    this.userSession = sessionService.getSession();
+  }
   signIn() {
     this.displayModal = true;
     this.modalType = MODALTYPE.LOGIN;
@@ -17,5 +22,13 @@ export class HeaderComponent {
   signUp() {
     this.displayModal = true;
     this.modalType = MODALTYPE.REGISTRATION;
+  }
+  logout() {
+    this.sessionService.logout();
+    this.userSession = null;
+  }
+  modalClosed(userSession: UserSession) {
+    this.userSession = userSession;
+    this.displayModal = false;
   }
 }
