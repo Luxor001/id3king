@@ -118,6 +118,10 @@ login-modal input {
   margin-bottom: 10px;
 }
 
+login-modal small {
+  color: red;
+}
+
 login-modal .ui-dialog-footer {
   text-align: right;
 }

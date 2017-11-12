@@ -1,7 +1,8 @@
 const {
   IncorrectPasswordLengthException,
   PasswordsNotEqualsException,
-  UsernameAlreadyExistException
+  UsernameAlreadyExistException,
+  IncorrectLoginException
 } = require('./dbHandler/dbHandlerExceptions.js');
 const BaseResult = require('./code/BaseResult.js');
 const User = require('./code/User.js');
@@ -24,7 +25,8 @@ class LoginResult extends BaseResult {
 const LoginResultERRORS = {
   INCORRECT_PASSWORD_LENGTH: 'INCORRECT_PASSWORD_LENGTH',
   PASSWORD_NOT_MATCHING: 'PASSWORD_NOT_MATCHING',
-  USER_ALREADY_EXIST: 'USER_ALREADY_EXIST'
+  USER_ALREADY_EXIST: 'USER_ALREADY_EXIST',
+  INCORRECT_LOGIN: 'INCORRECT_LOGIN'
 }
 
 module.exports = [
@@ -89,8 +91,8 @@ module.exports = [
         result.user = dbHandler.getUserInfo(request.payload.userLogin);
         reply(result);
       }, function onFail(Exception) {
-        if (Exception instanceof PasswordsNotEqualsException)
-          reply(result.setError(LoginResultERRORS.PASSWORD_NOT_MATCHING));
+        if (Exception instanceof IncorrectLoginException)
+          reply(result.setError(LoginResultERRORS.INCORRECT_LOGIN));
       })
     }
   },

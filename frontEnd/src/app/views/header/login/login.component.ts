@@ -6,6 +6,7 @@ import { SessionService, UserSession } from '@shared/session.service';
 const PASSWORD_MIN_LENGTH_ERROR = "La password deve essere di almeno 5 caratteri";
 const PASSWORD_NOT_MATCHING_ERROR = "Le password non corrispondono"
 const USER_ALREADY_EXIST_ERROR = "Nome utente non disponibile"
+const INCORRECT_LOGIN_ERROR = "Nome utente o password non corretti"
 
 @Component({
   selector: 'login-modal',
@@ -24,10 +25,12 @@ export class LoginComponent {
 
   constructor(private loginService: LoginService, private sessionService: SessionService) { }
   signIn(userCredentials: UserLogin) {
+    this.erroreCorrente = "";
     this.loginService.signIn(userCredentials).subscribe(
       (result: any) => {
         if (!result.Return) {
-          // TODO: gestione errore...\
+          if (result.error == "INCORRECT_LOGIN")
+            this.erroreCorrente = INCORRECT_LOGIN_ERROR;
           return;
         }
         this.sessionService.login(result.user.username, result.loginToken);
@@ -48,6 +51,7 @@ export class LoginComponent {
             this.erroreCorrente = PASSWORD_NOT_MATCHING_ERROR;
           if (result.error == "USER_ALREADY_EXIST")
             this.erroreCorrente = USER_ALREADY_EXIST_ERROR;
+          return;
         }
         this.sessionService.login(result.user.username, result.loginToken);
         this.closeModal();
@@ -57,6 +61,7 @@ export class LoginComponent {
   }
 
   closeModal() {
+    this.erroreCorrente = "";
     this.displayModal = false;
     this.modalClosed.emit(this.sessionService.getSession());
   }

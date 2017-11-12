@@ -2,7 +2,8 @@
 const {
   IncorrectPasswordLengthException,
   PasswordsNotEqualsException,
-  UsernameAlreadyExistException
+  UsernameAlreadyExistException,
+  IncorrectLoginException
 } = require('./dbHandlerExceptions.js');
 const Route = require('../code/Route.js');
 const RouteDetail = require('../code/RouteDetail.js');
@@ -58,7 +59,7 @@ module.exports = {
     // let hashedPasswordOnDb = "";
     return Bcrypt.compare(userLogin.password, hashed_prova_pass).then(function(result) {
       if (!result)
-        throw new PasswordsNotEqualsException();
+        throw new IncorrectLoginException();
 
       // TODO: salvare il token su DB!
       let loginToken = randtoken.generate(32);
