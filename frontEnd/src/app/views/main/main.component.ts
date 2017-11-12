@@ -5,6 +5,7 @@ import { RouteService } from '@shared/route.service';
 import { UtilityService } from '@shared/utility.service';
 import { LoginService } from '@shared/login.service';
 import { SelectItem, DataTable } from 'primeng/primeng';
+import { SessionService, UserSession } from '@shared/session.service';
 import * as $ from 'jquery';
 
 @Component({
@@ -23,7 +24,8 @@ export class MainComponent implements OnInit {
   filtersValue: FiltersValue = new FiltersValue();
 
   constructor(private routeService: RouteService,
-    private loginService: LoginService) { }
+    private loginService: LoginService,
+    private sessionService: SessionService) { }
 
   @ViewChild('dataTableIstance') dt: DataTable;
   ngOnInit() {
@@ -82,6 +84,10 @@ export class MainComponent implements OnInit {
     filtersValue.minDuration = sorted[0].durata;
     filtersValue.maxDuration = sorted[sorted.length - 1].durata
     return filtersValue;
+  }
+
+  loadBookmarkedRoutes() {
+    //TODO: posizionare tutta la logica per caricare le route "salvate"
   }
 }
 

@@ -4,6 +4,10 @@
     <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
     <input #globalFilter type="text" pInputText size="50" placeholder="Ricerca itinerario">
   </div>
+  <div *ngIf="sessionService.getSession()" class="toolbar">
+    <button pButton type="button" class="ui-button-secondary" (click)="loadBookmarkedRoutes()" icon="fa-star-o" iconPos="left" label="Itinerari preferiti"></button>
+    <button pButton type="button" class="ui-button-secondary" label="Filtri salvati"></button>
+  </div>
 </div>
 <div class="tableContainer">
   <p-dataTable [value]="routes" scrollable="true" [globalFilter]="globalFilter" [emptyMessage]="'Nessun itinerario corrispondente ai filtri indicati'" scrollHeight="100%" expandableRows="true" rowExpandMode="single" #dataTableIstance>

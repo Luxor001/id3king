@@ -7,6 +7,18 @@ h1 {
   font-size: 36px;
 }
 
+app-main>.ui-widget-header {
+  overflow: auto;
+}
+
+app-main>.ui-widget-header>div {
+  display: inline-block;
+}
+
+app-main>.ui-widget-header>div.toolbar {
+  float: right;
+}
+
 p-datatable tbody {
   border: 0 !important;
 }
@@ -127,15 +139,15 @@ login-modal .ui-dialog-footer {
 }
 
 login-modal p-footer button:first-child {
-    background-color: #5cb85c !important;
-    border-color: #5cb85c !important;
-    color: #fff !important;
+  background-color: #5cb85c !important;
+  border-color: #5cb85c !important;
+  color: #fff !important;
 }
 
 login-modal p-footer button:first-child:hover {
-    background-color: #4cae4c !important;
-    border-color: #5cb85c !important;
-    color: #fff !important;
+  background-color: #4cae4c !important;
+  border-color: #5cb85c !important;
+  color: #fff !important;
 }
 
 body {
