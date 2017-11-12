@@ -222,7 +222,7 @@ route-detail section .tailInfo span:first-child {
   color: #373a3c !important;
 }
 
-.ui-button:hover {
+.ui-button:hover:not([disabled]) {
   background-color: #f2f2f2 !important;
   border-color: #ccc !important;
   color: #373a3c !important;

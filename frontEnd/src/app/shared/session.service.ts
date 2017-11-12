@@ -1,3 +1,4 @@
+/// Questo service a memorizzare la sessione utente corrente, fornendo anche alcune funzioni per la gestione della sessione nell'applicazione
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/mergeMap';
 

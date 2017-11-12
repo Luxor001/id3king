@@ -3,6 +3,7 @@ import {Route} from '@shared/route.model';
 import {RouteDetail} from '@shared/routedetail.model'
 import {RouteService} from '@shared/route.service';
 import {UtilityService} from '@shared/utility.service';
+import { SessionService } from '@shared/session.service';
 import * as $ from 'jquery';
 
 @Component({
@@ -14,7 +15,9 @@ export class RouteDetailComponent implements OnInit {
   @Input() routeSelezionato: Route;
   routeDetail: RouteDetail;
 
-  constructor(private routeService: RouteService) {}
+  constructor(private routeService: RouteService,
+    private sessionService: SessionService) { }
+
   ngOnInit() {
     this.routeService.getRouteDetails(this.routeSelezionato.id)
       .subscribe(

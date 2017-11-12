@@ -1,12 +1,12 @@
 <!-- da inserire tutto il template per l'header -->
 <div>
   <div class="login">
-    <div *ngIf="!userSession">
+    <div *ngIf="sessionService.getSession() == null">
       <span class="link" (click)="signIn()">Accedi</span>
       <span> o </span>
       <span class="link" (click)="signUp()">Registrati</span>
     </div>
-    <div *ngIf="userSession">
+    <div *ngIf="sessionService.getSession() != null">
       <span>Bentornato, {{userSession.username}} </span>
       <div>
         <span class="link" (click)="logout()">Disconnetti</span>
