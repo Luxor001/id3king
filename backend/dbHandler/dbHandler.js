@@ -46,7 +46,7 @@ module.exports = {
   },
 
   saveRoute: function(routeId, loginToken) {
-    // TODO: if(loginExist(loginToken)) (controllare se il token di login utente esiste)
+    // TODO: if(this.checkToken(loginToken)) (controllare se il token di login utente esiste)
     let route = dummyValues.find(route => route.id == routeId);
     route.saved = !route.saved;
     // TODO: UPDATE... (inserire nella tabella delle route salvate dell'utente la corrente (routeId))
@@ -91,9 +91,19 @@ module.exports = {
     });
   },
 
+  checkToken: function(loginToken) {
+    return new Promise(function(resolve, reject) {
+      //TODO: controllare se il logintoken esiste e, in caso, ritornare a che utente appartiene...
+      // if(loginTokenDoesNOTexist...)
+      // throw new IncorrectLoginException();
+      var username = 'Luxor001';
+      resolve(getUserInfo(username));
+    });
+  },
+
   getUserInfo: function(username) {
     //TODO: richiedere al DB info sull'utente
-    return new User('Luxor001', '101', [], []);
+    return new User('Luxor001', '101', [102, 103], []);
   },
 
   insertFilters: function(loginToken, routes) {

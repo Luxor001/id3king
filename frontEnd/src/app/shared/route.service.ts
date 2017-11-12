@@ -34,6 +34,10 @@ export class RouteService {
     return this.http.post(this.appBaseUrl + '/getRouteDetails', { routeId: routeId });
   }
 
+  getBookmarkedRoutes(loginToken: string): Observable<Route[]>{
+    return this.http.post(this.appBaseUrl + '/getBookmarkedRoutes', { loginToken: loginToken });
+  }
+
   saveRoute(routeId: number): Observable<RouteDetail> {
     return this.http.post(this.appBaseUrl + '/saveRoute', { routeId: routeId });
   }

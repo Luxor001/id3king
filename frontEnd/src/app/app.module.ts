@@ -23,13 +23,7 @@ import { SessionService } from '@shared/session.service';
 
 
 /// DIPENDENZE ESTERNE
-import { DataTableModule,
-  MultiSelectModule,
-  SliderModule,
-  SharedModule,
-  ButtonModule,
-  DialogModule } from 'primeng/primeng';
-
+import { DataTableModule, MultiSelectModule, SliderModule, SharedModule, ButtonModule, DialogModule, DropdownModule } from 'primeng/primeng';
 import * as $ from 'jquery';
 
 @NgModule({
@@ -51,6 +45,7 @@ import * as $ from 'jquery';
     SliderModule,
     MultiSelectModule,
     DialogModule,
+    DropdownModule,
     ButtonModule,
     BrowserAnimationsModule
   ],

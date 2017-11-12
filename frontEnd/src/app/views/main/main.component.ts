@@ -16,6 +16,11 @@ import * as $ from 'jquery';
 export class MainComponent implements OnInit {
 
   routes: Route[];
+  filters: ConcreteSelectItem[] = [
+    new ConcreteSelectItem('nuovo', 'Nuovo gruppo filtri...')
+  ];
+  savedFilterSelected: ConcreteSelectItem;
+  bookmarkedRoutes: Route[];
 
   filtroDislivello: number;
   filtroLunghezza: number;
@@ -87,8 +92,18 @@ export class MainComponent implements OnInit {
   }
 
   loadBookmarkedRoutes() {
+    let session = this.sessionService.getSession();
+    if (session == null)
+      return;
+    this.routeService.getBookmarkedRoutes(session.loginToken).subscribe(
+      (routes: Array<Route>) => {
+        this.bookmarkedRoutes = routes;
+      },
+      err => console.log(err)
+    );
     //TODO: posizionare tutta la logica per caricare le route "salvate"
   }
+
 }
 
 class ConcreteSelectItem implements SelectItem {

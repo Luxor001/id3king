@@ -15,7 +15,8 @@ app-main>.ui-widget-header>div {
   display: inline-block;
 }
 
-app-main>.ui-widget-header>div.toolbar {
+app-main>.ui-widget-header div.toolbar,
+app-main>.ui-widget-header div.toolbar div {
   float: right;
 }
 

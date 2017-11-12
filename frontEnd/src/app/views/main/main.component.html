@@ -5,8 +5,12 @@
     <input #globalFilter type="text" pInputText size="50" placeholder="Ricerca itinerario">
   </div>
   <div *ngIf="sessionService.getSession()" class="toolbar">
-    <button pButton type="button" class="ui-button-secondary" (click)="loadBookmarkedRoutes()" icon="fa-star-o" iconPos="left" label="Itinerari preferiti"></button>
-    <button pButton type="button" class="ui-button-secondary" label="Filtri salvati"></button>
+    <div>
+      <p-dropdown [options]="filters" [(ngModel)]="savedFilterSelected" placeholder="Filtri salvati" optionLabel="name" [appendTo]="'body'"></p-dropdown>
+    </div>
+    <div>
+      <button pButton type="button" class="ui-button-secondary" (click)="loadBookmarkedRoutes()" icon="fa-star-o" iconPos="left" label="Itinerari preferiti"></button>
+    </div>
   </div>
 </div>
 <div class="tableContainer">

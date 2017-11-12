@@ -31,7 +31,7 @@ const LoginResultERRORS = {
 
 module.exports = [
 
-  /// API per l'ottenimento di tutti gli itinerari da DB
+  /// API per l'ottenimento di tutti gli itinerari da DB (ATTUALMENTE NON UTILIZZATA, VIENE UTILIZZATA GETROUTES)
   {
     method: 'POST',
     path: '/getData',
@@ -118,6 +118,24 @@ module.exports = [
       });
     }
   },
+
+  /// API per registrare un utente
+  {
+    method: 'POST',
+    path: '/getBookmarkedRoutes',
+    handler: function(request, reply) {
+      let result = new GetDataResult();
+      dbHandler.checkToken(request.payload.loginToken).then(function onSuccess(userInfo) {
+        result.Return = true;
+        result.routes = userInfo.savedRoutes;
+        reply(result);
+      }, function onFail(Exception) {
+        if (Exception instanceof IncorrectLoginException)
+          return; // non ritornare nulla: è più sicuro se l'utente non sa il perché la richiesta è fallita
+      });
+    }
+  },
+
 
   /// API per salvare i filtri su DB
   {
