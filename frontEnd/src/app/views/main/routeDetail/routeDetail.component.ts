@@ -1,9 +1,9 @@
-import {Component, OnInit, Input} from '@angular/core';
-import {Route} from '@shared/route.model';
-import {RouteDetail} from '@shared/routedetail.model'
-import {RouteService} from '@shared/route.service';
-import {UtilityService} from '@shared/utility.service';
-import { SessionService } from '@shared/session.service';
+import { Component, OnInit, Input } from '@angular/core';
+import { Route } from '@shared/route.model';
+import { RouteDetail } from '@shared/routedetail.model'
+import { RouteService } from '@shared/route.service';
+import { UtilityService } from '@shared/utility.service';
+import { SessionService, UserSession } from '@shared/session.service';
 import * as $ from 'jquery';
 
 @Component({
@@ -33,7 +33,10 @@ export class RouteDetailComponent implements OnInit {
   }
 
   saveBookmark(route: RouteDetail) {
-    this.routeService.saveRoute(route.id)
+    let session = this.sessionService.getSession();
+    if (!session)
+      return;
+    this.routeService.saveRoute(route.id, session.loginToken)
       .subscribe(
       (routeDetail: RouteDetail) => {
         this.routeDetail = routeDetail;

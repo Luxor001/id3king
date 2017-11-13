@@ -6,6 +6,7 @@ import { UtilityService } from '@shared/utility.service';
 import { LoginService } from '@shared/login.service';
 import { SelectItem, DataTable } from 'primeng/primeng';
 import { SessionService, UserSession } from '@shared/session.service';
+import { FilterBounds, FilterValues } from '@shared/routefilter.model'
 import * as $ from 'jquery';
 
 @Component({
@@ -16,17 +17,14 @@ import * as $ from 'jquery';
 export class MainComponent implements OnInit {
 
   routes: Route[];
-  filters: ConcreteSelectItem[] = [
-    new ConcreteSelectItem('nuovo', 'Nuovo gruppo filtri...')
-  ];
+  private defaultBookmarkedFilter = new ConcreteSelectItem('nuovo', 'Nuovo gruppo filtri...');
   savedFilterSelected: ConcreteSelectItem;
-  bookmarkedRoutesFilter: boolean;
+  bookmarkedFilters: ConcreteSelectItem[] = [this.defaultBookmarkedFilter];
+  bookmarkedRoutes: boolean;
+  bookmarkedFilterModal = false;
 
-  filtroDislivello: number;
-  filtroLunghezza: number;
-  filtroDurata: number;
-  filtroDate: Date[];
-  filtersValue: FiltersValue = new FiltersValue();
+  filterValues = new FilterValues();
+  filterBounds = new FilterBounds();
 
   constructor(private routeService: RouteService,
     private loginService: LoginService,
@@ -39,7 +37,7 @@ export class MainComponent implements OnInit {
       .subscribe(
       (result: any) => {
         this.routes = result.routes;
-        this.filtersValue = root.getFilterValues(this.routes);
+        this.filterBounds = root.calcFilterBounds(this.routes);
       },
       err => console.log(err)
       );
@@ -52,23 +50,23 @@ export class MainComponent implements OnInit {
         return true;
       if (value == null)
         return false;
-      return value <= filter;
+      return value <= filter.value;
     }
   }
 
-  getFilterValues(routes: Route[]): FiltersValue {
+  calcFilterBounds(routes: Route[]): FilterBounds {
     var root = this;
-    var filtersValue = new FiltersValue();
+    var filterBounds = new FilterBounds();
     var dictionary;
     // Ottenimento dei possibili valori dei luoghi da visitare
     dictionary = routes.reduce((dictionary, route) => dictionary.add(route.luogo), new Set<string>());
-    dictionary.forEach(place => filtersValue.places.push(new ConcreteSelectItem(place, place)));
+    dictionary.forEach(place => filterBounds.places.push(new ConcreteSelectItem(place, place)));
 
     // Possibili valori delle difficoltà degli itinerari
     dictionary = routes.reduce((dictionary, route) => dictionary.add(route.difficolta), new Set<string>());
-    dictionary.forEach(difficulty => filtersValue.difficulties.push(new ConcreteSelectItem(difficulty, difficulty)));
+    dictionary.forEach(difficulty => filterBounds.difficulties.push(new ConcreteSelectItem(difficulty, difficulty)));
 
-    filtersValue.periods = [
+    filterBounds.periods = [
       new ConcreteSelectItem('Inverno', 'Inverno'),
       new ConcreteSelectItem('Primavera', 'Primavera'),
       new ConcreteSelectItem('Estate', 'Estate'),
@@ -76,19 +74,24 @@ export class MainComponent implements OnInit {
     ];
     // Data minima e massima
     var sorted = routes.sort((a, b) => { return (a.id - b.id) });
-    filtersValue.minDate = new Date(sorted[0].data);
-    filtersValue.maxDate = new Date(sorted[sorted.length - 1].data);
+    filterBounds.minDate = new Date(sorted[0].data);
+    filterBounds.maxDate = new Date(sorted[sorted.length - 1].data);
 
     // Bounds di lunghezza
     sorted = routes.sort((a, b) => { return (a.lunghezza - b.lunghezza) });
-    filtersValue.minRouteLength = sorted[0].lunghezza;
-    filtersValue.maxRouteLength = sorted[sorted.length - 1].lunghezza
+    filterBounds.minRouteLength = sorted[0].lunghezza;
+    filterBounds.maxRouteLength = sorted[sorted.length - 1].lunghezza
 
     // Bounds di durata
     sorted = routes.sort((a, b) => { return (a.durata - b.durata) });
-    filtersValue.minDuration = sorted[0].durata;
-    filtersValue.maxDuration = sorted[sorted.length - 1].durata
-    return filtersValue;
+    filterBounds.minDuration = sorted[0].durata;
+    filterBounds.maxDuration = sorted[sorted.length - 1].durata
+
+    // Bounds di durata
+    sorted = routes.sort((a, b) => { return (a.dislivello - b.dislivello) });
+    filterBounds.minElevation = sorted[0].dislivello;
+    filterBounds.maxElevation = sorted[sorted.length - 1].dislivello
+    return filterBounds;
   }
 
   loadBookmarkedRoutes() {
@@ -96,17 +99,44 @@ export class MainComponent implements OnInit {
     if (session == null)
       return;
 
-    this.bookmarkedRoutesFilter = !this.bookmarkedRoutesFilter;
-    let observable = this.bookmarkedRoutesFilter ? this.routeService.getBookmarkedRoutes(session.loginToken) : this.routeService.getAllRoutes()
+    this.bookmarkedRoutes = !this.bookmarkedRoutes;
+    let observable = this.bookmarkedRoutes ? this.routeService.getBookmarkedRoutes(session.loginToken) : this.routeService.getAllRoutes()
 
     var root = this;
     observable.subscribe(
       (result: any) => {
         this.routes = result.routes;
-        this.filtersValue = root.getFilterValues(this.routes);
+        this.filterBounds = root.calcFilterBounds(this.routes);
       },
       err => console.log(err)
     );
+  }
+
+  // gestione dei filtri preferiti
+  bookmarkedFilterChanged(filterSelectedValue: string) {
+    if (filterSelectedValue == this.defaultBookmarkedFilter.value)
+      this.bookmarkedFilterModal = true;
+  }
+
+  saveBookmarkedFilter(filter: FilterValues) {
+    let session = this.sessionService.getSession();
+    if (!session)
+      return;
+    this.routeService.saveFilter(filter, session.loginToken)
+      .subscribe(
+      (result: any) => {
+        if (!result.Return) {
+          //TODO: da fixare l'errore
+          //if (result.error == "INCORRECT_LOGIN")
+          return;
+        }
+        this.bookmarkedFilterClosed();
+      },
+      err => console.log(err)
+      );
+  }
+  bookmarkedFilterClosed() {
+    this.bookmarkedFilterModal = false;
   }
 }
 
@@ -115,16 +145,4 @@ class ConcreteSelectItem implements SelectItem {
     public value: string,
     public label: string) {
   }
-}
-
-class FiltersValue {
-  places: SelectItem[] = [];
-  difficulties: SelectItem[] = [];
-  periods: SelectItem[] = [];
-  maxRouteLength: number;
-  minRouteLength: number;
-  minDuration: number;
-  maxDuration: number;
-  minDate: Date;
-  maxDate: Date;
 }

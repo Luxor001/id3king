@@ -6,10 +6,10 @@
   </div>
   <div *ngIf="sessionService.getSession()" class="toolbar">
     <div>
-      <p-dropdown [options]="filters" [(ngModel)]="savedFilterSelected" placeholder="Filtri salvati" optionLabel="name" [appendTo]="'body'"></p-dropdown>
+      <p-dropdown [options]="bookmarkedFilters" [styleClass]="'w30'" [(ngModel)]="savedFilterSelected" placeholder="Filtri salvati" optionLabel="name" [appendTo]="'body'" (onChange)="bookmarkedFilterChanged($event.value)"></p-dropdown>
     </div>
     <div>
-      <button pButton type="button" class="ui-button-secondary" (click)="loadBookmarkedRoutes()" icon="{{bookmarkedRoutesFilter ? 'fa-star' : 'fa-star-o'}}" iconPos="left" label="Itinerari preferiti"></button>
+      <button pButton type="button" class="ui-button-secondary" (click)="loadBookmarkedRoutes()" icon="{{bookmarkedRoutes ? 'fa-star' : 'fa-star-o'}}" iconPos="left" label="Itinerari preferiti"></button>
     </div>
   </div>
 </div>
@@ -21,37 +21,37 @@
 
     <p-column field="data" [style]="{'width':'120px'}" header="DATA" filterField="periodo" [sortable]="true" filterMatchMode="in">
       <ng-template pTemplate="filter" let-col>
-        <p-multiSelect [options]="filtersValue.periods" defaultLabel="Tutti" selectedItemsLabel="{0} Periodi" maxSelectedLabels="1" (onChange)="dataTableIstance.filter($event.value,'periodo',col.filterMatchMode)" styleClass="ui-column-filter"></p-multiSelect>
+        <p-multiSelect [(ngModel)]="filterValues.filtroPeriodi" [options]="filterBounds.periods" defaultLabel="Tutti" selectedItemsLabel="{0} Periodi" maxSelectedLabels="1" (onChange)="dataTableIstance.filter($event.value,'periodo',col.filterMatchMode)" styleClass="ui-column-filter"></p-multiSelect>
       </ng-template>
       <ng-template let-itinerario="rowData" pTemplate="body">
         <span>{{itinerario.data | date:'dd-MM-y'}}</span>
       </ng-template>
     </p-column>
 
-    <p-column field="durata" [style]="{'width':'110px'}" header="DURATA {{filtroDurata == null ? '' : (filtroDurata | time)}}" [sortable]="true" filterMatchMode="atMost">
+    <p-column field="durata" [style]="{'width':'110px'}" header="DURATA {{filterValues.filtroDurata == null ? '' : (filterValues.filtroDurata | time)}}" [sortable]="true" filterMatchMode="atMost">
       <ng-template pTemplate="filter" let-col>
-        <i class="fa fa-close" (click)="filtroDurata=null;dataTableIstance.filter(null,col.field,col.filterMatchMode)"></i>
-        <p-slider [(ngModel)]="filtroDurata" [min]="filtersValue.minDuration" [max]="filtersValue.maxDuration" (onSlideEnd)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)"></p-slider>
+        <i class="fa fa-close" (click)="filterValues.filtroDurata=null;dataTableIstance.filter(null,col.field,col.filterMatchMode)"></i>
+        <p-slider [(ngModel)]="filterValues.filtroDurata" [min]="filterBounds.minDuration" [max]="filterBounds.maxDuration" (onSlideEnd)="dataTableIstance.filter($event,col.field,col.filterMatchMode)"></p-slider>
       </ng-template>
       <ng-template let-itinerario="rowData" pTemplate="body">
         <span>{{itinerario.durata | time}}</span>
       </ng-template>
     </p-column>
 
-    <p-column field="lunghezza" [style]="{'width':'130px'}" header="LUNGHEZZA {{filtroLunghezza == null ? '' : filtroLunghezza+'km'}}" [sortable]="true" filterMatchMode="atMost">
+    <p-column field="lunghezza" [style]="{'width':'130px'}" header="LUNGHEZZA {{filterValues.filtroLunghezza == null ? '' : filterValues.filtroLunghezza+'km'}}" [sortable]="true" filterMatchMode="atMost">
       <ng-template pTemplate="filter" let-col>
-        <i class="fa fa-close" (click)="filtroLunghezza=null;dataTableIstance.filter(null,col.field,col.filterMatchMode)"></i>
-        <p-slider [(ngModel)]="filtroLunghezza" [min]="filtersValue.minRouteLength" [max]="filtersValue.maxRouteLength" (onSlideEnd)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)"></p-slider>
+        <i class="fa fa-close" (click)="filterValues.filtroLunghezza=null;dataTableIstance.filter(null,col.field,col.filterMatchMode)"></i>
+        <p-slider [(ngModel)]="filterValues.filtroLunghezza" [min]="filterBounds.minRouteLength" [max]="filterBounds.maxRouteLength" (onSlideEnd)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)"></p-slider>
       </ng-template>
       <ng-template let-itinerario="rowData" pTemplate="body">
         <span>{{itinerario.lunghezza}} <span>km</span></span>
       </ng-template>
     </p-column>
 
-    <p-column field="dislivello" [style]="{'width':'130px'}" header=" DISLIVELLO {{filtroDislivello == null ? '' : filtroDislivello+'m'}}" [sortable]="true" [filter]="true" filterMatchMode="atMost">
+    <p-column field="dislivello" [style]="{'width':'130px'}" header=" DISLIVELLO {{filterValues.filtroDislivello == null ? '' : filterValues.filtroDislivello+'m'}}" [sortable]="true" [filter]="true" filterMatchMode="atMost">
       <ng-template pTemplate="filter" let-col>
-        <i class="fa fa-close" (click)="filtroDislivello=null;dataTableIstance.filter(null,col.field,col.filterMatchMode)"></i>
-        <p-slider [(ngModel)]="filtroDislivello" [min]="0" [max]="500" (onSlideEnd)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)"></p-slider>
+        <i class="fa fa-close" (click)="filterValues.filtroDislivello=null;dataTableIstance.filter(null,col.field,col.filterMatchMode)"></i>
+        <p-slider [(ngModel)]="filterValues.filtroDislivello" [min]="filterBounds.minElevation" [max]="filterBounds.maxElevation" (onSlideEnd)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)"></p-slider>
       </ng-template>
       <ng-template let-itinerario="rowData" pTemplate="body">
         <span>{{itinerario.dislivello}} <span>m</span></span>
@@ -60,13 +60,13 @@
 
     <p-column field="difficolta" [style]="{'width':'130px'}" header="DIFFICOLTA" [sortable]="true" [filter]="true" filterMatchMode="in">
       <ng-template pTemplate="filter" let-col>
-        <p-multiSelect [options]="filtersValue.difficulties" defaultLabel="Tutte" selectedItemsLabel="{0} Difficoltà" maxSelectedLabels="1" (onChange)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)" styleClass="ui-column-filter"></p-multiSelect>
+        <p-multiSelect [(ngModel)]="filterValues.filtroDifficolta" [options]="filterBounds.difficulties" defaultLabel="Tutte" selectedItemsLabel="{0} Difficoltà" maxSelectedLabels="1" (onChange)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)" styleClass="ui-column-filter"></p-multiSelect>
       </ng-template>
     </p-column>
 
     <p-column field="luogo" [style]="{'width':'150px'}" header="LUOGO" [sortable]="true" filterMatchMode="in">
       <ng-template pTemplate="filter" let-col>
-        <p-multiSelect [options]="filtersValue.places" defaultLabel="Tutti" selectedItemsLabel="{0} Luoghi" maxSelectedLabels="0" (onChange)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)" styleClass="ui-column-filter"></p-multiSelect>
+        <p-multiSelect [(ngModel)]="filterValues.filtroLuoghi" [options]="filterBounds.places" defaultLabel="Tutti" selectedItemsLabel="{0} Luoghi" maxSelectedLabels="0" (onChange)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)" styleClass="ui-column-filter"></p-multiSelect>
       </ng-template>
     </p-column>
 
@@ -77,3 +77,16 @@
     </ng-template>
   </p-dataTable>
 </div>
+
+<p-dialog #nuovofiltro header="Nuovo filtro" [draggable]="false" modal="modal" [styleClass]="bookmarkFilterModal" [responsive]="true" [(visible)]="bookmarkedFilterModal" (onHide)="bookmarkedFilterClosed()">
+
+  <label for="bookmarkedFilterName">Nome filtro</label>
+  <input type="text" class="form-control" id="bookmarkedFilterName" required name="username" [(ngModel)]="nuovofiltro.name" minlength="1" #name="ngModel" tabindex="1">
+  <small *ngIf="erroreCorrente != ''">
+        {{erroreCorrente}}
+  </small>
+  <p-footer>
+    <button type="button" pButton (click)="saveBookmarkedFilter(filterValues)" label="Salva" tabindex="1"></button>
+    <button type="button" pButton (click)="bookmarkedFilterModal = false" label="Annulla" tabindex="2"></button>
+  </p-footer>
+</p-dialog>

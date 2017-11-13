@@ -22,6 +22,7 @@ class LoginResult extends BaseResult {
     this.user = userInfo;
   }
 }
+
 const LoginResultERRORS = {
   INCORRECT_PASSWORD_LENGTH: 'INCORRECT_PASSWORD_LENGTH',
   PASSWORD_NOT_MATCHING: 'PASSWORD_NOT_MATCHING',
@@ -126,15 +127,21 @@ module.exports = [
     }
   },
 
-
   /// API per salvare i filtri su DB
   {
     method: 'POST',
-    path: '/savefilters',
+    path: '/savefilter',
     handler: function(request, reply) {
-      var filtri = request.payload.filtri;
-      filtri.forEach(filtro => {
-        // save filtro to DB
+      let result = new BaseResult();
+      dbHandler.checkToken(request.payload.loginToken).then(function onSuccess(userInfo) {
+        dbHandler.saveFilter(request.payload.filter).then(function() {
+          result.Return = true;
+          reply(result);
+        });
+      }, function onFail(Exception) {
+        //TODO: da sistemare l'eccezione...
+        //if (Exception instanceof FilterNameAlreadyExistException)
+
       });
     }
   },

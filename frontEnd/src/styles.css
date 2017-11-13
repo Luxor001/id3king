@@ -15,8 +15,7 @@ app-main>.ui-widget-header>div {
   display: inline-block;
 }
 
-app-main>.ui-widget-header div.toolbar,
-app-main>.ui-widget-header div.toolbar div {
+app-main>.ui-widget-header div.toolbar, app-main>.ui-widget-header div.toolbar div {
   float: right;
 }
 
@@ -105,13 +104,13 @@ app-main {
   padding-top: 10px;
 }
 
-login-modal label {
+login-modal label, .bookmarkFilterModal label {
   margin-bottom: 5px;
   font-weight: bold;
   display: block;
 }
 
-login-modal input {
+login-modal input, .bookmarkFilterModal input {
   min-height: 34px;
   padding: 6px 8px;
   font-size: 14px;
@@ -131,21 +130,21 @@ login-modal input {
   margin-bottom: 10px;
 }
 
-login-modal small {
+login-modal small, .bookmarkFilterModal small {
   color: red;
 }
 
-login-modal .ui-dialog-footer {
+login-modal .ui-dialog-footer, .bookmarkFilterModal .ui-dialog-footer {
   text-align: right;
 }
 
-login-modal p-footer button:first-child {
+login-modal p-footer button:first-child, .bookmarkFilterModal p-footer button:first-child {
   background-color: #5cb85c !important;
   border-color: #5cb85c !important;
   color: #fff !important;
 }
 
-login-modal p-footer button:first-child:hover {
+login-modal p-footer button:first-child:hover, .bookmarkFilterModal p-footer button:first-child:hover {
   background-color: #4cae4c !important;
   border-color: #5cb85c !important;
   color: #fff !important;
