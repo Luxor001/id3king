@@ -31,10 +31,10 @@ const LoginResultERRORS = {
 
 module.exports = [
 
-  /// API per l'ottenimento di tutti gli itinerari da DB (ATTUALMENTE NON UTILIZZATA, VIENE UTILIZZATA GETROUTES)
+  /// API per ottenere tutte le routes del DB
   {
-    method: 'POST',
-    path: '/getData',
+    method: 'GET',
+    path: '/getRoutes',
     handler: function(request, reply) {
       var result = new GetDataResult();
 
@@ -43,17 +43,7 @@ module.exports = [
         result.routes = routes;
         result.Return = true; // segnaliamo al client che è andato tutto come previsto
       }
-      reply(routes); // response della chiamata HTTP POST
-    }
-  },
-
-  /// API per ottenere tutte le routes del DB
-  {
-    method: 'GET',
-    path: '/getRoutes',
-    handler: function(request, reply) {
-      var routes = dbHandler.getRoutes();
-      reply(routes);
+      reply(result);
     }
   },
 

@@ -1,12 +1,12 @@
-import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import {AppConfig} from '../config/app.config'
-import {SeasonsService} from './utility.service';
+import { AppConfig } from '../config/app.config'
+import { SeasonsService } from './utility.service';
 
-import {Route} from './route.model';
-import {RouteDetail} from './routedetail.model'
-import {Observable} from 'rxjs/Observable';
+import { Route } from './route.model';
+import { RouteDetail } from './routedetail.model'
+import { Observable } from 'rxjs/Observable';
 
 
 @Injectable()
@@ -19,22 +19,23 @@ export class RouteService {
     this.headers = new HttpHeaders({ 'Content-Type': 'application/json' });
   }
 
-  getAllRoutes(): Observable<Route[]> {
+  getAllRoutes(): Observable<any> {
     return this.http.get(this.appBaseUrl + '/getRoutes')
-      .map((response: Route[]) => {
+      .map((response: any) => {
         // aggiungi all'array di itinerari il periodo
-        return response.map(route => {
+        response.routes = response.routes.map(route => {
           route.periodo = SeasonsService.getSeason(new Date(route.data));
           return route;
         });
-      })
+        return response;
+      });
   }
 
   getRouteDetails(routeId: number): Observable<RouteDetail> {
     return this.http.post(this.appBaseUrl + '/getRouteDetails', { routeId: routeId });
   }
 
-  getBookmarkedRoutes(loginToken: string): Observable<Route[]>{
+  getBookmarkedRoutes(loginToken: string): Observable<Route[]> {
     return this.http.post(this.appBaseUrl + '/getBookmarkedRoutes', { loginToken: loginToken });
   }
 

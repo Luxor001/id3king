@@ -9,7 +9,7 @@
       <p-dropdown [options]="filters" [(ngModel)]="savedFilterSelected" placeholder="Filtri salvati" optionLabel="name" [appendTo]="'body'"></p-dropdown>
     </div>
     <div>
-      <button pButton type="button" class="ui-button-secondary" (click)="loadBookmarkedRoutes()" icon="fa-star-o" iconPos="left" label="Itinerari preferiti"></button>
+      <button pButton type="button" class="ui-button-secondary" (click)="loadBookmarkedRoutes()" icon="{{bookmarkedRoutesFilter ? 'fa-star' : 'fa-star-o'}}" iconPos="left" label="Itinerari preferiti"></button>
     </div>
   </div>
 </div>

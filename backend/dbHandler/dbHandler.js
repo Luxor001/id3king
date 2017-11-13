@@ -101,14 +101,18 @@ module.exports = {
     });
   },
 
-  getUserInfo: function(username) {
-    //TODO: richiedere al DB info sull'utente
-    return new User('Luxor001', '101', [102, 103], []);
-  },
-
+  getUserInfo: getUserInfo,
   insertFilters: function(loginToken, routes) {
     // inserimento dei filtri salvati
   }
+}
+
+function getUserInfo(loginToken) {
+  //TODO: richiedere al DB info sull'utente
+  return new User('Luxor001', '101', [
+    new RouteDetail(102, "S. Piero in Bagno, Bagno di Romagna e il versante West del Monte Comero", new Date('01/01/2017'), 100, 20, 367, 'E', "La Lama", "percorso molto bello nella lama", "http://www.id3king.it/Uscite/U2002/Uscita102/indice_102.htm", "http://www.id3king.it/Uscite/U2002/Uscita100/Images100/mappa100.jpg", "http://www.id3king.it/Tracce/U100%20FalterBagnoPoppiBadiaP.rar"),
+    new RouteDetail(106, "S. Piero in Bagno, Bagno di Romagna e il versante West del Monte Comero", new Date('05/01/2017'), 300, 18, 123, 'E', "Ridracoli", "Vivamus magna justo, lacinia eget consectetur sed, convallis", "http://www.id3king.it/Uscite/U2002/Uscita101/indice_101.htm", "http://www.id3king.it/Uscite/U2002/Uscita100/Images100/mappa100.jpg", "http://www.id3king.it/Tracce/U100%20FalterBagnoPoppiBadiaP.rar")
+    ], []);
 }
 
 function loginExist(username) {

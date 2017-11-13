@@ -20,7 +20,7 @@ export class MainComponent implements OnInit {
     new ConcreteSelectItem('nuovo', 'Nuovo gruppo filtri...')
   ];
   savedFilterSelected: ConcreteSelectItem;
-  bookmarkedRoutes: Route[];
+  bookmarkedRoutesFilter: boolean;
 
   filtroDislivello: number;
   filtroLunghezza: number;
@@ -37,9 +37,9 @@ export class MainComponent implements OnInit {
     var root = this;
     this.routeService.getAllRoutes()
       .subscribe(
-      (routes: Array<Route>) => {
-        this.routes = routes;
-        this.filtersValue = root.getFilterValues(routes);
+      (result: any) => {
+        this.routes = result.routes;
+        this.filtersValue = root.getFilterValues(this.routes);
       },
       err => console.log(err)
       );
@@ -95,15 +95,19 @@ export class MainComponent implements OnInit {
     let session = this.sessionService.getSession();
     if (session == null)
       return;
-    this.routeService.getBookmarkedRoutes(session.loginToken).subscribe(
-      (routes: Array<Route>) => {
-        this.bookmarkedRoutes = routes;
+
+    this.bookmarkedRoutesFilter = !this.bookmarkedRoutesFilter;
+    let observable = this.bookmarkedRoutesFilter ? this.routeService.getBookmarkedRoutes(session.loginToken) : this.routeService.getAllRoutes()
+
+    var root = this;
+    observable.subscribe(
+      (result: any) => {
+        this.routes = result.routes;
+        this.filtersValue = root.getFilterValues(this.routes);
       },
       err => console.log(err)
     );
-    //TODO: posizionare tutta la logica per caricare le route "salvate"
   }
-
 }
 
 class ConcreteSelectItem implements SelectItem {
