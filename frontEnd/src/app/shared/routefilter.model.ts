@@ -1,6 +1,7 @@
 import { SelectItem } from 'primeng/primeng';
 
 export class FilterValues {
+  name: string;
   filtroDislivello: number;
   filtroLunghezza: number;
   filtroDurata: number;

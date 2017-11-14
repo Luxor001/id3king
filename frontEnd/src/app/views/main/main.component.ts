@@ -34,13 +34,11 @@ export class MainComponent implements OnInit {
   ngOnInit() {
     var root = this;
     this.routeService.getAllRoutes()
-      .subscribe(
-      (result: any) => {
+      .subscribe((result: any) => {
         this.routes = result.routes;
         this.filterBounds = root.calcFilterBounds(this.routes);
       },
-      err => console.log(err)
-      );
+      err => console.log(err));
 
     UtilityService.resizeToParent($('.tableContainer'));
 
@@ -103,19 +101,30 @@ export class MainComponent implements OnInit {
     let observable = this.bookmarkedRoutes ? this.routeService.getBookmarkedRoutes(session.loginToken) : this.routeService.getAllRoutes()
 
     var root = this;
-    observable.subscribe(
-      (result: any) => {
-        this.routes = result.routes;
-        this.filterBounds = root.calcFilterBounds(this.routes);
-      },
-      err => console.log(err)
-    );
+    observable.subscribe((result: any) => {
+      this.routes = result.routes;
+      this.filterBounds = root.calcFilterBounds(this.routes);
+    }, err => console.log(err));
   }
 
   // gestione dei filtri preferiti
   bookmarkedFilterChanged(filterSelectedValue: string) {
+    let session = this.sessionService.getSession();
+    if (!session)
+      return;
     if (filterSelectedValue == this.defaultBookmarkedFilter.value)
       this.bookmarkedFilterModal = true;
+    else {
+      this.routeService.getFilter(filterSelectedValue, session.loginToken)
+        .subscribe((result: any) => {
+          if (!result.Return) {
+            //TODO: da fixare l'errore
+            //if (result.error == "INCORRECT_LOGIN")
+            return;
+          }
+          this.filterValues = result.filter;
+        }, err => console.log(err));
+    }
   }
 
   saveBookmarkedFilter(filter: FilterValues) {
@@ -123,17 +132,15 @@ export class MainComponent implements OnInit {
     if (!session)
       return;
     this.routeService.saveFilter(filter, session.loginToken)
-      .subscribe(
-      (result: any) => {
+      .subscribe((result: any) => {
         if (!result.Return) {
           //TODO: da fixare l'errore
           //if (result.error == "INCORRECT_LOGIN")
           return;
         }
+        this.bookmarkedFilters.push(new ConcreteSelectItem(filter.name, filter.name));
         this.bookmarkedFilterClosed();
-      },
-      err => console.log(err)
-      );
+      }, err => console.log(err));
   }
   bookmarkedFilterClosed() {
     this.bookmarkedFilterModal = false;

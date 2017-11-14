@@ -104,6 +104,7 @@ module.exports = {
   saveFilter: function(filter, loginToken) {
     return new Promise(function(resolve, reject){
         //TODO: da fare tutta la logica di salvataggio di un filtro su db...
+        //INSERT (filter.name)
         resolve(true);
     });
   },

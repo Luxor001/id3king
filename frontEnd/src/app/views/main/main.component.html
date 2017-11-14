@@ -78,10 +78,10 @@
   </p-dataTable>
 </div>
 
-<p-dialog #nuovofiltro header="Nuovo filtro" [draggable]="false" modal="modal" [styleClass]="bookmarkFilterModal" [responsive]="true" [(visible)]="bookmarkedFilterModal" (onHide)="bookmarkedFilterClosed()">
+<p-dialog #name header="Nuovo filtro" [draggable]="false" modal="modal" [styleClass]="bookmarkFilterModal" [responsive]="true" [(visible)]="bookmarkedFilterModal" (onHide)="bookmarkedFilterClosed()">
 
   <label for="bookmarkedFilterName">Nome filtro</label>
-  <input type="text" class="form-control" id="bookmarkedFilterName" required name="username" [(ngModel)]="nuovofiltro.name" minlength="1" #name="ngModel" tabindex="1">
+  <input type="text" class="form-control" id="bookmarkedFilterName" required name="username" [(ngModel)]="filterValues.name" minlength="1" #name="ngModel" tabindex="1">
   <small *ngIf="erroreCorrente != ''">
         {{erroreCorrente}}
   </small>

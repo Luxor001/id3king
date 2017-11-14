@@ -47,4 +47,8 @@ export class RouteService {
   saveFilter(filter: FilterValues, loginToken: string): Observable<RouteDetail> {
     return this.http.post(this.appBaseUrl + '/saveFilter', { filter: filter, loginToken: loginToken  });
   }
+
+  getFilter(filterName: string, loginToken: string): Observable<any> {
+    return this.http.post(this.appBaseUrl + '/getFilter', { filterName: filterName, loginToken: loginToken  });
+  }
 }
