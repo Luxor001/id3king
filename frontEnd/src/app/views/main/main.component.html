@@ -31,7 +31,7 @@
     <p-column field="durata" [style]="{'width':'110px'}" header="DURATA {{filterValues.filtroDurata == null ? '' : (filterValues.filtroDurata | time)}}" [sortable]="true" filterMatchMode="atMost">
       <ng-template pTemplate="filter" let-col>
         <i class="fa fa-close" (click)="filterValues.filtroDurata=null;dataTableIstance.filter(null,col.field,col.filterMatchMode)"></i>
-        <p-slider [(ngModel)]="filterValues.filtroDurata" [min]="filterBounds.minDuration" [max]="filterBounds.maxDuration" (onSlideEnd)="dataTableIstance.filter($event,col.field,col.filterMatchMode)"></p-slider>
+        <p-slider [(ngModel)]="filterValues.filtroDurata" [min]="filterBounds.minDuration" [max]="filterBounds.maxDuration" (onSlideEnd)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)"></p-slider>
       </ng-template>
       <ng-template let-itinerario="rowData" pTemplate="body">
         <span>{{itinerario.durata | time}}</span>

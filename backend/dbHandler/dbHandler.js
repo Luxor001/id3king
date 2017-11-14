@@ -8,6 +8,7 @@ const {
 const Route = require('../code/Route.js');
 const RouteDetail = require('../code/RouteDetail.js');
 const User = require('../code/User.js');
+const Filter = require('../code/Filter.js');
 
 //FIXME: da cancellare
 const hashed_prova_pass = "$2a$10$sqfzhsD1waUvTFKFApoki./Fio5YOqFm75jHW0OvAfwRg5LXJqkCK";
@@ -101,7 +102,7 @@ module.exports = {
     });
   },
 
-  saveFilter: function(filter, loginToken) {
+  saveFilter: function(filter, user) {
     return new Promise(function(resolve, reject){
         //TODO: da fare tutta la logica di salvataggio di un filtro su db...
         //INSERT (filter.name)
@@ -110,7 +111,15 @@ module.exports = {
   },
 
   getUserInfo: getUserInfo,
-  insertFilters: function(loginToken, routes) {
+
+  getFilter: function(loginToken, routes) {
+    return new Promise(function(resolve, reject){
+        //TODO: da fare tutta la logica di salvataggio di un filtro su db...
+        //INSERT (filter.name)
+        let filter = new Filter('savedFilter', 500, 100, 100, ['E'], ['La Lama'], ['Primavera'])
+        resolve(filter);
+    });
+    //TODO: da fare tutta la logica di ricerca di un filtro utente
     // inserimento dei filtri salvati
   }
 }

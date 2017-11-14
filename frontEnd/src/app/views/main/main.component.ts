@@ -17,7 +17,7 @@ import * as $ from 'jquery';
 export class MainComponent implements OnInit {
 
   routes: Route[];
-  private defaultBookmarkedFilter = new ConcreteSelectItem('nuovo', 'Nuovo gruppo filtri...');
+  private defaultBookmarkedFilter = new ConcreteSelectItem('nuovo', 'Nuovo filtro');
   savedFilterSelected: ConcreteSelectItem;
   bookmarkedFilters: ConcreteSelectItem[] = [this.defaultBookmarkedFilter];
   bookmarkedRoutes: boolean;
@@ -43,12 +43,12 @@ export class MainComponent implements OnInit {
     UtilityService.resizeToParent($('.tableContainer'));
 
     // thanks to https://stackoverflow.com/a/46370483/1306679
-    this.dt.filterConstraints['atMost'] = function atMost(value: number, filter: any): boolean {
-      if (filter === undefined || filter === null)
+    this.dt.filterConstraints['atMost'] = function atMost(value: number, filterValue: any): boolean {
+      if (filterValue === undefined || filterValue === null)
         return true;
       if (value == null)
         return false;
-      return value <= filter.value;
+      return value <= filterValue;
     }
   }
 
@@ -115,6 +115,7 @@ export class MainComponent implements OnInit {
     if (filterSelectedValue == this.defaultBookmarkedFilter.value)
       this.bookmarkedFilterModal = true;
     else {
+      let aaa = this.dt;
       this.routeService.getFilter(filterSelectedValue, session.loginToken)
         .subscribe((result: any) => {
           if (!result.Return) {
@@ -122,6 +123,8 @@ export class MainComponent implements OnInit {
             //if (result.error == "INCORRECT_LOGIN")
             return;
           }
+          var prova = this.dt;
+          let a = aaa;
           this.filterValues = result.filter;
         }, err => console.log(err));
     }
@@ -138,7 +141,9 @@ export class MainComponent implements OnInit {
           //if (result.error == "INCORRECT_LOGIN")
           return;
         }
-        this.bookmarkedFilters.push(new ConcreteSelectItem(filter.name, filter.name));
+        let newBookmarkedFilter = new ConcreteSelectItem(filter.name, filter.name);
+        this.savedFilterSelected = newBookmarkedFilter;
+        this.bookmarkedFilters.push(newBookmarkedFilter);
         this.bookmarkedFilterClosed();
       }, err => console.log(err));
   }

@@ -35,7 +35,7 @@ module.exports = [
   /// API per ottenere tutte le routes del DB
   {
     method: 'GET',
-    path: '/getRoutes',
+    path: '/api/getRoutes',
     handler: function(request, reply) {
       var result = new GetDataResult();
 
@@ -51,7 +51,7 @@ module.exports = [
   /// API per ottenere i dettagli di una certa route
   {
     method: 'POST',
-    path: '/getRouteDetails',
+    path: '/api/getRouteDetails',
     handler: function(request, reply) {
       let routeDetail = dbHandler.getRouteDetails(request.payload.routeId);
       reply(routeDetail);
@@ -61,7 +61,7 @@ module.exports = [
   /// API per salvare tra i preferiti la route corrente
   {
     method: 'POST',
-    path: '/saveRoute',
+    path: '/api/saveRoute',
     handler: function(request, reply) {
       let result = dbHandler.saveRoute(request.payload.routeId);
       reply(result);
@@ -72,7 +72,7 @@ module.exports = [
   /// cercare come fare per https://hapijs.com/tutorials/auth
   {
     method: 'POST',
-    path: '/signin',
+    path: '/api/signin',
     handler: function(request, reply) {
       var result = new LoginResult();
 
@@ -91,7 +91,7 @@ module.exports = [
   /// API per registrare un utente
   {
     method: 'POST',
-    path: '/signup',
+    path: '/api/signup',
     handler: function(request, reply) {
       let result = new LoginResult();
       dbHandler.signup(request.payload.userLogin).then(function onSuccess(loginToken) {
@@ -113,7 +113,7 @@ module.exports = [
   /// API per registrare un utente
   {
     method: 'POST',
-    path: '/getBookmarkedRoutes',
+    path: '/api/getBookmarkedRoutes',
     handler: function(request, reply) {
       let result = new GetDataResult();
       dbHandler.checkToken(request.payload.loginToken).then(function onSuccess(userInfo) {
@@ -130,11 +130,11 @@ module.exports = [
   /// API per salvare i filtri su DB
   {
     method: 'POST',
-    path: '/savefilter',
+    path: '/api/saveFilter',
     handler: function(request, reply) {
       let result = new BaseResult();
-      dbHandler.checkToken(request.payload.loginToken).then(function onSuccess(userInfo) {
-        dbHandler.saveFilter(request.payload.filter).then(function() {
+      dbHandler.checkToken(request.payload.loginToken).then(function onSuccess(user) {
+        dbHandler.saveFilter(request.payload.filter, user).then(function() {
           result.Return = true;
           reply(result);
         });
@@ -142,6 +142,25 @@ module.exports = [
         //TODO: da sistemare l'eccezione...
         //if (Exception instanceof FilterNameAlreadyExistException)
 
+      });
+    }
+  },
+
+  /// API per salvare i filtri su DB
+  {
+    method: 'POST',
+    path: '/api/getFilter',
+    handler: function(request, reply) {
+      let result = new BaseResult();
+      dbHandler.checkToken(request.payload.loginToken).then(function onSuccess(user) {
+        dbHandler.getFilter(request.payload.filterName, user).then(function(filter) {
+          result.Return = true;
+          result.filter = filter;
+          reply(result);
+        });
+      }, function onFail(Exception) {
+        //TODO: da sistemare questo error handling? In teoria non dovrebbe mai fallire la ricerca di un filtro.
+        return;
       });
     }
   },
