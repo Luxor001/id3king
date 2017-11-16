@@ -1,11 +1,15 @@
 {
-  "name": "id3KingServer",
+  "name": "id3King-JS",
   "version": "1.0.0",
-  "description": "id3KingServer, written in nodejs with <3",
+  "description": "id3King-JS, written in nodejs with <3",
   "main": "index.js",
   "scripts": {},
   "author": "Luxor001",
-  "license": "ISC",
+  "license": "AGPL-3.0+",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/Luxor002/id3king-JS.git"
+  },
   "dependencies": {
     "bcrypt": "^1.0.3",
     "cheerio": "*",

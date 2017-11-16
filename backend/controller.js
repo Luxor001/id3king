@@ -7,6 +7,7 @@ const {
 const BaseResult = require('./code/BaseResult.js');
 const User = require('./code/User.js');
 const dbHandler = require('./dbHandler/dbHandler.js');
+const scraper = require('./scraper/scraper.js');
 
 class GetDataResult extends BaseResult {
   constructor() {
@@ -174,6 +175,15 @@ module.exports = [
         redirectToSlash: true,
         index: true
       }
+    }
+  },
+
+  /// API di debug che esegue lo scraping incondizionatamente
+  {
+    method: 'GET',
+    path: '/debugScraper',
+    handler: function(request, reply) {
+      scraper.scanSite();
     }
   }
 ];
