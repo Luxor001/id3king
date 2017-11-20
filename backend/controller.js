@@ -183,7 +183,13 @@ module.exports = [
     method: 'GET',
     path: '/debugScraper',
     handler: function(request, reply) {
-      scraper.scanSite();
+      let result = new GetDataResult();
+      var scrapeResults = scraper.scanSite();
+      if (scrapeResults != null) {
+        result.routes = scrapeResults;
+        result.Return = true; // segnaliamo al client che è andato tutto come previsto
+      }
+      reply(result);
     }
   }
 ];

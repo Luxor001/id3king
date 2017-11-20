@@ -8,8 +8,17 @@ var itinerari = {};
 var localita = [];
 var promises = [];
 
-module.exports.scanSite = function(doneCallback) {
+module.exports = {
+  scanSite: function() {
+    return new Promise(function(resolve, reject) {
+      var prom = scrape();
+      resolve(prom);
+    });
 
+  },
+}
+
+function scrape() {
   request(siteBaseAddress + 'Itinerari%20Frame/titolo.htm', function(err, response, result) {
     var $ = cheerio.load(result);
     var links = $('a');
@@ -63,7 +72,8 @@ module.exports.scanSite = function(doneCallback) {
           itinerariCollegati.forEach(idItinerario => [idItinerario].IDlocalita = newLocalita.id);
           localita.push(newLocalita);
         }
-        doneCallback(itinerari, localita);
+        //doneCallback(itinerari, localita);
+        return(itinerari, localita);
       });
 
       // Ottenimento toponimi secondari (LUOGHI)
@@ -90,7 +100,8 @@ module.exports.scanSite = function(doneCallback) {
       });
 
       $q.all([promiseToponimiPrincipali, promiseToponimiSecondari]).then(function() {
-        doneCallback(itinerari, localita);
+        //doneCallback(itinerari, localita);
+        return(itinerari, localita);
       });
     });
   });

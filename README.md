@@ -17,4 +17,4 @@ Download [NodeJS](https://nodejs.org) and install in your system.
 
 ## License
 
-This project is licensed under the GNU GPL v3 license - see the [LICENSE](LICENSE) file for details
+This project is licensed under the GNU AGPL v3 license - see the [LICENSE](LICENSE) file for details
