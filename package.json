@@ -18,7 +18,6 @@
     "hapi-login": "^1.2.2",
     "inert": "*",
     "joi": "^13.0.1",
-    "q": "^1.5.1",
     "rand-token": "^0.4.0",
     "request": "*",
     "request-promise": "^4.1.0",

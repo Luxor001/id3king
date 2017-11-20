@@ -184,12 +184,13 @@ module.exports = [
     path: '/debugScraper',
     handler: function(request, reply) {
       let result = new GetDataResult();
-      var scrapeResults = scraper.scanSite();
-      if (scrapeResults != null) {
-        result.routes = scrapeResults;
-        result.Return = true; // segnaliamo al client che è andato tutto come previsto
-      }
-      reply(result);
+      scraper.scanSite().then(function(scrapeResults) {
+        if (scrapeResults != null) {
+          result.routes = scrapeResults;
+          result.Return = true; // segnaliamo al client che è andato tutto come previsto
+        }
+        reply(scrapeResults);
+      });
     }
   }
 ];
