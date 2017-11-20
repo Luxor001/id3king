@@ -21,19 +21,45 @@
 	\maketitle
 \end{titlepage}
 
-\section*{Introduzione}
+\setcounter{chapter}{1}
+\section{Introduzione}
+Il sito "id3king.it" è un progetto amatoriale di un gruppo forlivese che raccoglie percorsi escursionistici di trekking in varie zone d'Italia.
+Ogni volta che il gruppo fa un'escursione, ne pubblica sul sito i dettagli: data dell'uscita, luogo, durata, difficoltà, distanza e dislivello percorsi, mappe, dettagli del percorso e foto.
+\\Tuttavia, l'interfaccia grafica del sito è poco pratica, in quanto risulta antiquata, priva di funzionalità di ricerca e, osservando il modo in cui i dati vengono proposti, pare che non siano normalizzati e memorizzati su un database in maniera opportuna.
+Per questo motivo, ottenuto il consenso da parte degli amministratori del sito, si è deciso di progettare e sviluppare una web app che esegue lo scraping dell'originale e propone i medesimi dati in maniera maggiormente fruibile e aggiungendo ulteriori funzionalità, quali la ricerca basata su parametri e la creazione di profili utente per memorizzare dati di interesse.
+\\Sarà quindi necessario realizzare un'opportuna architettura server, un back-end e un front-end. Il sistema dovrà rispettare requisiti di estensibilità, reattività e sicurezza.
+% TODO: diagramma dei casi d'uso
 
+\section{Architettura}
+Trattandosi di un'applicazione di tipo client-server, l'architettura è composta dai seguenti componenti:
+\begin{itemize}
+	\item un insieme di client che accedono al servizio;
+	\item un server web a cui i client si collegano;
+	\item un database relazionale per l'archiviazione dei dati.
+\end{itemize}
+Opzionalmente è possibile rendere l'applicazione scalabile orizzontalmente e resistente ai guasti tramite più server web e load balancer.
+Analogamente, è possibile utilizzare non un singolo DBMS, ma una configurazione cluster.
+\\Ai fini di questo progetto si è scelto di utilizzare un unico server cloud di tipo \textit{IaaS} (Infrastructure as a Service), fornito da un provider, sul quale saranno installati tutti i servizi necessari al funzionamento dell'applicazione.
+\\In base ai requisiti precedentemente definiti, come framework di sviluppo si è valutato di usare \textit{Node.js}, che prevede l'utilizzo di tecnologie web sia client-side che server-side e consente di utilizzare un modello di comunicazione event-driven, particolarmente utile in un'applicazione di rete.
+Saranno presenti interfacce REST, che prevedono una comunicazione \textit{stateless} (ovvero non necessita della memorizzazione di alcun contesto client sul server), consentono di implementare facilmente un'architettura scalabile a livelli con nodi di commutazione intermedi e sono universalmente riconosciute e supportate, essendo basate tu HTTP+TCP+IP.
+% TODO: diagramma di deployment
 
-\section*{Architettura}
+\section{Sicurezza}
+Data la natura di rete dell'applicazione e poiché verranno trattati anche alcuni dati personali (non sensibili) degli utenti, è opportuno considerare la sicurezza già in fase di progettazione, onde evitare lacune successive difficili da individuare e rimuovere:
+\begin{itemize}
+	\item tutte le comunicazioni di rete devono essere crittografate e autenticate con SSL/TLS per prevenire intercettazioni e attacchi \textit{man-in-the-middle};
+	\item tutti gli input degli utenti devono essere validati per impedire lo sfruttamento di \textit{SQL injection} e \textit{buffer overflow}.
+\end{itemize}
 
+\section{Back-end}
+Verrà ora descritto il funzionamento del back-end.
+%TODO: diagramma delle classi e/o di sequenza
+%TODO: Dati e database, controller (pattern MVC), interazioni con il db, scraper.
 
-\section*{BackEnd}
+\section{Front-end}
+%TODO: Angular in generale, pattern MVC (e altri?), descrizione interfaccia grafica (spiegazione funzioni principali con qualche screenshot).
 
-
-\section*{FrontEnd}
-
-
-\section*{Conclusioni}
+\section{Conclusioni}
 
 
 \end{document}
