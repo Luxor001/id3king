@@ -9,6 +9,8 @@ const Route = require('../code/Route.js');
 const RouteDetail = require('../code/RouteDetail.js');
 const User = require('../code/User.js');
 const Filter = require('../code/Filter.js');
+const database = require('mysql');
+
 
 //FIXME: da cancellare
 const hashed_prova_pass = "$2a$10$sqfzhsD1waUvTFKFApoki./Fio5YOqFm75jHW0OvAfwRg5LXJqkCK";
@@ -37,13 +39,37 @@ var dummyValues = [
 dummyValues = dummyValues.concat(dummyValues, dummyValues, dummyValues);
 module.exports = {
   getRoutes: function() {
-    // ottenimento dei valori da DB
-    return dummyValues;
+    // Ottenimento tutti i percorsi
+    return new Promise((resolve, reject) => {
+      let results = [];
+      var sql = 'SELECT ID,Nome,DataInizio,Durata,Lunghezza,Dislivello,Difficolta,Localita,Descrizione FROM Percorso;';
+      executeQuery(sql).then(function(routesResults) {
+        if (routesResults != null) {
+          routesResults.forEach(function(item, index) {
+            results.push(new Route(item.ID, item.Nome, item.DataInizio, item.Durata, item.Lunghezza, item.Dislivello, item.Difficolta, item.Localita, item.Descrizione));
+          });
+          resolve(results);
+        }
+      });
+    })
   },
 
   getRouteDetails: function(routeId) {
-    // ottenimento dei valori da DB
-    return dummyValues.find(route => route.id == routeId);
+    // Ottenimento dei dettagli su uno specifico percorso
+    return new Promise((resolve, reject) => {
+      let results;
+      var sql = 'SELECT ID,Nome,DataInizio,Durata,Lunghezza,Dislivello,Difficolta,Localita,Descrizione FROM Percorso WHERE ID=?;';
+      var inserts = [routeId];
+      sql = database.format(sql,inserts);
+      executeQuery(sql).then(function(routesResults) {
+        if (routesResults != null) {
+          results = new Route(routesResults[0].ID, routesResults[0].Nome, routesResults[0].DataInizio, routesResults[0].Durata, routesResults[0].Lunghezza, routesResults[0].Dislivello, routesResults[0].Difficolta, routesResults[0].Localita, routesResults[0].Descrizione);
+          resolve(results);
+        } else {
+          //TODO: non esiste un percorso con l'id specificato
+        }
+      });
+    })
   },
 
   saveRoute: function(routeId, loginToken) {
@@ -135,4 +161,25 @@ function getUserInfo(loginToken) {
 function loginExist(username) {
   // TODO: SELECT...
   return "asdsa";
+}
+
+function executeQuery(querySQL) {
+  return new Promise((resolve, reject) => {
+    const dbconnection = database.createConnection({
+      //TODO questi dati dovrebbero stare su un file di configurazione, non hardcoded
+      host: 'localhost',
+      user: 'id3king',
+      password: 'id3king',
+      database: 'id3king'
+    });
+    dbconnection.connect();
+    dbconnection.query(querySQL, function(err, rows, fields) {
+      if(err != null) {
+          console.log(err);
+          // TODO: throw exception?
+      }
+      dbconnection.end();
+      resolve(rows);
+    });
+  });
 }

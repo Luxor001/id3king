@@ -21,6 +21,6 @@
     "rand-token": "^0.4.0",
     "request": "*",
     "request-promise": "^4.1.0",
-    "sqlite3": "*"
+    "mysql": "^2.15.0"
   }
 }

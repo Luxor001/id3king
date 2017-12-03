@@ -38,14 +38,14 @@ module.exports = [
     method: 'GET',
     path: '/api/getRoutes',
     handler: function(request, reply) {
-      var result = new GetDataResult();
-
-      var routes = dbHandler.getRoutes();
-      if (routes != null) { // se il db non è vuoto e inizializzato (ovviamente da migliorare)..
-        result.routes = routes;
-        result.Return = true; // segnaliamo al client che è andato tutto come previsto
-      }
-      reply(result);
+      let result = new GetDataResult();
+      dbHandler.getRoutes().then(function(routesResults) {
+        if (routesResults != null) {
+          result.routes = routesResults;
+          result.Return = true;
+        }
+        reply(routesResults);
+      });
     }
   },
 

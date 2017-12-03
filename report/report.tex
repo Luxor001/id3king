@@ -45,11 +45,13 @@ Saranno presenti interfacce REST, che prevedono una comunicazione \textit{statel
 % TODO: diagramma di deployment
 
 \section{Sicurezza}
-Data la natura di rete dell'applicazione e poiché verranno trattati anche alcuni dati personali (non sensibili) degli utenti, è opportuno considerare la sicurezza già in fase di progettazione, onde evitare lacune successive difficili da individuare e rimuovere:
+Data la natura di rete dell'applicazione e poiché verranno trattati anche alcuni dati personali degli utenti, è opportuno considerare la sicurezza già in fase di progettazione, onde evitare lacune successive difficili da individuare e rimuovere:
 \begin{itemize}
 	\item tutte le comunicazioni di rete devono essere crittografate e autenticate con SSL/TLS per prevenire intercettazioni e attacchi \textit{man-in-the-middle};
 	\item tutti gli input degli utenti devono essere validati per impedire lo sfruttamento di \textit{SQL injection} e \textit{buffer overflow}.
 \end{itemize}
+Le credenziali degli utenti dovranno inoltre essere memorizzate sotto forma di hash della password e con \textit{salt}, onde rendere difficoltoso per un attaccante decifrare le password.
+A tale scopo si è scelta la funzione \textit{bcrypt}.
 
 \section{Back-end}
 Verrà ora descritto il funzionamento del back-end.
