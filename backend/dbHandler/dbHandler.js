@@ -3,7 +3,8 @@ const {
   IncorrectPasswordLengthException,
   PasswordsNotEqualsException,
   UsernameAlreadyExistException,
-  IncorrectLoginException
+  IncorrectLoginException,
+  RouteNotFoundException
 } = require('./dbHandlerExceptions.js');
 const Route = require('../code/Route.js');
 const RouteDetail = require('../code/RouteDetail.js');
@@ -11,15 +12,19 @@ const User = require('../code/User.js');
 const Filter = require('../code/Filter.js');
 const database = require('mysql');
 
-
-//FIXME: da cancellare
-const hashed_prova_pass = "$2a$10$sqfzhsD1waUvTFKFApoki./Fio5YOqFm75jHW0OvAfwRg5LXJqkCK";
+class UserLogin { // Creata sul modello di "userlogin.model.ts" del frontend
+  constructor(username, password, passwordConfirm) {
+    this.username = username;
+    this.password = password;
+    this.passwordConfirm = passwordConfirm;
+  }
+}
 
 let Bcrypt = require('bcrypt'); // use bcrypt to hash passwords.
 let randtoken = require('rand-token');
 
-const PASSWORD_MIN_LENGTH = 5;
-const DEFAULT_SALTROUNDS = 10;
+const PASSWORD_MIN_LENGTH = 5; // TODO: deve stare in un file di configurazione
+const DEFAULT_SALTROUNDS = 10; // TODO: da generare random. Non deve essere costante.
 
 var dummyValues = [
   new RouteDetail(102, "S. Piero in Bagno, Bagno di Romagna e il versante West del Monte Comero", new Date('01/01/2017'), 100, 20, 367, 'E', "La Lama", "percorso molto bello nella lama", "http://www.id3king.it/Uscite/U2002/Uscita102/indice_102.htm", "http://www.id3king.it/Uscite/U2002/Uscita100/Images100/mappa100.jpg", "http://www.id3king.it/Tracce/U100%20FalterBagnoPoppiBadiaP.rar"),
@@ -35,41 +40,36 @@ var dummyValues = [
   new RouteDetail(113, "S. Piero in Bagno, Bagno di Romagna e il versante West del Monte Comero", new Date('11/01/2017'), 600, 15, 555, 'E', "Alpe della luna", "Proin eget tortor risus. Donec rutrum congue leo eget malesuada.", "http://www.id3king.it/Uscite/U2002/Uscita101/indice_101.htm", "http://www.id3king.it/Uscite/U2002/Uscita100/Images100/mappa100.jpg", "http://www.id3king.it/Tracce/U100%20FalterBagnoPoppiBadiaP.rar"),
   new RouteDetail(114, "S. Piero in Bagno, Bagno di Romagna e il versante West del Monte Comero", new Date('12/01/2017'), 650, 15, 666, 'E', "Alpe della luna", "Praesent sapien massa, convallis a pellentesque nec, egestas non nisi.", "http://www.id3king.it/Uscite/U2002/Uscita101/indice_101.htm", "http://www.id3king.it/Uscite/U2002/Uscita100/Images100/mappa100.jpg", "http://www.id3king.it/Tracce/U100%20FalterBagnoPoppiBadiaP.rar")
 ];
-
 dummyValues = dummyValues.concat(dummyValues, dummyValues, dummyValues);
+
 module.exports = {
   getRoutes: function() {
     // Ottenimento tutti i percorsi
-    return new Promise((resolve, reject) => {
-      let results = [];
-      var sql = 'SELECT ID,Nome,DataInizio,Durata,Lunghezza,Dislivello,Difficolta,Localita,Descrizione FROM Percorso;';
-      executeQuery(sql).then(function(routesResults) {
-        if (routesResults != null) {
-          routesResults.forEach(function(item, index) {
-            results.push(new Route(item.ID, item.Nome, item.DataInizio, item.Durata, item.Lunghezza, item.Dislivello, item.Difficolta, item.Localita, item.Descrizione));
-          });
-          resolve(results);
-        }
-      });
-    })
+    let results = [];
+    var sql = 'SELECT ID,Nome,DataInizio,Durata,Lunghezza,Dislivello,Difficolta,Localita,Descrizione FROM Percorso;';
+    return executeQuery(sql).then(function(routesResults) {
+      if (routesResults != null) {
+        routesResults.forEach(function(item, index) {
+          results.push(new Route(item.ID, item.Nome, item.DataInizio, item.Durata, item.Lunghezza, item.Dislivello, item.Difficolta, item.Localita, item.Descrizione));
+        });
+        return results;
+      }
+    });
   },
 
   getRouteDetails: function(routeId) {
     // Ottenimento dei dettagli su uno specifico percorso
-    return new Promise((resolve, reject) => {
-      let results;
-      var sql = 'SELECT ID,Nome,DataInizio,Durata,Lunghezza,Dislivello,Difficolta,Localita,Descrizione FROM Percorso WHERE ID=?;';
-      var inserts = [routeId];
-      sql = database.format(sql,inserts);
-      executeQuery(sql).then(function(routesResults) {
-        if (routesResults != null) {
-          results = new Route(routesResults[0].ID, routesResults[0].Nome, routesResults[0].DataInizio, routesResults[0].Durata, routesResults[0].Lunghezza, routesResults[0].Dislivello, routesResults[0].Difficolta, routesResults[0].Localita, routesResults[0].Descrizione);
-          resolve(results);
-        } else {
-          //TODO: non esiste un percorso con l'id specificato
-        }
-      });
-    })
+    let results;
+    let sql = 'SELECT ID,Nome,DataInizio,Durata,Lunghezza,Dislivello,Difficolta,Localita,Descrizione FROM Percorso WHERE ID=' + database.escape(routeId) + ';';
+    return executeQuery(sql).then(function(routesResults) {
+      if (routesResults != null) {
+        results = new Route(routesResults[0].ID, routesResults[0].Nome, routesResults[0].DataInizio, routesResults[0].Durata, routesResults[0].Lunghezza, routesResults[0].Dislivello, routesResults[0].Difficolta, routesResults[0].Localita, routesResults[0].Descrizione);
+        // TODO: inserire un +1 nel cotatore delle route a scopi statistici
+        return results;
+      } else {
+        throw new RouteNotFoundException(); // Non esiste un percorso con l'id specificato. TODO: da gestire lato front end
+      }
+    });
   },
 
   saveRoute: function(routeId, loginToken) {
@@ -80,17 +80,38 @@ module.exports = {
     return route;
   },
 
-
   signin: function(userLogin) {
-    // TODO: ricavare password dell'utente in base all'username fornito
-    // let hashedPasswordOnDb = "";
-    return Bcrypt.compare(userLogin.password, hashed_prova_pass).then(function(result) {
-      if (!result)
+    //userLogin = new UserLogin("test", "prova", "prova"); // Utente di test
+    let hashedPasswordOnDb; // Ricavare la password dell'utente in base all'username fornito
+    let sql = 'SELECT password FROM utenti WHERE username=' + database.escape(userLogin.username) + ';';
+    return executeQuery(sql).then(function(dbPassword) {
+      if(dbPassword != null) {
+        hashedPasswordOnDb = dbPassword[0].password;
+        return Bcrypt.compare(userLogin.password, hashedPasswordOnDb);
+      } else {
+        throw new IncorrectLoginException(); // L'utente non esiste
+      }
+    }).then(function OnComparePassword(compareResult){
+      if (!compareResult)
+        throw new IncorrectLoginException(); // La password inserita non coincide con quella nel database
+      let userId; // Id dell'utente, da ricavare a partire dall'username
+      let getUserIdSql = 'SELECT ID FROM Utenti WHERE username=' + database.escape(userLogin.username) + ';';
+      return executeQuery(getUserIdSql);
+    }).then(function(dbUserId){
+      if(dbUserId == null)
         throw new IncorrectLoginException();
-
-      // TODO: salvare il token su DB!
+      // Se il login ha avuto successo, generare un token, salvarlo sul database e restituirlo al client
+      let userId = dbUserId[0].ID;
+      var currentDateSQL = new Date().toISOString().slice(0, 19).replace('T', ' '); // Data attuale convertita nel formato DATETIME di MySql
       let loginToken = randtoken.generate(32);
-      return loginToken;
+      var insertSql = 'INSERT INTO Login (`userId`, `logintoken`, `timestamp`) VALUES (?, ?, ?);';
+      var insertsInsert = [userId, loginToken, currentDateSQL];
+      insertSql = database.format(insertSql, insertsInsert);
+      return executeQuery(insertSql).then(function(result){
+        if(result.affectedRows != 1)
+          throw new IncorrectLoginException(); // Errore durante l'inserimento del token nel database
+        return loginToken;
+      });
     });
   },
 
@@ -163,6 +184,7 @@ function loginExist(username) {
   return "asdsa";
 }
 
+// Metodo di utilità per eseguire una query sul database. Restituisce un array contenente i risultati
 function executeQuery(querySQL) {
   return new Promise((resolve, reject) => {
     const dbconnection = database.createConnection({

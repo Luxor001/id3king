@@ -77,6 +77,7 @@ module.exports = [
     handler: function(request, reply) {
       var result = new LoginResult();
 
+      //let userLoginDbHandler = new UserLoginDbHandler(request.payload.userLogin);
       dbHandler.signin(request.payload.userLogin).then(function(loginToken) {
         result.Return = true;
         result.loginToken = loginToken;
@@ -189,6 +190,7 @@ module.exports = [
           result.routes = scrapeResults;
           result.Return = true; // segnaliamo al client che è andato tutto come previsto
         }
+        // TODO: Salvare su db
         reply(scrapeResults);
       });
     }
