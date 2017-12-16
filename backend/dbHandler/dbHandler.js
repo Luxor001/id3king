@@ -1,4 +1,4 @@
-/// In questo file va posta tutta la logica di input-output per il dbHandler
+// In questo file va posta tutta la logica di input-output per il dbHandler
 const {
   IncorrectPasswordLengthException,
   PasswordsNotEqualsException,
@@ -10,18 +10,11 @@ const Route = require('../code/Route.js');
 const RouteDetail = require('../code/RouteDetail.js');
 const User = require('../code/User.js');
 const Filter = require('../code/Filter.js');
+const UserLogin = require('../code/UserLogin.js');
+
 const database = require('mysql');
-
-class UserLogin { // Creata sul modello di "userlogin.model.ts" del frontend
-  constructor(username, password, passwordConfirm) {
-    this.username = username;
-    this.password = password;
-    this.passwordConfirm = passwordConfirm;
-  }
-}
-
-let Bcrypt = require('bcrypt'); // use bcrypt to hash passwords.
-let randtoken = require('rand-token');
+const Bcrypt = require('bcrypt'); // use bcrypt to hash passwords.
+const randtoken = require('rand-token');
 
 const PASSWORD_MIN_LENGTH = 5; // TODO: deve stare in un file di configurazione
 const DEFAULT_SALTROUNDS = 10; // TODO: da generare random. Non deve essere costante.
@@ -80,62 +73,28 @@ module.exports = {
     return route;
   },
 
-  signin: function(userLogin) {
-    //userLogin = new UserLogin("test", "prova", "prova"); // Utente di test
-    let hashedPasswordOnDb; // Ricavare la password dell'utente in base all'username fornito
-    let sql = 'SELECT password FROM utenti WHERE username=' + database.escape(userLogin.username) + ';';
-    return executeQuery(sql).then(function(dbPassword) {
-      if(dbPassword != null) {
-        hashedPasswordOnDb = dbPassword[0].password;
-        return Bcrypt.compare(userLogin.password, hashedPasswordOnDb);
-      } else {
-        throw new IncorrectLoginException(); // L'utente non esiste
-      }
-    }).then(function OnComparePassword(compareResult){
-      if (!compareResult)
-        throw new IncorrectLoginException(); // La password inserita non coincide con quella nel database
-      let userId; // Id dell'utente, da ricavare a partire dall'username
-      let getUserIdSql = 'SELECT ID FROM Utenti WHERE username=' + database.escape(userLogin.username) + ';';
-      return executeQuery(getUserIdSql);
-    }).then(function(dbUserId){
-      if(dbUserId == null)
-        throw new IncorrectLoginException();
-      // Se il login ha avuto successo, generare un token, salvarlo sul database e restituirlo al client
-      let userId = dbUserId[0].ID;
-      var currentDateSQL = new Date().toISOString().slice(0, 19).replace('T', ' '); // Data attuale convertita nel formato DATETIME di MySql
-      let loginToken = randtoken.generate(32);
-      var insertSql = 'INSERT INTO Login (`userId`, `logintoken`, `timestamp`) VALUES (?, ?, ?);';
-      var insertsInsert = [userId, loginToken, currentDateSQL];
-      insertSql = database.format(insertSql, insertsInsert);
-      return executeQuery(insertSql).then(function(result){
-        if(result.affectedRows != 1)
-          throw new IncorrectLoginException(); // Errore durante l'inserimento del token nel database
-        return loginToken;
-      });
-    });
-  },
+  signin: signin,
 
   signup: function(userLogin) {
-    return new Promise(function(resolve, reject) {
-      //TODO: SANITIZZAZIONE SQL!. Vedere https://stackoverflow.com/a/15778841/1306679
-
-      if (userLogin.password == null || userLogin.password.length < PASSWORD_MIN_LENGTH)
-        throw new IncorrectPasswordLengthException();
-      if (userLogin.passwordConfirm != userLogin.password)
-        throw new PasswordsNotEqualsException();
-
-      //TODO: check se esiste già un user con lo stesso nome
-      if (userLogin.username == "prova")
+    //userLogin = new UserLogin("test", "prova", "prova"); // Utente di test
+    if (userLogin.password == null || userLogin.password.length < PASSWORD_MIN_LENGTH)
+      throw new IncorrectPasswordLengthException();
+    if (userLogin.passwordConfirm != userLogin.password)
+      throw new PasswordsNotEqualsException();
+    let sqlCheckUserAlreadyExists = 'SELECT ID FROM Utenti WHERE username=' + database.escape(userLogin.username) + ';';
+    return executeQuery(sqlCheckUserAlreadyExists).then(function(userId) {
+      if(userId.length != 0) // L'utente esiste già
         throw new UsernameAlreadyExistException();
-
-      // ritorna una promise. fare .then dall'altra parte
-      Bcrypt.hash(userLogin.password, DEFAULT_SALTROUNDS).then(function(hash) {
-        //TODO: save in DB la password hashata e l'username
-
-        let loginToken = randtoken.generate(32);
-        //TODO: salvare il token su DB!
-        resolve(loginToken);
-      });
+      return Bcrypt.hash(userLogin.password, DEFAULT_SALTROUNDS);
+    }).then(function OnHashedPassword(hashedPassword) {
+      // Salvare nel database il nuovo utente
+      let sqlAddUser = 'INSERT INTO `id3king`.`utenti` (`username`, `password`) VALUES (' + database.escape(userLogin.username) + ', ' + database.escape(userLogin.password) + ');';
+      return executeQuery(sqlAddUser);
+    }).then(function(result) {
+      if(result.affectedRows != 1)
+        throw new IncorrectLoginException(); // Errore durante l'inserimento del nuovo utente nel database
+      // Generazione token, salvataggio sul database e restituzione al client
+      return signin(userLogin);
     });
   },
 
@@ -202,6 +161,35 @@ function executeQuery(querySQL) {
       }
       dbconnection.end();
       resolve(rows);
+    });
+  });
+}
+
+function signin(userLogin) {
+  //userLogin = new UserLogin("test", "prova", "prova"); // Utente di test
+  let sql = 'SELECT password FROM utenti WHERE username=' + database.escape(userLogin.username) + ';'; // Ricavare la password dell'utente in base all'username fornito
+  return executeQuery(sql).then(function(dbPassword) {
+    if(dbPassword == null)
+      throw new IncorrectLoginException(); // L'utente non esiste
+    return Bcrypt.compare(userLogin.password, dbPassword[0].password);
+  }).then(function OnComparePassword(compareResult) {
+    if (!compareResult)
+      throw new IncorrectLoginException(); // La password inserita non coincide con quella nel database
+    let getUserIdSql = 'SELECT ID FROM Utenti WHERE username=' + database.escape(userLogin.username) + ';'; // Id dell'utente, da ricavare a partire dall'username
+    return executeQuery(getUserIdSql);
+  }).then(function(dbUserId){
+    if(dbUserId == null)
+      throw new IncorrectLoginException();
+    // Se il login ha avuto successo, generare un token, salvarlo sul database e restituirlo al client
+    var currentDateSQL = new Date().toISOString().slice(0, 19).replace('T', ' '); // Data attuale convertita nel formato DATETIME di MySql
+    let loginToken = randtoken.generate(32);
+    var insertSql = 'INSERT INTO Login (`userId`, `logintoken`, `timestamp`) VALUES (?, ?, ?);';
+    var insertsInsert = [dbUserId[0].ID, loginToken, currentDateSQL];
+    insertSql = database.format(insertSql, insertsInsert);
+    return executeQuery(insertSql).then(function(result){
+      if(result.affectedRows != 1)
+        throw new IncorrectLoginException(); // Errore durante l'inserimento del token nel database
+      return loginToken;
     });
   });
 }
