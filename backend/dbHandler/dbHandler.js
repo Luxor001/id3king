@@ -1,3 +1,4 @@
+const config = require('../config');
 // In questo file va posta tutta la logica di input-output per il dbHandler
 const {
   IncorrectPasswordLengthException,
@@ -16,7 +17,6 @@ const database = require('mysql');
 const Bcrypt = require('bcrypt'); // use bcrypt to hash passwords.
 const randtoken = require('rand-token');
 
-const PASSWORD_MIN_LENGTH = 5; // TODO: deve stare in un file di configurazione
 const DEFAULT_SALTROUNDS = 10; // TODO: da generare random. Non deve essere costante.
 
 var dummyValues = [
@@ -77,7 +77,7 @@ module.exports = {
 
   signup: function(userLogin) {
     //userLogin = new UserLogin("test", "prova", "prova"); // Utente di test
-    if (userLogin.password == null || userLogin.password.length < PASSWORD_MIN_LENGTH)
+    if (userLogin.password == null || userLogin.password.length < config.security.password_min_length)
       throw new IncorrectPasswordLengthException();
     if (userLogin.passwordConfirm != userLogin.password)
       throw new PasswordsNotEqualsException();
@@ -146,13 +146,7 @@ function loginExist(username) {
 // Metodo di utilità per eseguire una query sul database. Restituisce un array contenente i risultati
 function executeQuery(querySQL) {
   return new Promise((resolve, reject) => {
-    const dbconnection = database.createConnection({
-      //TODO questi dati dovrebbero stare su un file di configurazione, non hardcoded
-      host: 'localhost',
-      user: 'id3king',
-      password: 'id3king',
-      database: 'id3king'
-    });
+    const dbconnection = database.createConnection(config.dbConnection);
     dbconnection.connect();
     dbconnection.query(querySQL, function(err, rows, fields) {
       if(err != null) {

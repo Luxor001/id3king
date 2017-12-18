@@ -1,0 +1,17 @@
+{
+  "dbConnection": {
+    "host": "localhost",
+    "user": "id3king",
+    "password": "id3king",
+    "database": "id3king"
+  },
+  "serverConnection": {
+    "port": 8081,
+    "routes": {
+      "cors": true
+    }
+  },
+  "security":{
+     "password_min_length": 5
+  }
+}

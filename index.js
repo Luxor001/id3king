@@ -3,7 +3,7 @@ const cron = require('cron');
 const Inert = require('inert');
 //carica tutte le routes di routes.js
 var controller = require('./backend/controller');
-let authConfig = require('./backend/auth/authConfig')
+const config = require('./backend/config');
 
 const Path = require('path');
 const server = new Hapi.Server({
@@ -16,17 +16,9 @@ const server = new Hapi.Server({
   }
 });
 
-server.connection({
-  port: 8081,
-  routes: {
-    cors: true
-  }
-});
+server.connection(config.serverConnection);
 
-var opts = { fields:authConfig.fields, handler:authConfig.handlerFunct, loginPath:'/login' }; // the fields and handler defined above
-server.register([Inert, { register: require('hapi-login'), options:opts }], function (err) {
-  if (err) { console.error('Failed to load plugin:', err); }
-});
+server.register([Inert]);
 
 server.start((err) => {
   if (err)
