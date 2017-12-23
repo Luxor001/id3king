@@ -5,7 +5,8 @@ const {
   PasswordsNotEqualsException,
   UsernameAlreadyExistException,
   IncorrectLoginException,
-  RouteNotFoundException
+  RouteNotFoundException,
+  AlreadyExistingFilterException
 } = require('./dbHandlerExceptions.js');
 const Route = require('../code/Route.js');
 const RouteDetail = require('../code/RouteDetail.js');
@@ -39,11 +40,11 @@ module.exports = {
   getRoutes: function() {
     // Ottenimento tutti i percorsi
     let results = [];
-    var sql = 'SELECT ID,Nome,DataInizio,Durata,Lunghezza,Dislivello,Difficolta,Localita,Descrizione FROM Percorso;';
+    var sql = 'SELECT p.ID,p.Nome,p.DataInizio,p.Durata,p.Lunghezza,p.Dislivello,d.Valore,l.Denominazione,Descrizione FROM Percorso p JOIN difficolta d2 ON p.Difficolta=d2.ID JOIN localita l2 ON p.Localita=l2.ID , difficolta d, localita l;';
     return executeQuery(sql).then(function(routesResults) {
       if (routesResults != null) {
         routesResults.forEach(function(item, index) {
-          results.push(new Route(item.ID, item.Nome, item.DataInizio, item.Durata, item.Lunghezza, item.Dislivello, item.Difficolta, item.Localita, item.Descrizione));
+          results.push(new Route(item.ID, item.Nome, item.DataInizio, item.Durata, item.Lunghezza, item.Dislivello, item.Valore, item.Denominazione, item.Descrizione));
         });
         return results;
       }
@@ -53,10 +54,10 @@ module.exports = {
   getRouteDetails: function(routeId) {
     // Ottenimento dei dettagli su uno specifico percorso
     let results;
-    let sql = 'SELECT ID,Nome,DataInizio,Durata,Lunghezza,Dislivello,Difficolta,Localita,Descrizione FROM Percorso WHERE ID=' + database.escape(routeId) + ';';
+    let sql = 'SELECT p.ID,p.Nome,p.DataInizio,p.Durata,p.Lunghezza,p.Dislivello,d.Valore,l.Denominazione,p.Descrizione,p.URL,p.MapURL,p.TrackURL FROM Percorso p JOIN difficolta d2 ON d2.ID=p.Difficolta JOIN localita l2 ON l2.ID=p.Localita , difficolta d, localita l WHERE p.ID=' + database.escape(routeId) + ';';
     return executeQuery(sql).then(function(routesResults) {
       if (routesResults != null) {
-        results = new Route(routesResults[0].ID, routesResults[0].Nome, routesResults[0].DataInizio, routesResults[0].Durata, routesResults[0].Lunghezza, routesResults[0].Dislivello, routesResults[0].Difficolta, routesResults[0].Localita, routesResults[0].Descrizione);
+        results = new RouteDetail(routesResults[0].ID, routesResults[0].Nome, routesResults[0].DataInizio, routesResults[0].Durata, routesResults[0].Lunghezza, routesResults[0].Dislivello, routesResults[0].Valore, routesResults[0].Denominazione, routesResults[0].Descrizione, routesResults[0].URL, routesResults[0].MapURL, routesResults[0].TrackURL);
         // TODO: inserire un +1 nel cotatore delle route a scopi statistici
         return results;
       } else {
@@ -109,10 +110,25 @@ module.exports = {
   },
 
   saveFilter: function(filter, user) {
-    return new Promise(function(resolve, reject){
-        //TODO: da fare tutta la logica di salvataggio di un filtro su db...
-        //INSERT (filter.name)
-        resolve(true);
+    // filter = new Filter("ricercaprova", 10000, 30000, 1000, 2, 500, null); // Filtro di test
+    // user = new User("test", null, null, null); // Utente di test
+    let userId;
+    let getUserIdSql = 'SELECT ID FROM Utenti WHERE username=' + database.escape(user.username) + ';'; // Id dell'utente, da ricavare a partire dall'username
+    return executeQuery(getUserIdSql).then(function OnGetUserId(dbUserId) {
+      if(dbUserId == null)
+        throw new IncorrectLoginException();
+      userId = dbUserId[0].ID;
+      let sqlCheckIfAlreadySavedFilter = 'SELECT IDUtente FROM ricerca WHERE IDUtente=' + userId + ' AND NomeRicerca=' + database.escape(filter.name) + ';';
+      return executeQuery(sqlCheckIfAlreadySavedFilter);
+    }).then(function OnCheckedIfAlreadySavedFilter(checkResults) {
+      if(checkResults.length != 0)
+        throw new AlreadyExistingFilterException();
+      let sqlAddFilterToDb = 'INSERT INTO `id3king`.`ricerca` (`IDUtente`, `NomeRicerca`, `DislivelloMassimo`, `LunghezzaMassima`, `DurataMassima`, `Localita`, `Difficolta`) VALUES (' + userId + ', ' + database.escape(filter.name) + ', ' + database.escape(filter.filtroDislivello) + ', ' + database.escape(filter.filtroLunghezza) + ', ' + database.escape(filter.filtroDurata) + ', ' + database.escape(filter.filtroLuoghi) + ', ' + database.escape(filter.filtroDifficolta) + ');';
+      return executeQuery(sqlAddFilterToDb);
+    }).then(function OnInsertedFilter(result) {
+      if(result.affectedRows != 1)
+        throw new IncorrectLoginException(); // Errore durante l'inserimento del token nel database
+      return true;
     });
   },
 
@@ -131,11 +147,34 @@ module.exports = {
 }
 
 function getUserInfo(loginToken) {
-  //TODO: richiedere al DB info sull'utente
-  return new User('Luxor001', '101', [
-    new RouteDetail(102, "S. Piero in Bagno, Bagno di Romagna e il versante West del Monte Comero", new Date('01/01/2017'), 100, 20, 367, 'E', "La Lama", "percorso molto bello nella lama", "http://www.id3king.it/Uscite/U2002/Uscita102/indice_102.htm", "http://www.id3king.it/Uscite/U2002/Uscita100/Images100/mappa100.jpg", "http://www.id3king.it/Tracce/U100%20FalterBagnoPoppiBadiaP.rar"),
-    new RouteDetail(106, "S. Piero in Bagno, Bagno di Romagna e il versante West del Monte Comero", new Date('05/01/2017'), 300, 18, 123, 'E', "Ridracoli", "Vivamus magna justo, lacinia eget consectetur sed, convallis", "http://www.id3king.it/Uscite/U2002/Uscita101/indice_101.htm", "http://www.id3king.it/Uscite/U2002/Uscita100/Images100/mappa100.jpg", "http://www.id3king.it/Tracce/U100%20FalterBagnoPoppiBadiaP.rar")
-    ], []);
+  // loginToken = "aaaaaaaabbbbbbbbccccccccdddddddd"; // Token di test
+  let userId;
+  let userName;
+  let lastRoute;
+  let savedRoutes = [];
+  let savedFilters = [];
+  let sqlGetUserIdAndLastRoute = 'SELECT u.ID, u.username, u.UltimoPercorsoRicercato FROM utenti u INNER JOIN login l ON l.userId=u.ID AND l.logintoken=' + database.escape(loginToken) + ';';
+  return executeQuery(sqlGetUserIdAndLastRoute).then(function OnGetUserIdAndLastRoute(dbUserIdAndLastRoute) {
+    if(dbUserIdAndLastRoute == null)
+      throw new IncorrectLoginException();
+    userId = dbUserIdAndLastRoute[0].ID;
+    userName = dbUserIdAndLastRoute[0].username;
+    lastRoute = dbUserIdAndLastRoute[0].UltimoPercorsoRicercato;
+    //let sqlGetSavedRoutesIds = 'SELECT IDPercorso FROM itinerariopreferito WHERE IDUtente=' + database.escape(userId) + ';';
+    let sqlGetSavedRoutes = 'SELECT p.ID, p.Nome, p.DataInizio, p.Durata, p.Lunghezza, p.Dislivello, p.Difficolta, p.Localita, p.Descrizione FROM percorso p WHERE p.ID IN (SELECT ip.IDPercorso FROM itinerariopreferito ip WHERE ip.IDUtente=' + database.escape(userId) + ');';
+    return executeQuery(sqlGetSavedRoutes);
+  }).then(function OnGetSavedRoutesIds(savedRoutesDb) {
+    savedRoutesDb.forEach(function(item, index) {
+      savedRoutes.push(new RouteDetail(item.ID, item.Nome, item.DataInizio, item.Durata, item.Lunghezza, item.Dislivello, item.Difficolta, item.Localita, item.Descrizione, item.URL, item.MapURL, item.TrackURL));
+    });
+    let sqlGetSavedFilters = 'SELECT r.NomeRicerca, r.DislivelloMassimo, r.LunghezzaMassima, r.DurataMassima, r.Difficolta, r.Localita FROM ricerca r WHERE r.IDUtente=' + database.escape(userId) + ';';
+    return executeQuery(sqlGetSavedFilters);
+  }).then(function OnGetSavedFilters(savedFiltersDb) {
+    savedFiltersDb.forEach(function(item, index) {
+      savedFilters.push(new Filter(item.NomeRicerca, item.DislivelloMassimo, item.LunghezzaMassima, item.DurataMassima, item.Difficolta, item.Localita));
+    });
+    return new User(userName, lastRoute, savedRoutes, savedFilters);
+  });
 }
 
 function loginExist(username) {
@@ -161,8 +200,8 @@ function executeQuery(querySQL) {
 
 function signin(userLogin) {
   //userLogin = new UserLogin("test", "prova", "prova"); // Utente di test
-  let sql = 'SELECT password FROM utenti WHERE username=' + database.escape(userLogin.username) + ';'; // Ricavare la password dell'utente in base all'username fornito
-  return executeQuery(sql).then(function(dbPassword) {
+  let sqlGetPassword = 'SELECT password FROM utenti WHERE username=' + database.escape(userLogin.username) + ';'; // Ricavare la password dell'utente in base all'username fornito
+  return executeQuery(sqlGetPassword).then(function(dbPassword) {
     if(dbPassword == null)
       throw new IncorrectLoginException(); // L'utente non esiste
     return Bcrypt.compare(userLogin.password, dbPassword[0].password);
@@ -171,7 +210,7 @@ function signin(userLogin) {
       throw new IncorrectLoginException(); // La password inserita non coincide con quella nel database
     let getUserIdSql = 'SELECT ID FROM Utenti WHERE username=' + database.escape(userLogin.username) + ';'; // Id dell'utente, da ricavare a partire dall'username
     return executeQuery(getUserIdSql);
-  }).then(function(dbUserId){
+  }).then(function OngetUserId (dbUserId){
     if(dbUserId == null)
       throw new IncorrectLoginException();
     // Se il login ha avuto successo, generare un token, salvarlo sul database e restituirlo al client
@@ -180,7 +219,7 @@ function signin(userLogin) {
     var insertSql = 'INSERT INTO Login (`userId`, `logintoken`, `timestamp`) VALUES (?, ?, ?);';
     var insertsInsert = [dbUserId[0].ID, loginToken, currentDateSQL];
     insertSql = database.format(insertSql, insertsInsert);
-    return executeQuery(insertSql).then(function(result){
+    return executeQuery(insertSql).then(function(result) {
       if(result.affectedRows != 1)
         throw new IncorrectLoginException(); // Errore durante l'inserimento del token nel database
       return loginToken;

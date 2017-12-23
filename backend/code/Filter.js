@@ -6,6 +6,6 @@ module.exports = class Filter {
     this.filtroDurata = filtroDurata;
     this.filtroDifficolta = filtroDifficolta;
     this.filtroLuoghi = filtroLuoghi;
-    this.filtroPeriodi = filtroPeriodi;
+    this.filtroPeriodi = filtroPeriodi; // TODO Non utilizzato?
   }
 }
