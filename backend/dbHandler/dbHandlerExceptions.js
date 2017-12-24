@@ -4,6 +4,8 @@ class IncorrectLoginException extends Error {}
 class UsernameAlreadyExistException extends Error {}
 class RouteNotFoundException extends Error {}
 class AlreadyExistingFilterException extends Error {}
+class NotExistingFilterException extends Error {}
+class FailedDatabaseQueryException extends Error {}
 
 module.exports = {
   IncorrectPasswordLengthException: IncorrectPasswordLengthException,
@@ -11,5 +13,7 @@ module.exports = {
   UsernameAlreadyExistException: UsernameAlreadyExistException,
   IncorrectLoginException: IncorrectLoginException,
   RouteNotFoundException: RouteNotFoundException,
-  AlreadyExistingFilterException: AlreadyExistingFilterException
+  AlreadyExistingFilterException: AlreadyExistingFilterException,
+  NotExistingFilterException: NotExistingFilterException,
+  FailedDatabaseQueryException: FailedDatabaseQueryException
 }

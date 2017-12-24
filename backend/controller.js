@@ -118,7 +118,7 @@ module.exports = [
     path: '/api/getBookmarkedRoutes',
     handler: function(request, reply) {
       let result = new GetDataResult();
-      dbHandler.checkToken(request.payload.loginToken).then(function onSuccess(userInfo) {
+      dbHandler.getUserInfo(request.payload.loginToken).then(function onSuccess(userInfo) {
         result.Return = true;
         result.routes = userInfo.savedRoutes;
         reply(result);
@@ -135,7 +135,7 @@ module.exports = [
     path: '/api/saveFilter',
     handler: function(request, reply) {
       let result = new BaseResult();
-      dbHandler.checkToken(request.payload.loginToken).then(function onSuccess(user) {
+      dbHandler.getUserInfo(request.payload.loginToken).then(function onSuccess(user) {
         dbHandler.saveFilter(request.payload.filter, user).then(function() {
           result.Return = true;
           reply(result);
@@ -154,7 +154,7 @@ module.exports = [
     path: '/api/getFilter',
     handler: function(request, reply) {
       let result = new BaseResult();
-      dbHandler.checkToken(request.payload.loginToken).then(function onSuccess(user) {
+      dbHandler.getUserInfo(request.payload.loginToken).then(function onSuccess(user) {
         dbHandler.getFilter(request.payload.filterName, user).then(function(filter) {
           result.Return = true;
           result.filter = filter;
