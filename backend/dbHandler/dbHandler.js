@@ -136,6 +136,43 @@ module.exports = {
         throw new NotExistingFilterException();
       return new Filter(filter[0].NomeRicerca, filter[0].DislivelloMassimo, filter[0].LunghezzaMassima, filter[0].DurataMassima, filter[0].Difficolta, filter[0].Localita, filter[0].Periodo);
     });
+  },
+
+  saveScrapeResults: function(scrapeResultsRoutes) {
+    let maxIDLocalita;
+    let maxIDPercorso;
+    return executeQuery('SELECT MAX(p.ID) AS MaxIdPercorso, MAX(l.ID) AS MaxIdLocalita FROM Percorso p, Localita l;').then(function(maxIdResults) {
+      maxIDLocalita = maxIdResults[0].MaxIdLocalita;
+      maxIDPercorso = maxIdResults[0].MaxIdPercorso;
+      // Inserimento delle località
+      if(maxIDLocalita == null) // Caso base in cui il database è vuoto
+        maxIDLocalita = 0;
+      for(i=maxIDLocalita+1; i<scrapeResultsRoutes.localita.length; i++) {
+        let sqlInsertLocalita = 'INSERT INTO `id3king`.`localita` (`ID`, `Denominazione`) VALUES (?, ?);';
+        const inserts = [scrapeResultsRoutes.localita[i].id, scrapeResultsRoutes.localita[i].nome];
+        sqlInsertLocalita = database.format(sqlInsertLocalita, inserts);
+        executeQuery(sqlInsertLocalita);
+      }
+    }).then(function() {
+      // Inserimento dei percorsi
+      if(maxIDPercorso == null) // Caso base in cui il database è vuoto
+        maxIDPercorso = 1;
+      for(i=maxIDPercorso; i<Object.keys(scrapeResultsRoutes.itinerari).length; i++) {
+        const dateToArray = scrapeResultsRoutes.itinerari[i].data.split('/');
+        const dateToSqlFormat = new Date(dateToArray[2], dateToArray[1], dateToArray[0]).toISOString().slice(0,19).replace('T', ' ');
+        var difficoltaID = scrapeResultsRoutes.itinerari[i].difficolta; // Conversione da valore difficoltà al relativo ID del database
+        if(difficoltaID=='T') difficoltaID = 1;
+        else if(difficoltaID=='E') difficoltaID = 2;
+        else if(difficoltaID=='EE') difficoltaID = 3;
+        else difficoltaID = "";
+        let sqlInsertString = "INSERT INTO `id3king`.`percorso` (`ID`, `Nome`, `DataInizio`, `URL`, `Durata`, `Lunghezza`, `Dislivello`, `Difficolta`, `Localita`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+        const inserts = [scrapeResultsRoutes.itinerari[i].id, scrapeResultsRoutes.itinerari[i].descrizione, dateToSqlFormat, scrapeResultsRoutes.itinerari[i].link, scrapeResultsRoutes.itinerari[i].durata, scrapeResultsRoutes.itinerari[i].lunghezza, scrapeResultsRoutes.itinerari[i].dislivello, difficoltaID, scrapeResultsRoutes.itinerari[i].IDlocalita];
+        sqlInsertString = database.format(sqlInsertString, inserts);
+        executeQuery(sqlInsertString);
+      }
+      // TODO inserire toponimi secondari
+      return true;
+    });
   }
 }
 
@@ -187,24 +224,20 @@ function executeQuery(querySQL) {
 
 function signin(userLogin) {
   // userLogin = new UserLogin("test", "prova", "prova"); // Utente di test
-  let sqlGetPassword = 'SELECT password FROM utenti WHERE username=' + database.escape(userLogin.username) + ';'; // Ricavare la password dell'utente in base all'username fornito
-  return executeQuery(sqlGetPassword).then(function(dbPassword) {
-    if(dbPassword == null)
+  let dbUserId;
+  const sqlGetPassword = 'SELECT ID,password FROM utenti WHERE username=' + database.escape(userLogin.username) + ';'; // Ricavare la password dell'utente in base all'username fornito
+  return executeQuery(sqlGetPassword).then(function(dbCredentials) {
+    if(dbCredentials == null)
       throw new IncorrectLoginException(); // L'utente non esiste
-    return Bcrypt.compare(userLogin.password, dbPassword[0].password);
+    dbUserId = dbCredentials[0].ID;
+    return Bcrypt.compare(userLogin.password, dbCredentials[0].password);
   }).then(function OnComparePassword(compareResult) {
     if (!compareResult)
       throw new IncorrectLoginException(); // La password inserita non coincide con quella nel database
-    let getUserIdSql = 'SELECT ID FROM Utenti WHERE username=' + database.escape(userLogin.username) + ';'; // Id dell'utente, da ricavare a partire dall'username
-    return executeQuery(getUserIdSql);
-  }).then(function OngetUserId (dbUserId){
-    if(dbUserId == null)
-      throw new IncorrectLoginException();
     // Se il login ha avuto successo, generare un token, salvarlo sul database e restituirlo al client
-    var currentDateSQL = new Date().toISOString().slice(0, 19).replace('T', ' '); // Data attuale convertita nel formato DATETIME di MySql
     let loginToken = randtoken.generate(32);
-    var insertSql = 'INSERT INTO Login (`userId`, `logintoken`, `timestamp`) VALUES (?, ?, ?);';
-    var insertsInsert = [dbUserId[0].ID, loginToken, currentDateSQL];
+    var insertSql = 'INSERT INTO Login (`userId`, `logintoken`) VALUES (?, ?);';
+    var insertsInsert = [dbUserId, loginToken];
     insertSql = database.format(insertSql, insertsInsert);
     return executeQuery(insertSql).then(function(result) {
       if(result.affectedRows != 1)

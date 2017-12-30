@@ -190,8 +190,8 @@ module.exports = [
           result.routes = scrapeResults;
           result.Return = true; // segnaliamo al client che è andato tutto come previsto
         }
-        // TODO: Salvare su db
-        reply(scrapeResults);
+        dbHandler.saveScrapeResults(scrapeResults);
+        reply(result);
       });
     }
   }

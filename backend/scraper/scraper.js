@@ -26,7 +26,7 @@ function scrape() {
           var newItinerario = {};
           newItinerario.id = parseInt(colonneRiga.eq(0).text().replace(/\W/g, ''));
           newItinerario.link = siteBaseAddress + colonneRiga.eq(0).find('a').attr('href');
-          newItinerario.descrizione = colonneRiga.eq(2).text().replace(/\s\s+/g, ' ');
+          newItinerario.descrizione = colonneRiga.eq(2).text().replace(/\s\s+/g, ' ').substr(1);
           //var data = colonneRiga.eq(1).text().replace(/[^\d\/]/g, '').split('/');
           var data = colonneRiga.eq(1).text().split('/');
           data[0] = data[0].slice(8);
@@ -64,7 +64,7 @@ function scrape() {
         var colonneRiga = righe.eq(i).children('td');
         var newLocalita = {};
         newLocalita.id = i;
-        newLocalita.nome = colonneRiga.eq(0).text().replace(/\s\s+/g, ' ');
+        newLocalita.nome = colonneRiga.eq(0).text().replace(/\s\s+/g, ' ').substr(1);
         var itinerariCollegati = colonneRiga.eq(1).text().replace(/\s\s+/g, ' ').replace(/[,]/g, '');
         itinerariCollegati = itinerariCollegati.split(' ').map(value => parseInt(value)).filter(value => !isNaN(value));
         itinerariCollegati.forEach(idItinerario => itinerari[idItinerario].IDlocalita = newLocalita.id);
