@@ -2,7 +2,13 @@ const {
   IncorrectPasswordLengthException,
   PasswordsNotEqualsException,
   UsernameAlreadyExistException,
-  IncorrectLoginException
+  IncorrectLoginException,
+  RouteNotFoundException,
+  AlreadySavedRouteException,
+  AlreadyExistingFilterException,
+  NotExistingFilterException,
+  FailedDatabaseQueryException,
+  EmptyDatabaseException
 } = require('./dbHandler/dbHandlerExceptions.js');
 const BaseResult = require('./code/BaseResult.js');
 const User = require('./code/User.js');
@@ -28,7 +34,14 @@ const LoginResultERRORS = {
   INCORRECT_PASSWORD_LENGTH: 'INCORRECT_PASSWORD_LENGTH',
   PASSWORD_NOT_MATCHING: 'PASSWORD_NOT_MATCHING',
   USER_ALREADY_EXIST: 'USER_ALREADY_EXIST',
-  INCORRECT_LOGIN: 'INCORRECT_LOGIN'
+  INCORRECT_LOGIN: 'INCORRECT_LOGIN',
+  ROUTE_NOT_FOUND: 'ROUTE_NOT_FOUND',
+  ALREADY_SAVED_ROUTE: 'ALREADY_SAVED ROUTE',
+  ALREADY_EXISTING_FILTER: 'ALREADY_EXISTING_FILTER',
+  NOT_EXISTING_FILTER: 'NOT_EXISTING_FILTER',
+  FAILED_DATABASE_QUERY: 'FAILED_DATABASE_QUERY',
+  EMPTY_DATABASE: 'EMPTY_DATABASE',
+  GENERIC_UNHANDLED_ERROR: 'GENERIC_UNHANDLED_ERROR'
 }
 
 module.exports = [
@@ -40,11 +53,14 @@ module.exports = [
     handler: function(request, reply) {
       let result = new GetDataResult();
       dbHandler.getRoutes().then(function(routesResults) {
-        if (routesResults != null) {
-          result.routes = routesResults;
-          result.Return = true;
-        }
-        reply(routesResults);
+        result.routes = routesResults;
+        result.Return = true;
+        reply(result);
+      }, function onFail(Exception) {
+        if(Exception instanceof EmptyDatabaseException)
+          reply(result.setError(LoginResultERRORS.EMPTY_DATABASE));
+        else
+          reply(result.setError(LoginResultERRORS.GENERIC_UNHANDLED_ERROR));
       });
     }
   },
@@ -54,8 +70,17 @@ module.exports = [
     method: 'POST',
     path: '/api/getRouteDetails',
     handler: function(request, reply) {
-      let routeDetail = dbHandler.getRouteDetails(request.payload.routeId);
-      reply(routeDetail);
+      let result = new GetDataResult();
+      dbHandler.getRouteDetails(request.payload.routeId).then(function(routeDetails) {
+        result.routes = routeDetails;
+        result.Return = true;
+        reply(result);
+      }, function onFail(Exception) {
+        if(Exception instanceof RouteNotFoundException)
+          reply(result.setError(LoginResultERRORS.ROUTE_NOT_FOUND));
+        else
+          reply(result.setError(LoginResultERRORS.GENERIC_UNHANDLED_ERROR));
+      });
     }
   },
 
@@ -64,8 +89,17 @@ module.exports = [
     method: 'POST',
     path: '/api/saveRoute',
     handler: function(request, reply) {
-      let result = dbHandler.saveRoute(request.payload.routeId);
-      reply(result);
+      let result = new BaseResult();
+      dbHandler.saveRoute(request.payload.routeId).then(function(boolean) {
+        result.Return = true;
+      }, function onFail(Exception) {
+        if(Exception instanceof IncorrectLoginException)
+          reply(result.setError(LoginResultERRORS.INCORRECT_LOGIN));
+        else if(Exception instanceof AlreadySavedRouteException)
+          reply(result.setError(LoginResultERRORS.ALREADY_SAVED_ROUTE));
+        else
+          reply(result.setError(LoginResultERRORS.GENERIC_UNHANDLED_ERROR));
+      });
     }
   },
 
@@ -76,8 +110,6 @@ module.exports = [
     path: '/api/signin',
     handler: function(request, reply) {
       var result = new LoginResult();
-
-      //let userLoginDbHandler = new UserLoginDbHandler(request.payload.userLogin);
       dbHandler.signin(request.payload.userLogin).then(function(loginToken) {
         result.Return = true;
         result.loginToken = loginToken;
@@ -86,6 +118,8 @@ module.exports = [
       }, function onFail(Exception) {
         if (Exception instanceof IncorrectLoginException)
           reply(result.setError(LoginResultERRORS.INCORRECT_LOGIN));
+        else
+          reply(result.setError(LoginResultERRORS.GENERIC_UNHANDLED_ERROR));
       })
     }
   },
@@ -104,10 +138,14 @@ module.exports = [
       }, function onFail(Exception) {
         if (Exception instanceof IncorrectPasswordLengthException)
           reply(result.setError(LoginResultERRORS.PASSWORD_MIN_LENGTH));
-        if (Exception instanceof PasswordsNotEqualsException)
+        else if (Exception instanceof PasswordsNotEqualsException)
           reply(result.setError(LoginResultERRORS.PASSWORD_NOT_MATCHING));
-        if (Exception instanceof UsernameAlreadyExistException)
+        else if (Exception instanceof UsernameAlreadyExistException)
           reply(result.setError(LoginResultERRORS.USER_ALREADY_EXIST));
+        else if (Exception instanceof IncorrectLoginException)
+          reply(result.setError(LoginResultERRORS.INCORRECT_LOGIN));
+        else
+          reply(result.setError(LoginResultERRORS.GENERIC_UNHANDLED_ERROR));
       });
     }
   },
@@ -124,7 +162,9 @@ module.exports = [
         reply(result);
       }, function onFail(Exception) {
         if (Exception instanceof IncorrectLoginException)
-          return; // non ritornare nulla: è più sicuro se l'utente non sa il perché la richiesta è fallita
+          reply(result.setError(LoginResultERRORS.INCORRECT_LOGIN));
+        else
+          reply(result.setError(LoginResultERRORS.GENERIC_UNHANDLED_ERROR));
       });
     }
   },
@@ -141,9 +181,12 @@ module.exports = [
           reply(result);
         });
       }, function onFail(Exception) {
-        //TODO: da sistemare l'eccezione...
-        //if (Exception instanceof FilterNameAlreadyExistException)
-
+        if (Exception instanceof IncorrectLoginException)
+          reply(result.setError(LoginResultERRORS.INCORRECT_LOGIN));
+        else if (Exception instanceof AlreadyExistingFilterException)
+          reply(result.setError(LoginResultERRORS.ALREADY_EXISTING_FILTER));
+        else
+          reply(result.setError(LoginResultERRORS.GENERIC_UNHANDLED_ERROR));
       });
     }
   },
@@ -161,8 +204,10 @@ module.exports = [
           reply(result);
         });
       }, function onFail(Exception) {
-        //TODO: da sistemare questo error handling? In teoria non dovrebbe mai fallire la ricerca di un filtro.
-        return;
+        if(Exception instanceof NotExistingFilterException)
+          reply(result.setError(LoginResultERRORS.NOT_EXISTING_FILTER));
+        else
+          reply(result.setError(LoginResultERRORS.GENERIC_UNHANDLED_ERROR));
       });
     }
   },
@@ -189,8 +234,8 @@ module.exports = [
         if (scrapeResults != null) {
           result.routes = scrapeResults;
           result.Return = true; // segnaliamo al client che è andato tutto come previsto
+          dbHandler.saveScrapeResults(scrapeResults);
         }
-        dbHandler.saveScrapeResults(scrapeResults);
         reply(result);
       });
     }

@@ -76,10 +76,7 @@ function scrape() {
       };
     });
   }).then(function onScrapingEnd(allPromisesResult) {
-
-    // qui possiamo rifinire i dati che abbiamo raccolto da tutti gli scraping...
-    // ....
-
+    // Qui possiamo eventualmente rifinire i dati che abbiamo raccolto da tutti gli scraping...
     return allPromisesResult;
   });
 };

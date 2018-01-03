@@ -9,7 +9,8 @@ const {
   AlreadySavedRouteException,
   AlreadyExistingFilterException,
   NotExistingFilterException,
-  FailedDatabaseQueryException
+  FailedDatabaseQueryException,
+  EmptyDatabaseException
 } = require('./dbHandlerExceptions.js');
 const Route = require('../code/Route.js');
 const RouteDetail = require('../code/RouteDetail.js');
@@ -27,12 +28,12 @@ module.exports = {
     let results = [];
     const sql = 'SELECT p.ID,p.Nome,p.DataInizio,p.Durata,p.Lunghezza,p.Dislivello,d.Valore,l.Denominazione,Descrizione FROM Percorso p JOIN difficolta d2 ON p.Difficolta=d2.ID JOIN localita l2 ON p.Localita=l2.ID , difficolta d, localita l;';
     return executeQuery(sql).then(function(routesResults) {
-      if (routesResults != null) {
-        routesResults.forEach(function(item, index) {
-          results.push(new Route(item.ID, item.Nome, item.DataInizio, item.Durata, item.Lunghezza, item.Dislivello, item.Valore, item.Denominazione, item.Descrizione));
-        });
-        return results;
-      }
+      if (routesResults == null)
+        throw new EmptyDatabaseException();
+      routesResults.forEach(function(item, index) {
+        results.push(new Route(item.ID, item.Nome, item.DataInizio, item.Durata, item.Lunghezza, item.Dislivello, item.Valore, item.Denominazione, item.Descrizione));
+      });
+      return results;
     });
   },
 
@@ -160,13 +161,14 @@ module.exports = {
       for(i=maxIDPercorso; i<Object.keys(scrapeResultsRoutes.itinerari).length; i++) {
         const dateToArray = scrapeResultsRoutes.itinerari[i].data.split('/');
         const dateToSqlFormat = new Date(dateToArray[2], dateToArray[1], dateToArray[0]).toISOString().slice(0,19).replace('T', ' ');
+        const mapURL = scrapeResultsRoutes.itinerari[i].link.replace("indice", "zona");
         var difficoltaID = scrapeResultsRoutes.itinerari[i].difficolta; // Conversione da valore difficoltà al relativo ID del database
         if(difficoltaID=='T') difficoltaID = 1;
         else if(difficoltaID=='E') difficoltaID = 2;
         else if(difficoltaID=='EE') difficoltaID = 3;
         else difficoltaID = "";
-        let sqlInsertString = "INSERT INTO `id3king`.`percorso` (`ID`, `Nome`, `DataInizio`, `URL`, `Durata`, `Lunghezza`, `Dislivello`, `Difficolta`, `Localita`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
-        const inserts = [scrapeResultsRoutes.itinerari[i].id, scrapeResultsRoutes.itinerari[i].descrizione, dateToSqlFormat, scrapeResultsRoutes.itinerari[i].link, scrapeResultsRoutes.itinerari[i].durata, scrapeResultsRoutes.itinerari[i].lunghezza, scrapeResultsRoutes.itinerari[i].dislivello, difficoltaID, scrapeResultsRoutes.itinerari[i].IDlocalita];
+        let sqlInsertString = "INSERT INTO `id3king`.`percorso` (`ID`, `Nome`, `DataInizio`, `URL`, `Durata`, `Lunghezza`, `Dislivello`, `MapURL`,  `Difficolta`, `Localita`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+        const inserts = [scrapeResultsRoutes.itinerari[i].id, scrapeResultsRoutes.itinerari[i].descrizione, dateToSqlFormat, scrapeResultsRoutes.itinerari[i].link, scrapeResultsRoutes.itinerari[i].durata, scrapeResultsRoutes.itinerari[i].lunghezza, scrapeResultsRoutes.itinerari[i].dislivello, mapURL, difficoltaID, scrapeResultsRoutes.itinerari[i].IDlocalita];
         sqlInsertString = database.format(sqlInsertString, inserts);
         executeQuery(sqlInsertString);
       }

@@ -7,6 +7,7 @@ class AlreadySavedRouteException extends Error {}
 class AlreadyExistingFilterException extends Error {}
 class NotExistingFilterException extends Error {}
 class FailedDatabaseQueryException extends Error {}
+class EmptyDatabaseException extends Error {}
 
 module.exports = {
   IncorrectPasswordLengthException: IncorrectPasswordLengthException,
@@ -17,5 +18,6 @@ module.exports = {
   AlreadySavedRouteException: AlreadySavedRouteException,
   AlreadyExistingFilterException: AlreadyExistingFilterException,
   NotExistingFilterException: NotExistingFilterException,
-  FailedDatabaseQueryException: FailedDatabaseQueryException
+  FailedDatabaseQueryException: FailedDatabaseQueryException,
+  EmptyDatabaseException: EmptyDatabaseException
 }
