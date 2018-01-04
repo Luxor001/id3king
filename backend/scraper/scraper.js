@@ -11,11 +11,15 @@ module.exports = {
 
 function scrape() {
   let scrapingItinerari = [];
-
+  let anni = [];
+  let scrapingGPSLinks = [];
   // Ottenimento di tutte le informazioni base degli itinerari (ITINERARIO)
   return request(siteBaseAddress + 'Itinerari%20Frame/titolo.htm').then(function(result, error) {
     let $ = cheerio.load(result);
+
     let links = $('a');
+    links.each((annoIndex,anno)  => anni.push($(anno).text().trim()));
+
     for (var i = 0; i < links.length; i++) {
       let linkToDate = $(links.eq(i)).attr('href');
       let scrapingItinerariAnno = request(siteBaseAddress + 'Itinerari%20Frame/' + linkToDate).then(function(result, error) {
@@ -76,10 +80,22 @@ function scrape() {
       };
     });
   }).then(function onScrapingEnd(allPromisesResult) {
+    //scrapeGps(allPromisesResult.itinerari)
     // Qui possiamo eventualmente rifinire i dati che abbiamo raccolto da tutti gli scraping...
     return allPromisesResult;
   });
 };
+
+function scrapeGps(itinerari){
+  debugger;
+  Object.keys(itinerari).forEach(keyItinerario =>{
+    let itinerario = itinerari[keyItinerario];
+
+    request(siteBaseAddress + 'Uscite/U${anno}/Uscita${anno}/traccia_${anno}.htm').then(function(result, error) {
+    });
+  })
+  return itinerari;
+}
 
 // Ottenimento toponimi secondari (LUOGHI)
 // PER ORA NON NECESSARIO, LASCIO IL CODICE DI SCRAPING (che funziona, va solo controllato e i dati effettivamente usati)
