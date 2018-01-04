@@ -10,7 +10,8 @@ const {
   AlreadyExistingFilterException,
   NotExistingFilterException,
   FailedDatabaseQueryException,
-  EmptyDatabaseException
+  EmptyDatabaseException,
+  DatabaseScrapingException
 } = require('./dbHandlerExceptions.js');
 const Route = require('../code/Route.js');
 const RouteDetail = require('../code/RouteDetail.js');
@@ -160,13 +161,18 @@ module.exports = {
         maxIDPercorso = 1;
       for(i=maxIDPercorso; i<Object.keys(scrapeResultsRoutes.itinerari).length; i++) {
         const dateToArray = scrapeResultsRoutes.itinerari[i].data.split('/');
-        const dateToSqlFormat = new Date(dateToArray[2], dateToArray[1], dateToArray[0]).toISOString().slice(0,19).replace('T', ' ');
+        dateToArray[0] = parseInt(dateToArray[0]); // Le date non normalizzate sono approssimate
+        dateToArray[1] = parseInt(dateToArray[1])-1;
+        dateToArray[2] = parseInt(dateToArray[2]);
+        const dateToSqlFormat = new Date(Date.UTC(dateToArray[2], dateToArray[1], dateToArray[0])).toISOString().slice(0,19).replace('T', ' ');
         const mapURL = scrapeResultsRoutes.itinerari[i].link.replace("indice", "zona");
         var difficoltaID = scrapeResultsRoutes.itinerari[i].difficolta; // Conversione da valore difficoltà al relativo ID del database
         if(difficoltaID=='T') difficoltaID = 1;
         else if(difficoltaID=='E') difficoltaID = 2;
         else if(difficoltaID=='EE') difficoltaID = 3;
-        else difficoltaID = "";
+        else if(difficoltaID=='EEA') difficoltaID = 4;
+        else if(difficoltaID=='EAI') difficoltaID = 5;
+        else difficoltaID = "NULL";
         let sqlInsertString = "INSERT INTO `id3king`.`percorso` (`ID`, `Nome`, `DataInizio`, `URL`, `Durata`, `Lunghezza`, `Dislivello`, `MapURL`,  `Difficolta`, `Localita`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
         const inserts = [scrapeResultsRoutes.itinerari[i].id, scrapeResultsRoutes.itinerari[i].descrizione, dateToSqlFormat, scrapeResultsRoutes.itinerari[i].link, scrapeResultsRoutes.itinerari[i].durata, scrapeResultsRoutes.itinerari[i].lunghezza, scrapeResultsRoutes.itinerari[i].dislivello, mapURL, difficoltaID, scrapeResultsRoutes.itinerari[i].IDlocalita];
         sqlInsertString = database.format(sqlInsertString, inserts);

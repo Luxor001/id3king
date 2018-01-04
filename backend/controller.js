@@ -8,7 +8,8 @@ const {
   AlreadyExistingFilterException,
   NotExistingFilterException,
   FailedDatabaseQueryException,
-  EmptyDatabaseException
+  EmptyDatabaseException,
+  DatabaseScrapingException,
 } = require('./dbHandler/dbHandlerExceptions.js');
 const BaseResult = require('./code/BaseResult.js');
 const User = require('./code/User.js');
@@ -41,7 +42,8 @@ const LoginResultERRORS = {
   NOT_EXISTING_FILTER: 'NOT_EXISTING_FILTER',
   FAILED_DATABASE_QUERY: 'FAILED_DATABASE_QUERY',
   EMPTY_DATABASE: 'EMPTY_DATABASE',
-  GENERIC_UNHANDLED_ERROR: 'GENERIC_UNHANDLED_ERROR'
+  GENERIC_UNHANDLED_ERROR: 'GENERIC_UNHANDLED_ERROR',
+  DATABASE_SCRAPING_ERROR: 'DATABASE_SCRAPING_ERROR'
 }
 
 module.exports = [
@@ -237,6 +239,8 @@ module.exports = [
           dbHandler.saveScrapeResults(scrapeResults);
         }
         reply(result);
+      }, function onFail(Exception) {
+        reply(result.setError(LoginResultERRORS.DATABASE_SCRAPING_ERROR));
       });
     }
   }

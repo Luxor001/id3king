@@ -26,8 +26,8 @@ function scrape() {
           var newItinerario = {};
           newItinerario.id = parseInt(colonneRiga.eq(0).text().replace(/\W/g, ''));
           newItinerario.link = siteBaseAddress + colonneRiga.eq(0).find('a').attr('href');
-          newItinerario.descrizione = colonneRiga.eq(2).text().replace(/\s\s+/g, ' ').substr(1);
-          //var data = colonneRiga.eq(1).text().replace(/[^\d\/]/g, '').split('/');
+          newItinerario.descrizione = colonneRiga.eq(2).text().replace(/\s\s+/g, ' ');
+          if(newItinerario.descrizione.charAt(0)==" ") newItinerario.descrizione/*.substr(1)*/;
           var data = colonneRiga.eq(1).text().split('/');
           data[0] = data[0].slice(8);
           data[2] = parseInt(data[2]) < 70 ? '20' + data[2] : '19' + data[2]; // Gestione degli anni indicati abbreviati con due cifre, dal 1970 in poi.
