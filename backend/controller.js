@@ -114,8 +114,10 @@ module.exports = [
       return dbHandler.signin(request.payload.userLogin).then(function(loginToken) {
         result.Return = true;
         result.loginToken = loginToken;
-        result.user = dbHandler.getUserInfo(request.payload.userLogin);
-        return result;
+        return dbHandler.getUserInfo(loginToken).then(function(userInfo){
+          result.user = userInfo;
+          return result;
+        });
       }, function onFail(Exception) {
         if (Exception instanceof IncorrectLoginException)
           return result.setError(LoginResultERRORS.INCORRECT_LOGIN);

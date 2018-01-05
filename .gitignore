@@ -2,3 +2,5 @@ node_modules/
 db_id3king.sqlite3
 /app/
 debug.log
+frontEnd/package-lock.json
+package-lock.json
