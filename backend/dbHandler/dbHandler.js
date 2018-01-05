@@ -27,7 +27,7 @@ module.exports = {
   getRoutes: function() {
     // Ottenimento tutti i percorsi
     let results = [];
-    const sql = 'SELECT p.ID,p.Nome,p.DataInizio,p.Durata,p.Lunghezza,p.Dislivello,d.Valore,l.Denominazione,Descrizione FROM Percorso p JOIN difficolta d2 ON p.Difficolta=d2.ID JOIN localita l2 ON p.Localita=l2.ID , difficolta d, localita l;';
+    const sql = 'SELECT p.ID,p.Nome,p.DataInizio,p.Durata,p.Lunghezza,p.Dislivello,d.Valore,l.Denominazione,Descrizione FROM Percorso p INNER JOIN difficolta d ON p.Difficolta=d.ID INNER JOIN localita l ON p.Localita=l.ID ORDER BY ID;';
     return executeQuery(sql).then(function(routesResults) {
       if (routesResults == null)
         throw new EmptyDatabaseException();
@@ -42,7 +42,7 @@ module.exports = {
     // Ottenimento dei dettagli su uno specifico percorso
     // routeId = 2017; // Percorso di test
     let results;
-    const sql = 'SELECT p.ID,p.Nome,p.DataInizio,p.Durata,p.Lunghezza,p.Dislivello,d.Valore,l.Denominazione,p.Descrizione,p.URL,p.MapURL,p.TrackURL,p.ContatoreAccessi FROM Percorso p JOIN difficolta d2 ON d2.ID=p.Difficolta JOIN localita l2 ON l2.ID=p.Localita , difficolta d, localita l WHERE p.ID=' + database.escape(routeId) + ' AND d.ID=p.Difficolta;';
+    const sql = 'SELECT p.ID,p.Nome,p.DataInizio,p.Durata,p.Lunghezza,p.Dislivello,d.Valore,l.Denominazione,p.Descrizione,p.URL,p.MapURL,p.TrackURL,p.ContatoreAccessi FROM Percorso p INNER JOIN difficolta d ON d.ID=p.Difficolta INNER JOIN localita l ON l.ID=p.Localita WHERE p.ID=' + database.escape(routeId) + ' AND d.ID=p.Difficolta;';
     return executeQuery(sql).then(function(routesResults) {
       if (routesResults == null)
         throw new RouteNotFoundException(); // Non esiste un percorso con l'id specificato.
@@ -90,11 +90,11 @@ module.exports = {
     return executeQuery(sqlCheckUserAlreadyExists).then(function(userId) {
       if(userId.length != 0) // L'utente esiste già
         throw new UsernameAlreadyExistException();
-      var saltRounds = Math.floor(Math.random()*100)+1;
+      var saltRounds = Math.floor(Math.random()*10)+1;
       return Bcrypt.hash(userLogin.password, saltRounds);
     }).then(function OnHashedPassword(hashedPassword) {
       // Salvare nel database il nuovo utente
-      const sqlAddUser = 'INSERT INTO `id3king`.`utenti` (`username`, `password`) VALUES (' + database.escape(userLogin.username) + ', ' + database.escape(userLogin.password) + ');';
+      const sqlAddUser = 'INSERT INTO `id3king`.`utenti` (`username`, `password`) VALUES (' + database.escape(userLogin.username) + ', ' + database.escape(hashedPassword) + ');';
       return executeQuery(sqlAddUser);
     }).then(function(result) {
       if(result.affectedRows != 1)
@@ -191,7 +191,10 @@ function getUserInfo(loginToken) {
   let lastRoute;
   let savedRoutes = [];
   let savedFilters = [];
-  const sqlGetUserIdAndLastRoute = 'SELECT u.ID, u.username, u.UltimoPercorsoRicercato FROM utenti u INNER JOIN login l ON l.userId=u.ID AND l.logintoken=' + database.escape(loginToken) + ';';
+  const sqlGetUserIdAndLastRoute = `SELECT u.ID, u.username, u.UltimoPercorsoRicercato
+                                    FROM utenti u
+                                    INNER JOIN login l ON l.userId=u.ID
+                                    WHERE l.logintoken=`+ database.escape(loginToken);
   return executeQuery(sqlGetUserIdAndLastRoute).then(function OnGetUserIdAndLastRoute(dbUserIdAndLastRoute) {
     if(dbUserIdAndLastRoute == null)
       throw new IncorrectLoginException();

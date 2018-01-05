@@ -12,7 +12,6 @@ module.exports = {
 function scrape() {
   let scrapingItinerari = [];
   let anni = [];
-  let scrapingGPSLinks = [];
   // Ottenimento di tutte le informazioni base degli itinerari (ITINERARIO)
   return request(siteBaseAddress + 'Itinerari%20Frame/titolo.htm').then(function(result, error) {
     let $ = cheerio.load(result);
@@ -80,21 +79,47 @@ function scrape() {
       };
     });
   }).then(function onScrapingEnd(allPromisesResult) {
-    //scrapeGps(allPromisesResult.itinerari)
-    // Qui possiamo eventualmente rifinire i dati che abbiamo raccolto da tutti gli scraping...
-    return allPromisesResult;
+    return scrapeGps(allPromisesResult.itinerari).then(function(itinerariUpdatedWithGPS){
+        allPromisesResult.itinerari = itinerariUpdatedWithGPS;
+        return allPromisesResult;
+    })
   });
 };
 
 function scrapeGps(itinerari){
-  debugger;
-  Object.keys(itinerari).forEach(keyItinerario =>{
-    let itinerario = itinerari[keyItinerario];
+  let numbers = 0;
+  let scrapingGPSLinks = [];
+  Object.values(itinerari).forEach(itinerario =>{    
+    let data = itinerario.data.split('/');
+    if(data != null && data[2] != null){
+      let anno = data[2];
+      let idItinerario = zeroPad(itinerario.id, 3);
+      
+      scrapingGPSLinks.push(new Promise(function(resolve, reject){
+          request(siteBaseAddress + `Uscite/U${anno}/Uscita${idItinerario}/traccia_${idItinerario}.htm`).then(function(result, error) {
+            if(!error)          
+              itinerario.trackUrl = siteBaseAddress + cheerio.load(result)('a').attr('href');
+            resolve(itinerario);
+          }, function(){
+             resolve(itinerario);
+          });
+      }));
+    }
+  });
+  
+  return Promise.all(scrapingGPSLinks);
+}
 
-    request(siteBaseAddress + 'Uscite/U${anno}/Uscita${anno}/traccia_${anno}.htm').then(function(result, error) {
-    });
-  })
-  return itinerari;
+// thanks to https://stackoverflow.com/a/1268377/1306679
+function zeroPad(num, numZeros) {
+  var n = Math.abs(num);
+  var zeros = Math.max(0, numZeros - Math.floor(n).toString().length );
+  var zeroString = Math.pow(10,zeros).toString().substr(1);
+  if( num < 0 ) {
+      zeroString = '-' + zeroString;
+  }
+
+  return zeroString+n;
 }
 
 // Ottenimento toponimi secondari (LUOGHI)
