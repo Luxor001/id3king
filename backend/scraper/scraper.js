@@ -29,8 +29,7 @@ function scrape() {
           var newItinerario = {};
           newItinerario.id = parseInt(colonneRiga.eq(0).text().replace(/\W/g, ''));
           newItinerario.link = siteBaseAddress + colonneRiga.eq(0).find('a').attr('href');
-          newItinerario.descrizione = colonneRiga.eq(2).text().replace(/\s\s+/g, ' ');
-          if(newItinerario.descrizione.charAt(0)==" ") newItinerario.descrizione/*.substr(1)*/;
+          newItinerario.descrizione = colonneRiga.eq(2).text().replace(/\s\s+/g, ' ').trimLeft();
           var data = colonneRiga.eq(1).text().split('/');
           data[0] = data[0].slice(8);
           data[2] = parseInt(data[2]) < 70 ? '20' + data[2] : '19' + data[2]; // Gestione degli anni indicati abbreviati con due cifre, dal 1970 in poi.
@@ -89,15 +88,15 @@ function scrape() {
 function scrapeGps(itinerari){
   let numbers = 0;
   let scrapingGPSLinks = [];
-  Object.values(itinerari).forEach(itinerario =>{    
+  Object.values(itinerari).forEach(itinerario =>{
     let data = itinerario.data.split('/');
     if(data != null && data[2] != null){
       let anno = data[2];
       let idItinerario = zeroPad(itinerario.id, 3);
-      
+
       scrapingGPSLinks.push(new Promise(function(resolve, reject){
           request(siteBaseAddress + `Uscite/U${anno}/Uscita${idItinerario}/traccia_${idItinerario}.htm`).then(function(result, error) {
-            if(!error)          
+            if(!error)
               itinerario.trackUrl = siteBaseAddress + cheerio.load(result)('a').attr('href');
             resolve(itinerario);
           }, function(){
@@ -106,7 +105,7 @@ function scrapeGps(itinerari){
       }));
     }
   });
-  
+
   return Promise.all(scrapingGPSLinks);
 }
 

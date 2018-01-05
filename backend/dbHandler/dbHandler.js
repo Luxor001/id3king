@@ -173,8 +173,8 @@ module.exports = {
         else if(difficoltaID=='EEA') difficoltaID = 4;
         else if(difficoltaID=='EAI') difficoltaID = 5;
         else difficoltaID = "NULL";
-        let sqlInsertString = "INSERT INTO `id3king`.`percorso` (`ID`, `Nome`, `DataInizio`, `URL`, `Durata`, `Lunghezza`, `Dislivello`, `MapURL`,  `Difficolta`, `Localita`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-        const inserts = [scrapeResultsRoutes.itinerari[i].id, scrapeResultsRoutes.itinerari[i].descrizione, dateToSqlFormat, scrapeResultsRoutes.itinerari[i].link, scrapeResultsRoutes.itinerari[i].durata, scrapeResultsRoutes.itinerari[i].lunghezza, scrapeResultsRoutes.itinerari[i].dislivello, mapURL, difficoltaID, scrapeResultsRoutes.itinerari[i].IDlocalita];
+        let sqlInsertString = "INSERT INTO `id3king`.`percorso` (`ID`, `Nome`, `DataInizio`, `URL`, `Durata`, `Lunghezza`, `Dislivello`, `TrackURL`, `MapURL`,  `Difficolta`, `Localita`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+        const inserts = [scrapeResultsRoutes.itinerari[i].id, scrapeResultsRoutes.itinerari[i].descrizione, dateToSqlFormat, scrapeResultsRoutes.itinerari[i].link, scrapeResultsRoutes.itinerari[i].durata, scrapeResultsRoutes.itinerari[i].lunghezza, scrapeResultsRoutes.itinerari[i].dislivello, scrapeResultsRoutes.itinerari[i].trackUrl, mapURL, difficoltaID, scrapeResultsRoutes.itinerari[i].IDlocalita];
         sqlInsertString = database.format(sqlInsertString, inserts);
         executeQuery(sqlInsertString);
       }

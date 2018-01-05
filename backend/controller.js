@@ -230,9 +230,10 @@ module.exports = [
           //dbHandler.saveScrapeResults(scrapeResults);
         }
         return result;
-      }, function(error){
+      }, function onFail(Exception) {
+        // return result.setError(LoginResultERRORS.DATABASE_SCRAPING_ERROR);
         debugger;
-        console.log(error);
+        console.log(Exception);
       });
     }
   }
