@@ -14,7 +14,6 @@ import { FilterValues } from '@shared/routefilter.model'
 export class RouteService {
   private headers: HttpHeaders;
   private appBaseUrl: string;
-  private loading = true;
 
   constructor(private http: HttpClient) {
     this.appBaseUrl = AppConfig.appBaseUrl;
@@ -30,7 +29,6 @@ export class RouteService {
           route.periodo = SeasonsService.getSeason(new Date(route.data));
           return route;
         });
-        this.loading = false;
         return response;
       });
   }
