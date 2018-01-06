@@ -35,7 +35,7 @@ export class MainComponent implements OnInit {
     var root = this;
     this.routeService.getAllRoutes()
       .subscribe((result: any) => {
-        this.routes = result.routes;
+        this.routes = result.routes.sort((a, b) => { return (b.id - a.id) });;
         this.filterBounds = root.calcFilterBounds(this.routes);
       },
       err => console.log(err));
@@ -71,22 +71,23 @@ export class MainComponent implements OnInit {
       new ConcreteSelectItem('Autunno', 'Autunno')
     ];
     // Data minima e massima
-    var sorted = routes.sort((a, b) => { return (a.id - b.id) });
+    var routesToSort = JSON.parse(JSON.stringify(routes));
+    var sorted = routesToSort.sort((a, b) => { return (a.id - b.id) });
     filterBounds.minDate = new Date(sorted[0].data);
     filterBounds.maxDate = new Date(sorted[sorted.length - 1].data);
 
     // Bounds di lunghezza
-    sorted = routes.sort((a, b) => { return (a.lunghezza - b.lunghezza) });
+    sorted = routesToSort.sort((a, b) => { return (a.lunghezza - b.lunghezza) });
     filterBounds.minRouteLength = sorted[0].lunghezza;
     filterBounds.maxRouteLength = sorted[sorted.length - 1].lunghezza
 
     // Bounds di durata
-    sorted = routes.sort((a, b) => { return (a.durata - b.durata) });
+    sorted = routesToSort.sort((a, b) => { return (a.durata - b.durata) });
     filterBounds.minDuration = sorted[0].durata;
     filterBounds.maxDuration = sorted[sorted.length - 1].durata
 
     // Bounds di durata
-    sorted = routes.sort((a, b) => { return (a.dislivello - b.dislivello) });
+    sorted = routesToSort.sort((a, b) => { return (a.dislivello - b.dislivello) });
     filterBounds.minElevation = sorted[0].dislivello;
     filterBounds.maxElevation = sorted[sorted.length - 1].dislivello
     return filterBounds;
@@ -115,7 +116,6 @@ export class MainComponent implements OnInit {
     if (filterSelectedValue == this.defaultBookmarkedFilter.value)
       this.bookmarkedFilterModal = true;
     else {
-      let aaa = this.dt;
       this.routeService.getFilter(filterSelectedValue, session.loginToken)
         .subscribe((result: any) => {
           if (!result.Return) {
@@ -123,8 +123,6 @@ export class MainComponent implements OnInit {
             //if (result.error == "INCORRECT_LOGIN")
             return;
           }
-          var prova = this.dt;
-          let a = aaa;
           this.filterValues = result.filter;
         }, err => console.log(err));
     }

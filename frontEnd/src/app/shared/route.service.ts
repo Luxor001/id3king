@@ -14,6 +14,7 @@ import { FilterValues } from '@shared/routefilter.model'
 export class RouteService {
   private headers: HttpHeaders;
   private appBaseUrl: string;
+  private loading = true;
 
   constructor(private http: HttpClient) {
     this.appBaseUrl = AppConfig.appBaseUrl;
@@ -25,15 +26,22 @@ export class RouteService {
       .map((response: any) => {
         // aggiungi all'array di itinerari il periodo
         response.routes = response.routes.map(route => {
+          route.lunghezza /= 1000;
           route.periodo = SeasonsService.getSeason(new Date(route.data));
           return route;
         });
+        this.loading = false;
         return response;
       });
   }
 
   getRouteDetails(routeId: number): Observable<RouteDetail> {
-    return this.http.post(this.appBaseUrl + '/getRouteDetails', { routeId: routeId });
+    return this.http.post(this.appBaseUrl + '/getRouteDetails', { routeId: routeId })
+    .map((response: any) => {
+        response.route.lunghezza /= 1000;
+        response.data = new Date(response.data);
+        return response.route;
+    });
   }
 
   getBookmarkedRoutes(loginToken: string): Observable<Route[]> {

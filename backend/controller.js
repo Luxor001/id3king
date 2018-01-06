@@ -16,10 +16,17 @@ const User = require('./code/User.js');
 const dbHandler = require('./dbHandler/dbHandler.js');
 const scraper = require('./scraper/scraper.js');
 
-class GetDataResult extends BaseResult {
+class GetRoutesResult extends BaseResult {
   constructor() {
     super();
     this.routes = [];
+  }
+}
+
+class GetRouteDetailResult extends BaseResult {
+  constructor() {
+    super();
+    this.route = {};
   }
 }
 
@@ -53,7 +60,7 @@ module.exports = [
     method: 'GET',
     path: '/api/getRoutes',
     handler: function(request) {
-      let result = new GetDataResult();
+      let result = new GetRoutesResult();
       return dbHandler.getRoutes().then(function(routesResults) {
         result.routes = routesResults;
         result.Return = true;
@@ -72,9 +79,9 @@ module.exports = [
     method: 'POST',
     path: '/api/getRouteDetails',
     handler: function(request) {
-      let result = new GetDataResult();
+      let result = new GetRouteDetailResult();
       return dbHandler.getRouteDetails(request.payload.routeId).then(function(routeDetails) {
-        result.routes = routeDetails;
+        result.route = routeDetails;
         result.Return = true;
         return result;
       }, function onFail(Exception) {
@@ -160,7 +167,7 @@ module.exports = [
     method: 'POST',
     path: '/api/getBookmarkedRoutes',
     handler: function(request) {
-      let result = new GetDataResult();
+      let result = new GetRoutesResult();
       return dbHandler.getUserInfo(request.payload.loginToken).then(function onSuccess(userInfo) {
         result.Return = true;
         result.routes = userInfo.savedRoutes;
@@ -222,12 +229,12 @@ module.exports = [
     method: 'GET',
     path: '/debugScraper',
     handler: function(request) {
-      let result = new GetDataResult();
+      let result = new GetRoutesResult();
       return scraper.scanSite().then(function(scrapeResults) {
         if (scrapeResults != null) {
           result.routes = scrapeResults;
           result.Return = true; // segnaliamo al client che è andato tutto come previsto
-          //dbHandler.saveScrapeResults(scrapeResults);
+          dbHandler.saveScrapeResults(scrapeResults);
         }
         return result;
       }, function onFail(Exception) {

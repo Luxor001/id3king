@@ -50,7 +50,7 @@ module.exports = {
                  FROM Percorso p
                  INNER JOIN difficolta d ON d.ID=p.Difficolta
                  INNER JOIN localita l ON l.ID=p.Localita
-                 WHERE p.ID=' + database.escape(routeId) + ' AND d.ID=p.Difficolta;`;
+                 WHERE p.ID=` + database.escape(routeId);
     return executeQuery(sql).then(function(routesResults) {
       if (routesResults == null)
         throw new RouteNotFoundException(); // Non esiste un percorso con l'id specificato.
@@ -143,7 +143,7 @@ module.exports = {
     const sqlGetFilter = `SELECT r.NomeRicerca, r.DislivelloMassimo, r.LunghezzaMassima, r.DurataMassima, l.Denominazione, d.Valore, p.Stagione
                           FROM ricerca r, localita l, difficolta d, periodo p
                           WHERE r.IDUtente = (SELECT u.ID FROM utenti u WHERE u.username=' + database.escape(user.username) + ')
-                          AND r.NomeRicerca=' + database.escape(filterName) + '
+                          AND r.NomeRicerca=` + database.escape(filterName) + `
                           AND d.ID=r.Difficolta AND p.ID=r.Periodo;`;
     return executeQuery(sqlGetFilter).then(function OnGetFilter(filter) {
       if(filter.length != 1)
@@ -219,7 +219,7 @@ function getUserInfo(loginToken) {
     lastRoute = dbUserIdAndLastRoute[0].UltimoPercorsoRicercato;
     const sqlGetSavedRoutes = `SELECT p.ID, p.Nome, p.DataInizio, p.Durata, p.Lunghezza, p.Dislivello, p.Difficolta, p.Localita, p.Descrizione
                                FROM percorso p
-                               WHERE p.ID IN (SELECT ip.IDPercorso FROM itinerariopreferito ip WHERE ip.IDUtente=' + database.escape(userId) + ');`;
+                               WHERE p.ID IN (SELECT ip.IDPercorso FROM itinerariopreferito ip WHERE ip.IDUtente=` + database.escape(userId) + `);`;
     return executeQuery(sqlGetSavedRoutes);
   }).then(function OnGetSavedRoutesIds(savedRoutesDb) {
     savedRoutesDb.forEach(function(item, index) {
@@ -227,7 +227,7 @@ function getUserInfo(loginToken) {
     });
     const sqlGetSavedFilters = `SELECT r.NomeRicerca, r.DislivelloMassimo, r.LunghezzaMassima, r.DurataMassima, r.Difficolta, r.Localita, r.Periodo
                                 FROM ricerca r
-                                WHERE r.IDUtente=' + database.escape(userId) + ';`;
+                                WHERE r.IDUtente=` + database.escape(userId) + `;`;
     return executeQuery(sqlGetSavedFilters);
   }).then(function OnGetSavedFilters(savedFiltersDb) {
     savedFiltersDb.forEach(function(item, index) {

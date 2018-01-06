@@ -23,7 +23,6 @@ export class RouteDetailComponent implements OnInit {
       .subscribe(
       (routeDetail: RouteDetail) => {
         this.routeDetail = routeDetail;
-        this.routeDetail.data = new Date(this.routeDetail.data);
       },
       err => console.log(err));
   }

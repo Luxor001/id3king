@@ -1,8 +1,8 @@
 <aside>
-  <button pButton type="button" class="w40 ui-button-secondary" (click)="goToSite(routeSelezionato)" icon="fa-external-link" iconPos="left" label="Vai al sito"></button>
-  <button pButton type="button" class="w40 ui-button-secondary" [disabled]="sessionService.getSession() == null" (click)="saveBookmark(routeSelezionato)" icon="{{routeDetail != null && routeDetail.saved ? 'fa-star' : 'fa-star-o'}}" iconPos="left" label="Salva nei preferiti"></button>
-  <button pButton type="button" class="w40 ui-button-secondary" (click)="downloadMap(routeSelezionato)" icon="fa-map-o" iconPos="left" label="Download mappa"></button>
-  <button pButton type="button" class="w40 ui-button-secondary" (click)="downloadTrack(routeSelezionato)" icon="fa-arrows" iconPos="left" label="Download traccia"></button>
+  <button pButton type="button" class="w40 ui-button-secondary" (click)="goToSite(routeDetail)" icon="fa-external-link" iconPos="left" label="Vai al sito"></button>
+  <button pButton type="button" class="w40 ui-button-secondary" [disabled]="sessionService.getSession() == null" (click)="saveBookmark(routeDetail)" icon="{{routeDetail != null && routeDetail.saved ? 'fa-star' : 'fa-star-o'}}" iconPos="left" label="Salva nei preferiti"></button>
+  <button pButton type="button" class="w40 ui-button-secondary" (click)="downloadMap(routeDetail)" icon="fa-map-o" iconPos="left" label="Download mappa"></button>
+  <button pButton type="button" class="w40 ui-button-secondary" (click)="downloadTrack(routeDetail)" icon="fa-arrows" iconPos="left" label="Download traccia"></button>
 </aside>
 <section *ngIf="routeDetail != null">
   <div class="title">{{routeDetail.titolo}}</div>
@@ -18,7 +18,7 @@
       <span>Difficolta:</span>&nbsp;<span class="bold">{{routeDetail.difficolta}}</span>
     </div>
     <div>
-      <span>Descrizione:</span>&nbsp;<span>{{routeDetail.descrizione}}</span>
+      <span>Descrizione:</span>&nbsp;<span>{{routeDetail.titolo}}</span>
     </div>
   </div>
 </section>
