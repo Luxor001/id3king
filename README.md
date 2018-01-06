@@ -8,6 +8,8 @@ Download [NodeJS](https://nodejs.org) and install in your system.
 
 * Clone the repo (or simply download the provided .zip file).
 * Do a 'npm install' in the root directory to download all required dependencies.
+* Import the [Database](id3king.sql) into a MySQL compatible RDBMS.
+* Modify the [Configuration File](backend/config.json) to set database credentials and security options.
 * Start the server with 'node index' and the connect to http://localhost:8081.
 
 ## Author
@@ -17,4 +19,4 @@ Download [NodeJS](https://nodejs.org) and install in your system.
 
 ## License
 
-This project is licensed under the GNU AGPL v3 license - see the [LICENSE](LICENSE) file for details
+This project is licensed under the GNU AGPL v3 license - see the [LICENSE](LICENSE) file for details.

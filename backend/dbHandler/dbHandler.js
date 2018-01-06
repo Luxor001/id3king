@@ -27,7 +27,11 @@ module.exports = {
   getRoutes: function() {
     // Ottenimento tutti i percorsi
     let results = [];
-    const sql = 'SELECT p.ID,p.Nome,p.DataInizio,p.Durata,p.Lunghezza,p.Dislivello,d.Valore,l.Denominazione,Descrizione FROM Percorso p INNER JOIN difficolta d ON p.Difficolta=d.ID INNER JOIN localita l ON p.Localita=l.ID ORDER BY ID;';
+    const sql = `SELECT p.ID,p.Nome,p.DataInizio,p.Durata,p.Lunghezza,p.Dislivello,d.Valore,l.Denominazione,Descrizione
+                 FROM Percorso p
+                 INNER JOIN difficolta d ON p.Difficolta=d.ID
+                 INNER JOIN localita l ON p.Localita=l.ID
+                 ORDER BY ID;`;
     return executeQuery(sql).then(function(routesResults) {
       if (routesResults == null)
         throw new EmptyDatabaseException();
@@ -42,7 +46,11 @@ module.exports = {
     // Ottenimento dei dettagli su uno specifico percorso
     // routeId = 2017; // Percorso di test
     let results;
-    const sql = 'SELECT p.ID,p.Nome,p.DataInizio,p.Durata,p.Lunghezza,p.Dislivello,d.Valore,l.Denominazione,p.Descrizione,p.URL,p.MapURL,p.TrackURL,p.ContatoreAccessi FROM Percorso p INNER JOIN difficolta d ON d.ID=p.Difficolta INNER JOIN localita l ON l.ID=p.Localita WHERE p.ID=' + database.escape(routeId) + ' AND d.ID=p.Difficolta;';
+    const sql = `SELECT p.ID,p.Nome,p.DataInizio,p.Durata,p.Lunghezza,p.Dislivello,d.Valore,l.Denominazione,p.Descrizione,p.URL,p.MapURL,p.TrackURL,p.ContatoreAccessi
+                 FROM Percorso p
+                 INNER JOIN difficolta d ON d.ID=p.Difficolta
+                 INNER JOIN localita l ON l.ID=p.Localita
+                 WHERE p.ID=' + database.escape(routeId) + ' AND d.ID=p.Difficolta;`;
     return executeQuery(sql).then(function(routesResults) {
       if (routesResults == null)
         throw new RouteNotFoundException(); // Non esiste un percorso con l'id specificato.
@@ -132,7 +140,11 @@ module.exports = {
   getFilter: function(filterName, user) {
     // filterName = "ricerca2"; // Ricerca di test
     // user = new User("test", null, null, null); // Utente di test
-    const sqlGetFilter = 'SELECT r.NomeRicerca, r.DislivelloMassimo, r.LunghezzaMassima, r.DurataMassima, l.Denominazione, d.Valore, p.Stagione FROM ricerca r, localita l, difficolta d, periodo p WHERE r.IDUtente = (SELECT u.ID FROM utenti u WHERE u.username=' + database.escape(user.username) + ') AND r.NomeRicerca=' + database.escape(filterName) + ' AND d.ID=r.Difficolta AND p.ID=r.Periodo;';
+    const sqlGetFilter = `SELECT r.NomeRicerca, r.DislivelloMassimo, r.LunghezzaMassima, r.DurataMassima, l.Denominazione, d.Valore, p.Stagione
+                          FROM ricerca r, localita l, difficolta d, periodo p
+                          WHERE r.IDUtente = (SELECT u.ID FROM utenti u WHERE u.username=' + database.escape(user.username) + ')
+                          AND r.NomeRicerca=' + database.escape(filterName) + '
+                          AND d.ID=r.Difficolta AND p.ID=r.Periodo;`;
     return executeQuery(sqlGetFilter).then(function OnGetFilter(filter) {
       if(filter.length != 1)
         throw new NotExistingFilterException();
@@ -143,22 +155,24 @@ module.exports = {
   saveScrapeResults: function(scrapeResultsRoutes) {
     let maxIDLocalita;
     let maxIDPercorso;
-    return executeQuery('SELECT MAX(p.ID) AS MaxIdPercorso, MAX(l.ID) AS MaxIdLocalita FROM Percorso p, Localita l;').then(function(maxIdResults) {
-      maxIDLocalita = maxIdResults[0].MaxIdLocalita;
-      maxIDPercorso = maxIdResults[0].MaxIdPercorso;
+    return executeQuery('SELECT MAX(l.ID) AS MaxIdLocalita FROM Localita l;').then(function(dbMaxIdLocalita) {
+      maxIDLocalita = dbMaxIdLocalita[0].MaxIdLocalita;
+      return executeQuery('SELECT MAX(p.ID) AS MaxIdPercorso FROM Percorso p;');
+    }).then(function(dbMaxIdPercorso) {
+      maxIDPercorso = dbMaxIdPercorso[0].MaxIdPercorso;
       // Inserimento delle località
       if(maxIDLocalita == null) // Caso base in cui il database è vuoto
         maxIDLocalita = 0;
-      for(i=maxIDLocalita+1; i<scrapeResultsRoutes.localita.length; i++) {
+      for(i=maxIDLocalita; i<scrapeResultsRoutes.localita.length; i++) {
         let sqlInsertLocalita = 'INSERT INTO `id3king`.`localita` (`ID`, `Denominazione`) VALUES (?, ?);';
-        const inserts = [scrapeResultsRoutes.localita[i].id, scrapeResultsRoutes.localita[i].nome];
+        const inserts = [parseInt(scrapeResultsRoutes.localita[i].id)+1, scrapeResultsRoutes.localita[i].nome];
         sqlInsertLocalita = database.format(sqlInsertLocalita, inserts);
         executeQuery(sqlInsertLocalita);
       }
     }).then(function() {
       // Inserimento dei percorsi
       if(maxIDPercorso == null) // Caso base in cui il database è vuoto
-        maxIDPercorso = 1;
+        maxIDPercorso = 0;
       for(i=maxIDPercorso; i<Object.keys(scrapeResultsRoutes.itinerari).length; i++) {
         const dateToArray = scrapeResultsRoutes.itinerari[i].data.split('/');
         dateToArray[0] = parseInt(dateToArray[0]); // Le date non normalizzate sono approssimate
@@ -173,8 +187,10 @@ module.exports = {
         else if(difficoltaID=='EEA') difficoltaID = 4;
         else if(difficoltaID=='EAI') difficoltaID = 5;
         else difficoltaID = "NULL";
-        let sqlInsertString = "INSERT INTO `id3king`.`percorso` (`ID`, `Nome`, `DataInizio`, `URL`, `Durata`, `Lunghezza`, `Dislivello`, `TrackURL`, `MapURL`,  `Difficolta`, `Localita`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-        const inserts = [scrapeResultsRoutes.itinerari[i].id, scrapeResultsRoutes.itinerari[i].descrizione, dateToSqlFormat, scrapeResultsRoutes.itinerari[i].link, scrapeResultsRoutes.itinerari[i].durata, scrapeResultsRoutes.itinerari[i].lunghezza, scrapeResultsRoutes.itinerari[i].dislivello, scrapeResultsRoutes.itinerari[i].trackUrl, mapURL, difficoltaID, scrapeResultsRoutes.itinerari[i].IDlocalita];
+        var localitaID = parseInt(scrapeResultsRoutes.itinerari[i].IDlocalita)+1;
+        if(!Number.isInteger(localitaID)) localitaID = 'NULL';
+        let sqlInsertString = "INSERT INTO `id3king`.`percorso` (`ID`, `Nome`, `DataInizio`, `URL`, `Durata`, `Lunghezza`, `Dislivello`, `TrackURL`, `MapURL`,  `Difficolta`, `Localita`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+        const inserts = [scrapeResultsRoutes.itinerari[i].id, scrapeResultsRoutes.itinerari[i].descrizione, dateToSqlFormat, scrapeResultsRoutes.itinerari[i].link, scrapeResultsRoutes.itinerari[i].durata, scrapeResultsRoutes.itinerari[i].lunghezza, scrapeResultsRoutes.itinerari[i].dislivello, scrapeResultsRoutes.itinerari[i].trackUrl, mapURL, difficoltaID, localitaID];
         sqlInsertString = database.format(sqlInsertString, inserts);
         executeQuery(sqlInsertString);
       }
@@ -201,13 +217,17 @@ function getUserInfo(loginToken) {
     userId = dbUserIdAndLastRoute[0].ID;
     userName = dbUserIdAndLastRoute[0].username;
     lastRoute = dbUserIdAndLastRoute[0].UltimoPercorsoRicercato;
-    const sqlGetSavedRoutes = 'SELECT p.ID, p.Nome, p.DataInizio, p.Durata, p.Lunghezza, p.Dislivello, p.Difficolta, p.Localita, p.Descrizione FROM percorso p WHERE p.ID IN (SELECT ip.IDPercorso FROM itinerariopreferito ip WHERE ip.IDUtente=' + database.escape(userId) + ');';
+    const sqlGetSavedRoutes = `SELECT p.ID, p.Nome, p.DataInizio, p.Durata, p.Lunghezza, p.Dislivello, p.Difficolta, p.Localita, p.Descrizione
+                               FROM percorso p
+                               WHERE p.ID IN (SELECT ip.IDPercorso FROM itinerariopreferito ip WHERE ip.IDUtente=' + database.escape(userId) + ');`;
     return executeQuery(sqlGetSavedRoutes);
   }).then(function OnGetSavedRoutesIds(savedRoutesDb) {
     savedRoutesDb.forEach(function(item, index) {
       savedRoutes.push(new RouteDetail(item.ID, item.Nome, item.DataInizio, item.Durata, item.Lunghezza, item.Dislivello, item.Difficolta, item.Localita, item.Descrizione, item.URL, item.MapURL, item.TrackURL));
     });
-    const sqlGetSavedFilters = 'SELECT r.NomeRicerca, r.DislivelloMassimo, r.LunghezzaMassima, r.DurataMassima, r.Difficolta, r.Localita, r.Periodo FROM ricerca r WHERE r.IDUtente=' + database.escape(userId) + ';';
+    const sqlGetSavedFilters = `SELECT r.NomeRicerca, r.DislivelloMassimo, r.LunghezzaMassima, r.DurataMassima, r.Difficolta, r.Localita, r.Periodo
+                                FROM ricerca r
+                                WHERE r.IDUtente=' + database.escape(userId) + ';`;
     return executeQuery(sqlGetSavedFilters);
   }).then(function OnGetSavedFilters(savedFiltersDb) {
     savedFiltersDb.forEach(function(item, index) {
