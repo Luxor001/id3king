@@ -70,13 +70,15 @@ module.exports = {
     // routeId = 2017; // Percorso di test
     // loginToken = "aaaaaaaabbbbbbbbccccccccdddddddd"; // Token di test
     const sqlGetUserId = 'SELECT userID FROM login WHERE logintoken=' + database.escape(loginToken) + ';';
-    return executeQuery(sqlGetUserId).then(function OnGetUserId(dbUserId) {
-      if (dbUserId == null) // Il token non esiste
+    let dbUserId = null;
+    return executeQuery(sqlGetUserId).then(function OnGetUserId(dbUserIdParam) {
+      if (dbUserIdParam == null) // Il token non esiste
         throw new IncorrectLoginException();
+      dbUserId = dbUserIdParam;
       const sqlCheckIfAlreadySavedRoute = 'SELECT * FROM itinerariopreferito WHERE IDUtente=' + database.escape(dbUserId[0].userID) + ' AND IDPercorso=' + database.escape(routeId) + ';';
       return executeQuery(sqlCheckIfAlreadySavedRoute);
     }).then(function OnCheckIfAlreadySavedRoute(alreadySavedRoute) {
-      if (alreadySavedRoute != null)
+      if (alreadySavedRoute.length != 0)
         throw new AlreadySavedRouteException();
       const sqlInsertRoute = 'INSERT INTO `id3king`.`itinerariopreferito` (`IDUtente`, `IDPercorso`) VALUES (' + database.escape(dbUserId[0].userID) + ', ' + database.escape(routeId) + ');';
       return executeQuery(sqlInsertRoute);
@@ -201,7 +203,6 @@ module.exports = {
 }
 
 function getUserInfo(loginToken) {
-  // loginToken = "aaaaaaaabbbbbbbbccccccccdddddddd"; // Token di test
   let userId;
   let userName;
   let lastRoute;
@@ -255,7 +256,7 @@ function signin(userLogin) {
   let dbUserId;
   const sqlGetPassword = 'SELECT ID,password FROM utenti WHERE username=' + database.escape(userLogin.username) + ';'; // Ricavare la password dell'utente in base all'username fornito
   return executeQuery(sqlGetPassword).then(function(dbCredentials) {
-    if (dbCredentials == null)
+    if (dbCredentials == null || !dbCredentials.length)
       throw new IncorrectLoginException(); // L'utente non esiste
     dbUserId = dbCredentials[0].ID;
     return Bcrypt.compare(userLogin.password, dbCredentials[0].password);

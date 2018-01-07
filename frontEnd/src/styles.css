@@ -8,7 +8,7 @@ h1 {
 }
 
 app-main>.ui-widget-header {
-  overflow: auto;
+  overflow: hidden;
 }
 
 app-main>.ui-widget-header>div {

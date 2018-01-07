@@ -99,7 +99,7 @@ module.exports = [
     path: '/api/saveRoute',
     handler: function(request) {
       let result = new BaseResult();
-      return dbHandler.saveRoute(request.payload.routeId).then(function(boolean) {
+      return dbHandler.saveRoute(request.payload.routeId, request.payload.loginToken).then(function(boolean) {
         result.Return = true;
         return result;
       }, function onFail(Exception) {
@@ -145,8 +145,10 @@ module.exports = [
       return dbHandler.signup(request.payload.userLogin).then(function onSuccess(loginToken) {
         result.Return = true;
         result.loginToken = loginToken;
-        result.user = dbHandler.getUserInfo(request.payload.userLogin);
-        return result;
+        return dbHandler.getUserInfo(loginToken).then(function(userInfo){
+            result.user = userInfo;
+            return result;
+        });
       }, function onFail(Exception) {
         if (Exception instanceof IncorrectPasswordLengthException)
           return result.setError(LoginResultERRORS.PASSWORD_MIN_LENGTH);
