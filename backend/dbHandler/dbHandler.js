@@ -22,6 +22,7 @@ const UserLogin = require('../code/UserLogin.js');
 const database = require('mysql');
 const Bcrypt = require('bcrypt');
 const randtoken = require('rand-token');
+const dbconnection = database.createConnection(config.dbConnection);
 
 module.exports = {
   getRoutes: function() {
@@ -56,10 +57,10 @@ module.exports = {
         throw new RouteNotFoundException(); // Non esiste un percorso con l'id specificato.
       results = new RouteDetail(routesResults[0].ID, routesResults[0].Nome, routesResults[0].DataInizio, routesResults[0].Durata, routesResults[0].Lunghezza, routesResults[0].Dislivello, routesResults[0].Valore, routesResults[0].Denominazione, routesResults[0].Descrizione, routesResults[0].URL, routesResults[0].MapURL, routesResults[0].TrackURL);
       // Incremento del contatore degli accessi del percorso corrente a scopi statistici
-      const sqlIncrementRouteCounter = 'UPDATE `id3king`.`percorso` SET `ContatoreAccessi`=' + parseInt(routesResults[0].ContatoreAccessi+1) + ' WHERE  `ID`=' + database.escape(routeId) + ';';
+      const sqlIncrementRouteCounter = 'UPDATE `id3king`.`percorso` SET `ContatoreAccessi`=' + parseInt(routesResults[0].ContatoreAccessi + 1) + ' WHERE  `ID`=' + database.escape(routeId) + ';';
       return executeQuery(sqlIncrementRouteCounter);
     }).then(function OnIncrementRouteCounter(result) {
-      if(result.affectedRows != 1)
+      if (result.affectedRows != 1)
         throw new RouteNotFoundException(); // Errore durante l'incremento del contatore nel database
       return results;
     });
@@ -70,17 +71,17 @@ module.exports = {
     // loginToken = "aaaaaaaabbbbbbbbccccccccdddddddd"; // Token di test
     const sqlGetUserId = 'SELECT userID FROM login WHERE logintoken=' + database.escape(loginToken) + ';';
     return executeQuery(sqlGetUserId).then(function OnGetUserId(dbUserId) {
-      if(dbUserId == null) // Il token non esiste
+      if (dbUserId == null) // Il token non esiste
         throw new IncorrectLoginException();
       const sqlCheckIfAlreadySavedRoute = 'SELECT * FROM itinerariopreferito WHERE IDUtente=' + database.escape(dbUserId[0].userID) + ' AND IDPercorso=' + database.escape(routeId) + ';';
       return executeQuery(sqlCheckIfAlreadySavedRoute);
     }).then(function OnCheckIfAlreadySavedRoute(alreadySavedRoute) {
-      if(alreadySavedRoute != null)
+      if (alreadySavedRoute != null)
         throw new AlreadySavedRouteException();
       const sqlInsertRoute = 'INSERT INTO `id3king`.`itinerariopreferito` (`IDUtente`, `IDPercorso`) VALUES (' + database.escape(dbUserId[0].userID) + ', ' + database.escape(routeId) + ');';
       return executeQuery(sqlInsertRoute);
     }).then(function OnInsertRoute(result) {
-      if(result.affectedRows != 1)
+      if (result.affectedRows != 1)
         throw new IncorrectLoginException(); // Errore durante l'inserimento del token nel database
       return true;
     });
@@ -96,16 +97,16 @@ module.exports = {
       throw new PasswordsNotEqualsException();
     const sqlCheckUserAlreadyExists = 'SELECT ID FROM Utenti WHERE username=' + database.escape(userLogin.username) + ';';
     return executeQuery(sqlCheckUserAlreadyExists).then(function(userId) {
-      if(userId.length != 0) // L'utente esiste già
+      if (userId.length != 0) // L'utente esiste già
         throw new UsernameAlreadyExistException();
-      var saltRounds = Math.floor(Math.random()*10)+1;
+      var saltRounds = Math.floor(Math.random() * 10) + 1;
       return Bcrypt.hash(userLogin.password, saltRounds);
     }).then(function OnHashedPassword(hashedPassword) {
       // Salvare nel database il nuovo utente
       const sqlAddUser = 'INSERT INTO `id3king`.`utenti` (`username`, `password`) VALUES (' + database.escape(userLogin.username) + ', ' + database.escape(hashedPassword) + ');';
       return executeQuery(sqlAddUser);
     }).then(function(result) {
-      if(result.affectedRows != 1)
+      if (result.affectedRows != 1)
         throw new IncorrectLoginException(); // Errore durante l'inserimento del nuovo utente nel database
       // Generazione token, salvataggio sul database e restituzione al client
       return signin(userLogin);
@@ -118,18 +119,18 @@ module.exports = {
     let userId;
     const sqlGetUserId = 'SELECT ID FROM Utenti WHERE username=' + database.escape(user.username) + ';'; // Id dell'utente, da ricavare a partire dall'username
     return executeQuery(sqlGetUserId).then(function OnGetUserId(dbUserId) {
-      if(dbUserId == null)
+      if (dbUserId == null)
         throw new IncorrectLoginException();
       userId = dbUserId[0].ID;
       const sqlCheckIfAlreadySavedFilter = 'SELECT IDUtente FROM ricerca WHERE IDUtente=' + userId + ' AND NomeRicerca=' + database.escape(filter.name) + ';';
       return executeQuery(sqlCheckIfAlreadySavedFilter);
     }).then(function OnCheckedIfAlreadySavedFilter(checkResults) {
-      if(checkResults.length != 0)
+      if (checkResults.length != 0)
         throw new AlreadyExistingFilterException();
       const sqlAddFilterToDb = 'INSERT INTO `id3king`.`ricerca` (`IDUtente`, `NomeRicerca`, `DislivelloMassimo`, `LunghezzaMassima`, `DurataMassima`, `Localita`, `Difficolta`) VALUES (' + userId + ', ' + database.escape(filter.name) + ', ' + database.escape(filter.filtroDislivello) + ', ' + database.escape(filter.filtroLunghezza) + ', ' + database.escape(filter.filtroDurata) + ', ' + database.escape(filter.filtroLuoghi) + ', ' + database.escape(filter.filtroDifficolta) + ', ' + database.escape(filter.filtroPeriodi) + ');';
       return executeQuery(sqlAddFilterToDb);
     }).then(function OnInsertedFilter(result) {
-      if(result.affectedRows != 1)
+      if (result.affectedRows != 1)
         throw new IncorrectLoginException(); // Errore durante l'inserimento del token nel database
       return true;
     });
@@ -146,7 +147,7 @@ module.exports = {
                           AND r.NomeRicerca=` + database.escape(filterName) + `
                           AND d.ID=r.Difficolta AND p.ID=r.Periodo;`;
     return executeQuery(sqlGetFilter).then(function OnGetFilter(filter) {
-      if(filter.length != 1)
+      if (filter.length != 1)
         throw new NotExistingFilterException();
       return new Filter(filter[0].NomeRicerca, filter[0].DislivelloMassimo, filter[0].LunghezzaMassima, filter[0].DurataMassima, filter[0].Difficolta, filter[0].Localita, filter[0].Periodo);
     });
@@ -161,34 +162,33 @@ module.exports = {
     }).then(function(dbMaxIdPercorso) {
       maxIDPercorso = dbMaxIdPercorso[0].MaxIdPercorso;
       // Inserimento delle località
-      if(maxIDLocalita == null) // Caso base in cui il database è vuoto
+      if (maxIDLocalita == null) // Caso base in cui il database è vuoto
         maxIDLocalita = 0;
-      for(i=maxIDLocalita; i<scrapeResultsRoutes.localita.length; i++) {
+      for (i = maxIDLocalita; i < scrapeResultsRoutes.localita.length; i++) {
         let sqlInsertLocalita = 'INSERT INTO `id3king`.`localita` (`ID`, `Denominazione`) VALUES (?, ?);';
-        const inserts = [parseInt(scrapeResultsRoutes.localita[i].id)+1, scrapeResultsRoutes.localita[i].nome];
+        const inserts = [parseInt(scrapeResultsRoutes.localita[i].id) + 1, scrapeResultsRoutes.localita[i].nome];
         sqlInsertLocalita = database.format(sqlInsertLocalita, inserts);
         executeQuery(sqlInsertLocalita);
       }
     }).then(function() {
-      // Inserimento dei percorsi
-      if(maxIDPercorso == null) // Caso base in cui il database è vuoto
+      if (maxIDPercorso == null) // Caso base in cui il database è vuoto
         maxIDPercorso = 0;
-      for(i=maxIDPercorso; i<Object.keys(scrapeResultsRoutes.itinerari).length; i++) {
+      for (i = maxIDPercorso; i < Object.keys(scrapeResultsRoutes.itinerari).length; i++) {
         const dateToArray = scrapeResultsRoutes.itinerari[i].data.split('/');
         dateToArray[0] = parseInt(dateToArray[0]); // Le date non normalizzate sono approssimate
-        dateToArray[1] = parseInt(dateToArray[1])-1;
+        dateToArray[1] = parseInt(dateToArray[1]) - 1;
         dateToArray[2] = parseInt(dateToArray[2]);
-        const dateToSqlFormat = new Date(Date.UTC(dateToArray[2], dateToArray[1], dateToArray[0])).toISOString().slice(0,19).replace('T', ' ');
-        const mapURL = scrapeResultsRoutes.itinerari[i].link.replace("indice", "zona");
+        const dateToSqlFormat = new Date(Date.UTC(dateToArray[2], dateToArray[1], dateToArray[0])).toISOString().slice(0, 19).replace('T', ' ');
+        const mapURL = scrapeResultsRoutes.itinerari[i].mapUrl;
         var difficoltaID = scrapeResultsRoutes.itinerari[i].difficolta; // Conversione da valore difficoltà al relativo ID del database
-        if(difficoltaID=='T') difficoltaID = 1;
-        else if(difficoltaID=='E') difficoltaID = 2;
-        else if(difficoltaID=='EE') difficoltaID = 3;
-        else if(difficoltaID=='EEA') difficoltaID = 4;
-        else if(difficoltaID=='EAI') difficoltaID = 5;
+        if (difficoltaID == 'T') difficoltaID = 1;
+        else if (difficoltaID == 'E') difficoltaID = 2;
+        else if (difficoltaID == 'EE') difficoltaID = 3;
+        else if (difficoltaID == 'EEA') difficoltaID = 4;
+        else if (difficoltaID == 'EAI') difficoltaID = 5;
         else difficoltaID = "NULL";
-        var localitaID = parseInt(scrapeResultsRoutes.itinerari[i].IDlocalita)+1;
-        if(!Number.isInteger(localitaID)) localitaID = 'NULL';
+        var localitaID = parseInt(scrapeResultsRoutes.itinerari[i].IDlocalita) + 1;
+        if (!Number.isInteger(localitaID)) localitaID = null;
         let sqlInsertString = "INSERT INTO `id3king`.`percorso` (`ID`, `Nome`, `DataInizio`, `URL`, `Durata`, `Lunghezza`, `Dislivello`, `TrackURL`, `MapURL`,  `Difficolta`, `Localita`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
         const inserts = [scrapeResultsRoutes.itinerari[i].id, scrapeResultsRoutes.itinerari[i].descrizione, dateToSqlFormat, scrapeResultsRoutes.itinerari[i].link, scrapeResultsRoutes.itinerari[i].durata, scrapeResultsRoutes.itinerari[i].lunghezza, scrapeResultsRoutes.itinerari[i].dislivello, scrapeResultsRoutes.itinerari[i].trackUrl, mapURL, difficoltaID, localitaID];
         sqlInsertString = database.format(sqlInsertString, inserts);
@@ -210,9 +210,9 @@ function getUserInfo(loginToken) {
   const sqlGetUserIdAndLastRoute = `SELECT u.ID, u.username, u.UltimoPercorsoRicercato
                                     FROM utenti u
                                     INNER JOIN login l ON l.userId=u.ID
-                                    WHERE l.logintoken=`+ database.escape(loginToken);
+                                    WHERE l.logintoken=` + database.escape(loginToken);
   return executeQuery(sqlGetUserIdAndLastRoute).then(function OnGetUserIdAndLastRoute(dbUserIdAndLastRoute) {
-    if(dbUserIdAndLastRoute == null)
+    if (dbUserIdAndLastRoute == null)
       throw new IncorrectLoginException();
     userId = dbUserIdAndLastRoute[0].ID;
     userName = dbUserIdAndLastRoute[0].username;
@@ -240,14 +240,11 @@ function getUserInfo(loginToken) {
 // Metodo di utilità per eseguire una query sul database. Restituisce un array contenente i risultati
 function executeQuery(querySQL) {
   return new Promise((resolve, reject) => {
-    const dbconnection = database.createConnection(config.dbConnection);
-    dbconnection.connect();
     dbconnection.query(querySQL, function(err, rows, fields) {
-      if(err != null) {
-          console.log(err);
-          throw new FailedDatabaseQueryException();
+      if (err != null) {
+        console.log(err);
+        throw new FailedDatabaseQueryException();
       }
-      dbconnection.end();
       resolve(rows);
     });
   });
@@ -258,7 +255,7 @@ function signin(userLogin) {
   let dbUserId;
   const sqlGetPassword = 'SELECT ID,password FROM utenti WHERE username=' + database.escape(userLogin.username) + ';'; // Ricavare la password dell'utente in base all'username fornito
   return executeQuery(sqlGetPassword).then(function(dbCredentials) {
-    if(dbCredentials == null)
+    if (dbCredentials == null)
       throw new IncorrectLoginException(); // L'utente non esiste
     dbUserId = dbCredentials[0].ID;
     return Bcrypt.compare(userLogin.password, dbCredentials[0].password);
@@ -271,7 +268,7 @@ function signin(userLogin) {
     var insertsInsert = [dbUserId, loginToken];
     insertSql = database.format(insertSql, insertsInsert);
     return executeQuery(insertSql).then(function(result) {
-      if(result.affectedRows != 1)
+      if (result.affectedRows != 1)
         throw new IncorrectLoginException(); // Errore durante l'inserimento del token nel database
       return loginToken;
     });

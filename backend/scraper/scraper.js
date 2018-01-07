@@ -28,7 +28,11 @@ function scrape() {
           var colonneRiga = righe.eq(j).children('td');
           var newItinerario = {};
           newItinerario.id = parseInt(colonneRiga.eq(0).text().replace(/\W/g, ''));
+          if(newItinerario.id == null || isNaN(newItinerario.id))
+            continue;
           newItinerario.link = siteBaseAddress + colonneRiga.eq(0).find('a').attr('href');
+          let mapUrl = newItinerario.link.split('/').slice(0,-1).join('/');
+          newItinerario.mapUrl = mapUrl.concat(`/Images${newItinerario.id}/mappa${newItinerario.id}.jpg`);
           newItinerario.descrizione = colonneRiga.eq(2).text().replace(/\s\s+/g, ' ').trimLeft();
           var data = colonneRiga.eq(1).text().split('/');
           data[0] = data[0].slice(8);
