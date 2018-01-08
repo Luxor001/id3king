@@ -38,8 +38,8 @@ export class RouteDetailComponent implements OnInit {
       return;
     this.routeService.saveRoute(route.id, session.loginToken)
       .subscribe(
-      (saved: boolean) => {
-        if (saved)
+      (result: any) => {
+        if (result.saved)
           this.sessionService.getSession().savedRoutes.push(route);
         else
           this.sessionService.getSession().savedRoutes.splice(this.sessionService.getSession().savedRoutes.indexOf(route), 1);
@@ -56,7 +56,7 @@ export class RouteDetailComponent implements OnInit {
   }
 
   isBookmarked(routeParam: RouteDetail) {
-    if (this.sessionService.getSession() == null)
+    if (this.sessionService.getSession() == null || routeParam == null)
       return false;
     let route = routeParam;
     let foundRoute = this.sessionService.getSession().savedRoutes.find(currRoute => currRoute.id == route.id);

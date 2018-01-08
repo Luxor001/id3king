@@ -16,6 +16,7 @@ import * as $ from 'jquery';
 
 export class MainComponent implements OnInit {
 
+  allRoutes: Route[];
   routes: Route[];
   private defaultBookmarkedFilter = new ConcreteSelectItem('nuovo', 'Nuovo filtro');
   savedFilterSelected: ConcreteSelectItem;
@@ -35,12 +36,13 @@ export class MainComponent implements OnInit {
     var root = this;
     this.routeService.getAllRoutes()
       .subscribe((result: any) => {
-        this.routes = result.routes.sort((a, b) => { return (b.id - a.id) });;
+        this.allRoutes = 	$.extend({}, result.routes);
+        this.routes = result.routes.sort((a, b) => { return (b.id - a.id) });
         this.filterBounds = root.calcFilterBounds(this.routes);
       },
       err => console.log(err));
 
-    UtilityService.resizeToParent($('.tableContainer'));
+    UtilityService.resizeToParent($('.tableContainer'), -42);
 
     // thanks to https://stackoverflow.com/a/46370483/1306679
     this.dt.filterConstraints['atMost'] = function atMost(value: number, filterValue: any): boolean {
@@ -99,13 +101,10 @@ export class MainComponent implements OnInit {
       return;
 
     this.bookmarkedRoutes = !this.bookmarkedRoutes;
-    let observable = this.bookmarkedRoutes ? this.routeService.getBookmarkedRoutes(session.loginToken) : this.routeService.getAllRoutes()
-
-    var root = this;
-    observable.subscribe((result: any) => {
-      this.routes = result.routes;
-      this.filterBounds = root.calcFilterBounds(this.routes);
-    }, err => console.log(err));
+    if(this.bookmarkedRoutes)
+      this.routes = this.sessionService.getSession().savedRoutes;
+    else
+      this.routes = $.extend([], this.allRoutes).sort((a, b) => { return (b.id - a.id) });
   }
 
   // gestione dei filtri preferiti
