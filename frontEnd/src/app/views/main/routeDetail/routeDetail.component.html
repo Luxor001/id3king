@@ -1,6 +1,6 @@
 <aside>
   <button pButton type="button" class="w40 ui-button-secondary" (click)="goToSite(routeDetail)" icon="fa-external-link" iconPos="left" label="Vai al sito"></button>
-  <button pButton type="button" class="w40 ui-button-secondary" [disabled]="sessionService.getSession() == null" (click)="saveBookmark(routeDetail)" icon="{{routeDetail != null && routeDetail.saved ? 'fa-star' : 'fa-star-o'}}" iconPos="left" label="Salva nei preferiti"></button>
+  <button pButton type="button" class="w40 ui-button-secondary" [disabled]="sessionService.getSession() == null" (click)="saveBookmark(routeDetail)" icon="{{isBookmarked(routeDetail) ? 'fa-star' : 'fa-star-o'}}" iconPos="left" label="Salva nei preferiti"></button>
   <button pButton type="button" class="w40 ui-button-secondary" (click)="downloadMap(routeDetail)" icon="fa-map-o" iconPos="left" label="Download mappa"></button>
   <button pButton type="button" class="w40 ui-button-secondary" (click)="downloadTrack(routeDetail)" icon="fa-arrows" iconPos="left" label="Download traccia"></button>
 </aside>

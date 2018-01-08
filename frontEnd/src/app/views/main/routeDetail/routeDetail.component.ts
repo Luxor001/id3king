@@ -31,14 +31,18 @@ export class RouteDetailComponent implements OnInit {
     window.open(route.url, route.descrizione);
   }
 
-  saveBookmark(route: RouteDetail) {
+  saveBookmark(routeParam: RouteDetail) {
+    let route = routeParam;
     let session = this.sessionService.getSession();
     if (!session)
       return;
     this.routeService.saveRoute(route.id, session.loginToken)
       .subscribe(
-      (routeDetail: RouteDetail) => {
-        this.routeDetail = routeDetail;
+      (saved: boolean) => {
+        if (saved)
+          this.sessionService.getSession().savedRoutes.push(route);
+        else
+          this.sessionService.getSession().savedRoutes.splice(this.sessionService.getSession().savedRoutes.indexOf(route), 1);
       },
       err => console.log(err));
   }
@@ -49,5 +53,13 @@ export class RouteDetailComponent implements OnInit {
 
   downloadTrack(route: RouteDetail) {
     UtilityService.downloadFile(route.trackUrl);
+  }
+
+  isBookmarked(routeParam: RouteDetail) {
+    if (this.sessionService.getSession() == null)
+      return false;
+    let route = routeParam;
+    let foundRoute = this.sessionService.getSession().savedRoutes.find(currRoute => currRoute.id == route.id);
+    return foundRoute != null;
   }
 }

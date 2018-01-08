@@ -33,7 +33,7 @@ export class LoginComponent {
             this.erroreCorrente = INCORRECT_LOGIN_ERROR;
           return;
         }
-        this.sessionService.login(result.user.username, result.loginToken);
+        this.sessionService.login(result.user.username, result.loginToken, result.user.savedRoutes, result.user.savedFilters);
         this.closeModal();
       },
       err => console.log(err)
@@ -53,7 +53,7 @@ export class LoginComponent {
             this.erroreCorrente = USER_ALREADY_EXIST_ERROR;
           return;
         }
-        this.sessionService.login(result.user.username, result.loginToken);
+        this.sessionService.login(result.user.username, result.loginToken, result.user.savedRoutes, result.user.savedFilters);
         this.closeModal();
       },
       err => console.log(err)

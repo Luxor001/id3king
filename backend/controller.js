@@ -98,7 +98,8 @@ module.exports = [
     handler: function(request) {
       let result = new BaseResult();
       return dbHandler.saveRoute(request.payload.routeId, request.payload.loginToken).then(function(boolean) {
-        result.Return = boolean;
+        result.Return = true;
+        result.saved = boolean;
         return result;
       }, function onFail(Exception) {
         if(Exception instanceof IncorrectLoginException)

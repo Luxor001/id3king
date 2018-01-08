@@ -46,7 +46,7 @@ export class RouteService {
     return this.http.post(this.appBaseUrl + '/getBookmarkedRoutes', { loginToken: loginToken });
   }
 
-  saveRoute(routeId: number, loginToken: string): Observable<RouteDetail> {
+  saveRoute(routeId: number, loginToken: string): Observable<boolean> {
     return this.http.post(this.appBaseUrl + '/saveRoute', { routeId: routeId, loginToken: loginToken });
   }
 

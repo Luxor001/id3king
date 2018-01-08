@@ -1,5 +1,6 @@
 /// Questo service a memorizzare la sessione utente corrente, fornendo anche alcune funzioni per la gestione della sessione nell'applicazione
 import { Injectable } from '@angular/core';
+import {RouteDetail} from './routeDetail.model'
 import 'rxjs/add/operator/mergeMap';
 
 @Injectable()
@@ -8,9 +9,8 @@ export class SessionService {
   userSession: UserSession;
   constructor() { }
 
-  login(username: string, loginToken: string) {
-    //FIXME: da fixare con i dati che arrivano dal server!
-    this.userSession = new UserSession(username, loginToken, 101, null, null);
+  login(username: string, loginToken: string, savedRoutes: RouteDetail[], savedFilters: any[]) {
+    this.userSession = new UserSession(username, loginToken, savedRoutes, savedFilters);
     return this.userSession;
   }
 
@@ -30,8 +30,6 @@ export class SessionService {
 export class UserSession {
   constructor(public username: string,
     public loginToken: string,
-    public lastRouteSearched: number,
-    public savedRoutes: number[],
-    public savedFilters: any[]) {
-  }
+    public savedRoutes: RouteDetail[],
+    public savedFilters: any[]) { }
 }
