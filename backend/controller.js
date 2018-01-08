@@ -5,7 +5,6 @@ const {
   IncorrectLoginException,
   RouteNotFoundException,
   AlreadySavedRouteException,
-  AlreadyExistingFilterException,
   NotExistingFilterException,
   FailedDatabaseQueryException,
   EmptyDatabaseException,
@@ -45,7 +44,6 @@ const LoginResultERRORS = {
   INCORRECT_LOGIN: 'INCORRECT_LOGIN',
   ROUTE_NOT_FOUND: 'ROUTE_NOT_FOUND',
   ALREADY_SAVED_ROUTE: 'ALREADY_SAVED ROUTE',
-  ALREADY_EXISTING_FILTER: 'ALREADY_EXISTING_FILTER',
   NOT_EXISTING_FILTER: 'NOT_EXISTING_FILTER',
   FAILED_DATABASE_QUERY: 'FAILED_DATABASE_QUERY',
   EMPTY_DATABASE: 'EMPTY_DATABASE',
@@ -100,7 +98,7 @@ module.exports = [
     handler: function(request) {
       let result = new BaseResult();
       return dbHandler.saveRoute(request.payload.routeId, request.payload.loginToken).then(function(boolean) {
-        result.Return = true;
+        result.Return = boolean;
         return result;
       }, function onFail(Exception) {
         if(Exception instanceof IncorrectLoginException)
@@ -197,8 +195,6 @@ module.exports = [
       }, function onFail(Exception) {
         if (Exception instanceof IncorrectLoginException)
           return result.setError(LoginResultERRORS.INCORRECT_LOGIN);
-        else if (Exception instanceof AlreadyExistingFilterException)
-          return result.setError(LoginResultERRORS.ALREADY_EXISTING_FILTER);
         else
          return result.setError(LoginResultERRORS.GENERIC_UNHANDLED_ERROR);
       });

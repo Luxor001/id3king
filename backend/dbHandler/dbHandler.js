@@ -7,7 +7,6 @@ const {
   IncorrectLoginException,
   RouteNotFoundException,
   AlreadySavedRouteException,
-  AlreadyExistingFilterException,
   NotExistingFilterException,
   FailedDatabaseQueryException,
   EmptyDatabaseException,
@@ -67,8 +66,9 @@ module.exports = {
   },
 
   saveRoute: function(routeId, loginToken) {
-    // routeId = 2017; // Percorso di test
+    // routeId = 400; // Percorso di test
     // loginToken = "aaaaaaaabbbbbbbbccccccccdddddddd"; // Token di test
+    let functionReturnValue;
     const sqlGetUserId = 'SELECT userID FROM login WHERE logintoken=' + database.escape(loginToken) + ';';
     let dbUserId = null;
     return executeQuery(sqlGetUserId).then(function OnGetUserId(dbUserIdParam) {
@@ -78,14 +78,20 @@ module.exports = {
       const sqlCheckIfAlreadySavedRoute = 'SELECT * FROM itinerariopreferito WHERE IDUtente=' + database.escape(dbUserId[0].userID) + ' AND IDPercorso=' + database.escape(routeId) + ';';
       return executeQuery(sqlCheckIfAlreadySavedRoute);
     }).then(function OnCheckIfAlreadySavedRoute(alreadySavedRoute) {
-      if (alreadySavedRoute.length != 0)
-        throw new AlreadySavedRouteException();
-      const sqlInsertRoute = 'INSERT INTO `id3king`.`itinerariopreferito` (`IDUtente`, `IDPercorso`) VALUES (' + database.escape(dbUserId[0].userID) + ', ' + database.escape(routeId) + ');';
-      return executeQuery(sqlInsertRoute);
+      let sqlInsertOrDeleteRoute;
+      if (alreadySavedRoute.length != 0) { // Se la route è già presente, viene eliminata, altrimenti viene creata
+        // throw new AlreadySavedRouteException();
+        sqlInsertOrDeleteRoute = 'DELETE FROM `id3king`.`itinerariopreferito` WHERE `IDUtente`=' + database.escape(dbUserId[0].userID) + ' AND `IDPercorso`=' + database.escape(routeId) + ';';
+        functionReturnValue = false;
+      } else {
+        sqlInsertOrDeleteRoute = 'INSERT INTO `id3king`.`itinerariopreferito` (`IDUtente`, `IDPercorso`) VALUES (' + database.escape(dbUserId[0].userID) + ', ' + database.escape(routeId) + ');';
+        functionReturnValue = true;
+      }
+      return executeQuery(sqlInsertOrDeleteRoute);
     }).then(function OnInsertRoute(result) {
       if (result.affectedRows != 1)
         throw new IncorrectLoginException(); // Errore durante l'inserimento del token nel database
-      return true;
+      return functionReturnValue;
     });
   },
 
