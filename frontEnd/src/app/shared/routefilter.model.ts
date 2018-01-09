@@ -1,6 +1,6 @@
 import { SelectItem } from 'primeng/primeng';
 
-export class FilterValues {
+export class Filter {
   name: string;
   filtroDislivello: number;
   filtroLunghezza: number;
@@ -9,6 +9,10 @@ export class FilterValues {
   filtroLuoghi: SelectItem[];
   filtroPeriodi: SelectItem[];
   constructor() { }
+
+  isEmpty(){
+    return this.filtroDislivello == null && this.filtroLunghezza == null && this.filtroDurata == null && this.filtroDifficolta == null &&  this.filtroLuoghi == null && this.filtroPeriodi == null;
+  }
 }
 
 export class FilterBounds {

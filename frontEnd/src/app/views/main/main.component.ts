@@ -6,7 +6,7 @@ import { UtilityService } from '@shared/utility.service';
 import { LoginService } from '@shared/login.service';
 import { SelectItem, DataTable } from 'primeng/primeng';
 import { SessionService, UserSession } from '@shared/session.service';
-import { FilterBounds, FilterValues } from '@shared/routefilter.model'
+import { FilterBounds, Filter } from '@shared/routefilter.model'
 import * as $ from 'jquery';
 
 @Component({
@@ -18,14 +18,16 @@ export class MainComponent implements OnInit {
 
   allRoutes: Route[];
   routes: Route[];
-  private defaultBookmarkedFilter = new ConcreteSelectItem('nuovo', 'Nuovo filtro');
+  private defaultBookmarkedFilter = new ConcreteSelectItem('nuovo', 'Salva come nuovo gruppo filtri');
   savedFilterSelected: ConcreteSelectItem;
   bookmarkedFilters: ConcreteSelectItem[] = [this.defaultBookmarkedFilter];
   bookmarkedRoutes: boolean;
   bookmarkedFilterModal = false;
 
-  filterValues = new FilterValues();
+  filterValues = new Filter();
   filterBounds = new FilterBounds();
+  erroreCorrenteFilters: string;
+  tableMessage = "Caricamento itinerari in corso...";
 
   constructor(private routeService: RouteService,
     private loginService: LoginService,
@@ -36,7 +38,8 @@ export class MainComponent implements OnInit {
     var root = this;
     this.routeService.getAllRoutes()
       .subscribe((result: any) => {
-        this.allRoutes = 	$.extend({}, result.routes);
+        this.tableMessage = "Nessun itinerario corrispondente ai filtri indicati";
+        this.allRoutes = $.extend({}, result.routes);
         this.routes = result.routes.sort((a, b) => { return (b.id - a.id) });
         this.filterBounds = root.calcFilterBounds(this.routes);
       },
@@ -101,7 +104,7 @@ export class MainComponent implements OnInit {
       return;
 
     this.bookmarkedRoutes = !this.bookmarkedRoutes;
-    if(this.bookmarkedRoutes)
+    if (this.bookmarkedRoutes)
       this.routes = this.sessionService.getSession().savedRoutes;
     else
       this.routes = $.extend([], this.allRoutes).sort((a, b) => { return (b.id - a.id) });
@@ -112,25 +115,35 @@ export class MainComponent implements OnInit {
     let session = this.sessionService.getSession();
     if (!session)
       return;
-    if (filterSelectedValue == this.defaultBookmarkedFilter.value)
+
+    if (filterSelectedValue == this.defaultBookmarkedFilter.value) {
       this.bookmarkedFilterModal = true;
-    else {
-      this.routeService.getFilter(filterSelectedValue, session.loginToken)
-        .subscribe((result: any) => {
-          if (!result.Return) {
-            //TODO: da fixare l'errore
-            //if (result.error == "INCORRECT_LOGIN")
-            return;
-          }
-          this.filterValues = result.filter;
-        }, err => console.log(err));
+      this.erroreCorrenteFilters = "";
+      return;
     }
+
+    this.routeService.getFilter(filterSelectedValue, session.loginToken)
+      .subscribe((result: any) => {
+        if (!result.Return) {
+          //TODO: da fixare l'errore
+          //if (result.error == "INCORRECT_LOGIN")
+          return;
+        }
+        this.filterValues = result.filter;
+      }, err => console.log(err));
   }
 
-  saveBookmarkedFilter(filter: FilterValues) {
+  saveBookmarkedFilter(filterName: string) {
     let session = this.sessionService.getSession();
     if (!session)
       return;
+    if(filterName == '')
+      this.erroreCorrenteFilters = "Non può essere salvato un gruppo filtro con nome vuoto";
+    if (this.filterValues.isEmpty())
+      this.erroreCorrenteFilters = "Nessun filtro impostato";
+
+    let filter = $.extend({}, this.filterValues);
+    filter.name = filterName;
     this.routeService.saveFilter(filter, session.loginToken)
       .subscribe((result: any) => {
         if (!result.Return) {

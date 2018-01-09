@@ -147,8 +147,6 @@ module.exports = {
   getUserInfo: getUserInfo,
 
   getFilter: function(filterName, user) {
-    // filterName = "ricerca2"; // Ricerca di test
-    // user = new User("test", null, null, null); // Utente di test
     const sqlGetFilter = `SELECT r.NomeRicerca, r.DislivelloMassimo, r.LunghezzaMassima, r.DurataMassima, l.Denominazione, d.Valore, p.Stagione
                           FROM ricerca r, localita l, difficolta d, periodo p
                           WHERE r.IDUtente = (SELECT u.ID FROM utenti u WHERE u.username=' + database.escape(user.username) + ')

@@ -6,7 +6,7 @@
   </div>
   <div *ngIf="sessionService.getSession()" class="toolbar">
     <div>
-      <p-dropdown [options]="bookmarkedFilters" [styleClass]="'w30'" [(ngModel)]="savedFilterSelected" placeholder="Filtri salvati" optionLabel="name" [appendTo]="'body'" (onChange)="bookmarkedFilterChanged($event.value)"></p-dropdown>
+      <p-dropdown [options]="bookmarkedFilters" [styleClass]="'w30'" [(ngModel)]="savedFilterSelected" placeholder="Filtri salvati" [appendTo]="'body'" (onChange)="bookmarkedFilterChanged($event.value)"></p-dropdown>
     </div>
     <div>
       <button pButton type="button" class="ui-button-secondary" (click)="loadBookmarkedRoutes()" icon="{{bookmarkedRoutes ? 'fa-star' : 'fa-star-o'}}" iconPos="left" label="Itinerari preferiti"></button>
@@ -14,7 +14,7 @@
   </div>
 </div>
 <div class="tableContainer">
-  <p-dataTable [value]="routes" scrollable="true" [globalFilter]="globalFilter" [emptyMessage]="'Nessun itinerario corrispondente ai filtri indicati'" scrollHeight="100%" expandableRows="true" rowExpandMode="single" paginator="true" [rows]="50" [pageLinks]="5" [rowsPerPageOptions]="[50,100,150]" #dataTableIstance>
+  <p-dataTable [value]="routes" scrollable="true" [globalFilter]="globalFilter" [emptyMessage]="tableMessage" scrollHeight="100%" expandableRows="true" rowExpandMode="single" paginator="true" [rows]="50" [pageLinks]="5" [rowsPerPageOptions]="[50,100,150]" #dataTableIstance>
     <p-header>ITINERARI</p-header>
     <p-column expander="true" [style]="{'width':'30px'}" styleClass="col-icon"></p-column>
     <p-column field="id" [style]="{'width':'70px'}" header="ID" [sortable]="true"></p-column>
@@ -78,15 +78,15 @@
   </p-dataTable>
 </div>
 
-<p-dialog #name header="Nuovo filtro" [draggable]="false" modal="modal" [styleClass]="bookmarkFilterModal" [responsive]="true" [(visible)]="bookmarkedFilterModal" (onHide)="bookmarkedFilterClosed()">
+<p-dialog class="bookmarkFilterModal" #name header="Nuovo filtro" [draggable]="false" modal="modal" [styleClass]="bookmarkFilterModal" [responsive]="true" [(visible)]="bookmarkedFilterModal" (onHide)="bookmarkedFilterClosed()">
 
   <label for="bookmarkedFilterName">Nome filtro</label>
-  <input type="text" class="form-control" id="bookmarkedFilterName" required name="username" [(ngModel)]="filterValues.name" minlength="1" #name="ngModel" tabindex="1">
-  <small *ngIf="erroreCorrente != ''">
-        {{erroreCorrente}}
+  <input type="text" class="form-control" id="bookmarkedFilterName" required name="username" minlength="1" #filterName tabindex="1">
+  <small *ngIf="erroreCorrenteFilters != ''">
+        {{erroreCorrenteFilters}}
   </small>
   <p-footer>
-    <button type="button" pButton (click)="saveBookmarkedFilter(filterValues)" label="Salva" tabindex="1"></button>
+    <button type="button" pButton (click)="saveBookmarkedFilter(filterName.value)" label="Salva" tabindex="1"></button>
     <button type="button" pButton (click)="bookmarkedFilterModal = false" label="Annulla" tabindex="2"></button>
   </p-footer>
 </p-dialog>

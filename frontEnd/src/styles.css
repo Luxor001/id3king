@@ -19,6 +19,10 @@ app-main>.ui-widget-header div.toolbar, app-main>.ui-widget-header div.toolbar d
   float: right;
 }
 
+app-main>.ui-widget-header div.toolbar p-dropdown label{
+  text-align: center;
+}
+
 p-datatable tbody {
   border: 0 !important;
 }

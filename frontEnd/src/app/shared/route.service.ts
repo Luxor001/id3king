@@ -7,7 +7,7 @@ import { SeasonsService } from './utility.service';
 import { Route } from './route.model';
 import { RouteDetail } from './routedetail.model'
 import { Observable } from 'rxjs/Observable';
-import { FilterValues } from '@shared/routefilter.model'
+import { Filter } from '@shared/routefilter.model'
 
 
 @Injectable()
@@ -50,7 +50,7 @@ export class RouteService {
     return this.http.post(this.appBaseUrl + '/saveRoute', { routeId: routeId, loginToken: loginToken });
   }
 
-  saveFilter(filter: FilterValues, loginToken: string): Observable<RouteDetail> {
+  saveFilter(filter: Filter, loginToken: string): Observable<RouteDetail> {
     return this.http.post(this.appBaseUrl + '/saveFilter', { filter: filter, loginToken: loginToken  });
   }
 
