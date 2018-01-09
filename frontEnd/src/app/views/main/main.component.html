@@ -6,7 +6,7 @@
   </div>
   <div *ngIf="sessionService.getSession()" class="toolbar">
     <div>
-      <p-dropdown [options]="bookmarkedFilters" [styleClass]="'w30'" [(ngModel)]="savedFilterSelected" placeholder="Filtri salvati" [appendTo]="'body'" (onChange)="bookmarkedFilterChanged($event.value)"></p-dropdown>
+      <p-dropdown [options]="bookmarkedFilters" [styleClass]="'w30'" [(ngModel)]="bookmarkedFilterSelected" placeholder="Filtri salvati" [appendTo]="'body'" (onChange)="bookmarkedFilterChanged($event.value)"></p-dropdown>
     </div>
     <div>
       <button pButton type="button" class="ui-button-secondary" (click)="loadBookmarkedRoutes()" icon="{{bookmarkedRoutes ? 'fa-star' : 'fa-star-o'}}" iconPos="left" label="Itinerari preferiti"></button>
@@ -64,7 +64,7 @@
       </ng-template>
     </p-column>
 
-    <p-column field="luogo" [style]="{'width':'150px'}" header="LUOGO" [sortable]="true" [filter]="true" filterMatchMode="in">
+    <p-column field="luogo" [style]="{'width':'220px'}" header="LUOGO" [sortable]="true" [filter]="true" filterMatchMode="in">
       <ng-template pTemplate="filter" let-col>
         <p-multiSelect [(ngModel)]="filterValues.filtroLuoghi" [options]="filterBounds.places" defaultLabel="Tutti" selectedItemsLabel="{0} Luoghi" maxSelectedLabels="0" (onChange)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)" styleClass="ui-column-filter"></p-multiSelect>
       </ng-template>
@@ -78,7 +78,7 @@
   </p-dataTable>
 </div>
 
-<p-dialog class="bookmarkFilterModal" #name header="Nuovo filtro" [draggable]="false" modal="modal" [styleClass]="bookmarkFilterModal" [responsive]="true" [(visible)]="bookmarkedFilterModal" (onHide)="bookmarkedFilterClosed()">
+<p-dialog class="bookmarkFilterModal" #name header="Nuovo filtro" [draggable]="false" modal="modal" [styleClass]="bookmarkFilterModal" [responsive]="true" [(visible)]="bookmarkedFilterModal">
 
   <label for="bookmarkedFilterName">Nome filtro</label>
   <input type="text" class="form-control" id="bookmarkedFilterName" required name="username" minlength="1" #filterName tabindex="1">
@@ -86,7 +86,7 @@
         {{erroreCorrenteFilters}}
   </small>
   <p-footer>
-    <button type="button" pButton (click)="saveBookmarkedFilter(filterName.value)" label="Salva" tabindex="1"></button>
-    <button type="button" pButton (click)="bookmarkedFilterModal = false" label="Annulla" tabindex="2"></button>
+    <button type="button" pButton (click)="saveNewFilter(filterName.value)" label="Salva" tabindex="1"></button>
+    <button type="button" pButton (click)="closeBookmarkFilterModal(true)" label="Annulla" tabindex="2"></button>
   </p-footer>
 </p-dialog>

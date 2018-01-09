@@ -8,6 +8,7 @@ class NotExistingFilterException extends Error {}
 class FailedDatabaseQueryException extends Error {}
 class EmptyDatabaseException extends Error {}
 class DatabaseScrapingException extends Error {}
+class AlreadyExistingFilterException extends Error {}
 
 module.exports = {
   IncorrectPasswordLengthException: IncorrectPasswordLengthException,
@@ -19,5 +20,6 @@ module.exports = {
   NotExistingFilterException: NotExistingFilterException,
   FailedDatabaseQueryException: FailedDatabaseQueryException,
   EmptyDatabaseException: EmptyDatabaseException,
-  DatabaseScrapingException: DatabaseScrapingException
+  DatabaseScrapingException: DatabaseScrapingException,
+  AlreadyExistingFilterException: AlreadyExistingFilterException
 }

@@ -18,11 +18,13 @@ export class MainComponent implements OnInit {
 
   allRoutes: Route[];
   routes: Route[];
-  private defaultBookmarkedFilter = new ConcreteSelectItem('nuovo', 'Salva come nuovo gruppo filtri');
-  savedFilterSelected: ConcreteSelectItem;
+
+  private defaultBookmarkedFilter = new ConcreteSelectItem({}, 'Salva come nuovo gruppo filtri');
   bookmarkedFilters: ConcreteSelectItem[] = [this.defaultBookmarkedFilter];
-  bookmarkedRoutes: boolean;
+  bookmarkedFilterSelected: string;
   bookmarkedFilterModal = false;
+
+  bookmarkedRoutes: boolean;
 
   filterValues = new Filter();
   filterBounds = new FilterBounds();
@@ -111,18 +113,18 @@ export class MainComponent implements OnInit {
   }
 
   // gestione dei filtri preferiti
-  bookmarkedFilterChanged(filterSelectedValue: string) {
+  bookmarkedFilterChanged(filterName: string) {
     let session = this.sessionService.getSession();
     if (!session)
       return;
 
-    if (filterSelectedValue == this.defaultBookmarkedFilter.value) {
+    if (filterName == this.defaultBookmarkedFilter.value) {
       this.bookmarkedFilterModal = true;
       this.erroreCorrenteFilters = "";
       return;
     }
 
-    this.routeService.getFilter(filterSelectedValue, session.loginToken)
+    this.routeService.getFilter(filterName, session.loginToken)
       .subscribe((result: any) => {
         if (!result.Return) {
           //TODO: da fixare l'errore
@@ -133,7 +135,7 @@ export class MainComponent implements OnInit {
       }, err => console.log(err));
   }
 
-  saveBookmarkedFilter(filterName: string) {
+  saveNewFilter(filterName: string) {
     let session = this.sessionService.getSession();
     if (!session)
       return;
@@ -141,6 +143,8 @@ export class MainComponent implements OnInit {
       this.erroreCorrenteFilters = "Non può essere salvato un gruppo filtro con nome vuoto";
     if (this.filterValues.isEmpty())
       this.erroreCorrenteFilters = "Nessun filtro impostato";
+    if(this.erroreCorrenteFilters != '')
+      return;
 
     let filter = $.extend({}, this.filterValues);
     filter.name = filterName;
@@ -151,20 +155,26 @@ export class MainComponent implements OnInit {
           //if (result.error == "INCORRECT_LOGIN")
           return;
         }
-        let newBookmarkedFilter = new ConcreteSelectItem(filter.name, filter.name);
-        this.savedFilterSelected = newBookmarkedFilter;
-        this.bookmarkedFilters.push(newBookmarkedFilter);
-        this.bookmarkedFilterClosed();
-      }, err => console.log(err));
+        this.bookmarkedFilters.push(new ConcreteSelectItem(filterName, filterName));
+        this.sessionService.getSession().savedFilters.push(filter);
+        this.bookmarkedFilterSelected = filterName;
+        this.closeBookmarkFilterModal();
+      }, err => {
+        this.bookmarkedFilterSelected = null;
+      });
   }
-  bookmarkedFilterClosed() {
+  closeBookmarkFilterModal(fromCancel?: boolean) {
     this.bookmarkedFilterModal = false;
+
+    // resettiamo il selezionatore se l'utente annulla il salvataggio di un nuovo filtro
+    if (fromCancel && this.bookmarkedFilterSelected == this.defaultBookmarkedFilter.value)
+      this.bookmarkedFilterSelected = null;
   }
 }
 
 class ConcreteSelectItem implements SelectItem {
   constructor(
-    public value: string,
+    public value: any,
     public label: string) {
   }
 }

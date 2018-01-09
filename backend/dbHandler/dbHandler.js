@@ -10,7 +10,8 @@ const {
   NotExistingFilterException,
   FailedDatabaseQueryException,
   EmptyDatabaseException,
-  DatabaseScrapingException
+  DatabaseScrapingException,
+  AlreadyExistingFilterException
 } = require('./dbHandlerExceptions.js');
 const Route = require('../code/Route.js');
 const RouteDetail = require('../code/RouteDetail.js');
@@ -135,7 +136,12 @@ module.exports = {
     }).then(function OnCheckedIfAlreadySavedFilter(checkResults) {
       if (checkResults.length != 0)
         throw new AlreadyExistingFilterException();
-      const sqlAddFilterToDb = 'INSERT INTO `id3king`.`ricerca` (`IDUtente`, `NomeRicerca`, `DislivelloMassimo`, `LunghezzaMassima`, `DurataMassima`, `Localita`, `Difficolta`) VALUES (' + userId + ', ' + database.escape(filter.name) + ', ' + database.escape(filter.filtroDislivello) + ', ' + database.escape(filter.filtroLunghezza) + ', ' + database.escape(filter.filtroDurata) + ', ' + database.escape(filter.filtroLuoghi) + ', ' + database.escape(filter.filtroDifficolta) + ', ' + database.escape(filter.filtroPeriodi) + ');';
+      const sqlAddFilterToDb = `INSERT INTO \`id3king\`.\`ricerca\` (\`IDUtente\`, \`NomeRicerca\`, \`DislivelloMassimo\`, \`LunghezzaMassima\`, \`DurataMassima\`, \`Localita\`, \`Difficolta\`, \`Periodo\`)
+                                VALUES (${userId},
+                                ${database.escape(filter.name)}, ${database.escape(filter.filtroDislivello)}, ${database.escape(filter.filtroLunghezza)}, ${database.escape(filter.filtroDurata)},
+                                ${database.escape(!filter.filtroLuoghi || filter.filtroLuoghi.length == 0 ? null : filter.filtroLuoghi)},
+                                ${database.escape(!filter.filtroDifficolta || filter.filtroDifficolta.length == 0 ? null : filter.filtroDifficolta)},
+                                ${database.escape(!filter.filtroPeriodi || filter.filtroPeriodi.length == 0 ? null : filter.filtroPeriodi)});`;
       return executeQuery(sqlAddFilterToDb);
     }).then(function OnInsertedFilter(result) {
       if (result.affectedRows != 1)
@@ -147,11 +153,12 @@ module.exports = {
   getUserInfo: getUserInfo,
 
   getFilter: function(filterName, user) {
-    const sqlGetFilter = `SELECT r.NomeRicerca, r.DislivelloMassimo, r.LunghezzaMassima, r.DurataMassima, l.Denominazione, d.Valore, p.Stagione
-                          FROM ricerca r, localita l, difficolta d, periodo p
-                          WHERE r.IDUtente = (SELECT u.ID FROM utenti u WHERE u.username=' + database.escape(user.username) + ')
-                          AND r.NomeRicerca=` + database.escape(filterName) + `
-                          AND d.ID=r.Difficolta AND p.ID=r.Periodo;`;
+
+    const sqlGetFilter = `SELECT NomeRicerca, DislivelloMassimo, LunghezzaMassima, DurataMassima, Denominazione, Valore, Stagione
+                          FROM ricerca LEFT JOIN localita on ricerca.Localita = localita.ID
+								          LEFT JOIN difficolta on ricerca.Difficolta = difficolta.ID
+								          LEFT JOIN periodo on ricerca.Periodo = periodo.ID
+                          where NomeRicerca=${database.escape(filterName)}`;
     return executeQuery(sqlGetFilter).then(function OnGetFilter(filter) {
       if (filter.length != 1)
         throw new NotExistingFilterException();
