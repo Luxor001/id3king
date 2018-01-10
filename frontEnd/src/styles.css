@@ -15,6 +15,13 @@ app-main>.ui-widget-header>div {
   display: inline-block;
 }
 
+.tableContainer p-datatable .ui-datatable .ui-datatable-scrollable-body,
+.tableContainer p-datatable .ui-datatable .ui-datatable-scrollable-table-wrapper{
+  min-width: 1000px;
+  height: calc(100vh - 260px) !important;
+  max-height: calc(100vh - 200px) !important;
+}
+
 app-main>.ui-widget-header div.toolbar, app-main>.ui-widget-header div.toolbar div {
   float: right;
 }

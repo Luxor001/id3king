@@ -14,9 +14,9 @@
   </div>
 </div>
 <div class="tableContainer">
-  <p-dataTable [value]="routes" scrollable="true" [globalFilter]="globalFilter" [emptyMessage]="tableMessage" scrollHeight="100%" expandableRows="true" rowExpandMode="single" paginator="true" [rows]="50" [pageLinks]="5" [rowsPerPageOptions]="[50,100,150]" #dataTableIstance>
+  <p-dataTable [value]="routes" responsive="true" scrollable="true" [globalFilter]="globalFilter" [emptyMessage]="tableMessage" scrollHeight="100%" scrollWidth="100%" expandableRows="true" rowExpandMode="single" paginator="true" [rows]="50" [pageLinks]="5" [rowsPerPageOptions]="[50,100,150]" #dataTableIstance>
     <p-header>ITINERARI</p-header>
-    <p-column expander="true" [style]="{'width':'30px'}" styleClass="col-icon"></p-column>
+    <p-column expander="true" [style]="{'width':'30px', 'max-height': '40px'}" styleClass="col-icon"></p-column>
     <p-column field="id" [style]="{'width':'70px'}" header="ID" [sortable]="true"></p-column>
 
     <p-column field="data" [style]="{'width':'120px'}" header="DATA" filterField="periodo" [sortable]="true" [filter]="true" filterMatchMode="in">
@@ -38,13 +38,13 @@
       </ng-template>
     </p-column>
 
-    <p-column field="lunghezza" [style]="{'width':'130px'}" header="LUNGHEZZA {{filterValues.filtroLunghezza == null ? '' : filterValues.filtroLunghezza+'km'}}" [sortable]="true" [filter]="true" filterMatchMode="atMost">
+    <p-column field="lunghezza" [style]="{'width':'130px'}" header="LUNGHEZZA {{filterValues.filtroLunghezza == null ? '' : roundFiltroLunghezza(filterValues.filtroLunghezza/1000) +'km'}}" [sortable]="true" [filter]="true" filterMatchMode="atMost">
       <ng-template pTemplate="filter" let-col>
         <i class="fa fa-close" (click)="filterValues.filtroLunghezza=null;dataTableIstance.filter(null,col.field,col.filterMatchMode)"></i>
         <p-slider [(ngModel)]="filterValues.filtroLunghezza" [min]="filterBounds.minRouteLength" [max]="filterBounds.maxRouteLength" (onSlideEnd)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)"></p-slider>
       </ng-template>
       <ng-template let-itinerario="rowData" pTemplate="body">
-        <span>{{itinerario.lunghezza}} <span>km</span></span>
+        <span>{{itinerario.lunghezza / 1000}} <span>km</span></span>
       </ng-template>
     </p-column>
 
@@ -70,7 +70,11 @@
       </ng-template>
     </p-column>
 
-    <p-column field="titolo" [style]="{'min-width':'500px'}" header="DESCRIZIONE"></p-column>
+    <p-column field="titolo" [style]="{'min-width':'500px', 'max-height': '40px'}" header="DESCRIZIONE">
+      <ng-template let-itinerario="rowData" pTemplate="body">
+        <span style="display:block; min-width:500px">{{itinerario.titolo}}</span>
+      </ng-template>
+    </p-column>
 
     <ng-template let-routeSelezionato pTemplate="rowexpansion">
       <route-detail [routeSelezionato]="routeSelezionato"> </route-detail>

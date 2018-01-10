@@ -25,7 +25,6 @@ export class RouteService {
       .map((response: any) => {
         // aggiungi all'array di itinerari il periodo
         response.routes = response.routes.map(route => {
-          route.lunghezza /= 1000;
           route.periodo = SeasonsService.getSeason(new Date(route.data));
           return route;
         });

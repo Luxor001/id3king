@@ -47,11 +47,12 @@ export class MainComponent implements OnInit {
       },
       err => console.log(err));
 
-    UtilityService.resizeToParent($('.tableContainer'), -42);
+    //UtilityService.resizeToParent($('.tableContainer'), -42);
     this.sessionService.addOnSigninCallback(() => {
       this.bookmarkedFilters = [this.defaultBookmarkedFilter];
       let session = this.sessionService.getSession();
-      //foreach savedfilter..
+      let sessionFilters = session.savedFilters.reduce((sessionFilters: any[], filter: Filter) => sessionFilters.concat(new ConcreteSelectItem(filter.name, filter.name)), new Array<ConcreteSelectItem>())
+      this.bookmarkedFilters = this.bookmarkedFilters.concat(sessionFilters);
     });
 
     // thanks to https://stackoverflow.com/a/46370483/1306679
@@ -91,7 +92,7 @@ export class MainComponent implements OnInit {
     // Bounds di lunghezza
     sorted = routesToSort.sort((a, b) => { return (a.lunghezza - b.lunghezza) });
     filterBounds.minRouteLength = sorted[0].lunghezza;
-    filterBounds.maxRouteLength = sorted[sorted.length - 1].lunghezza
+    filterBounds.maxRouteLength = sorted[sorted.length - 1].lunghezza;
 
     // Bounds di durata
     sorted = routesToSort.sort((a, b) => { return (a.durata - b.durata) });
@@ -145,7 +146,7 @@ export class MainComponent implements OnInit {
         this.filterValues.filtroDifficolta = result.filter.filtroDifficolta;
         this.filterValues.filtroLuoghi = result.filter.filtroLuoghi;
         this.filterValues.filtroPeriodi = result.filter.filtroPeriodi;
-        this.dt.updatePaginator()
+        this.applyFiltersToTable();
       }, err => console.log(err));
   }
 
@@ -183,6 +184,20 @@ export class MainComponent implements OnInit {
     // resettiamo il selezionatore se l'utente annulla il salvataggio di un nuovo filtro
     if (fromCancel && this.bookmarkedFilterSelected == this.defaultBookmarkedFilter.value)
       this.bookmarkedFilterSelected = null;
+  }
+
+  // purtroppo non c'è modo altro modo per effettuare un refresh manuale della tabella
+  applyFiltersToTable(){
+    this.dt.filter(this.filterValues.filtroPeriodi, 'periodo', 'in')
+    this.dt.filter(this.filterValues.filtroDurata, 'durata', 'atMost');
+    this.dt.filter(this.filterValues.filtroLunghezza, 'lunghezza', 'atMost')
+    this.dt.filter(this.filterValues.filtroDislivello, 'dislivello', 'atMost')
+    this.dt.filter(this.filterValues.filtroDifficolta, 'difficolta', 'in')
+    this.dt.filter(this.filterValues.filtroLuoghi, 'luogo', 'in')
+  }
+
+  roundFiltroLunghezza(filtroLunghezza:number):number{
+    return Math.floor(filtroLunghezza);
   }
 }
 
