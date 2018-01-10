@@ -20,7 +20,7 @@ export class MainComponent implements OnInit {
   routes: Route[];
 
   private defaultBookmarkedFilter = new ConcreteSelectItem({}, 'Salva come nuovo gruppo filtri');
-  bookmarkedFilters: ConcreteSelectItem[] = [this.defaultBookmarkedFilter];
+  bookmarkedFilters: ConcreteSelectItem[];
   bookmarkedFilterSelected: string;
   bookmarkedFilterModal = false;
 
@@ -48,6 +48,11 @@ export class MainComponent implements OnInit {
       err => console.log(err));
 
     UtilityService.resizeToParent($('.tableContainer'), -42);
+    this.sessionService.addOnSigninCallback(() => {
+      this.bookmarkedFilters = [this.defaultBookmarkedFilter];
+      let session = this.sessionService.getSession();
+      //foreach savedfilter..
+    });
 
     // thanks to https://stackoverflow.com/a/46370483/1306679
     this.dt.filterConstraints['atMost'] = function atMost(value: number, filterValue: any): boolean {
@@ -131,7 +136,16 @@ export class MainComponent implements OnInit {
           //if (result.error == "INCORRECT_LOGIN")
           return;
         }
-        this.filterValues = result.filter;
+
+        this.filterValues = new Filter();
+        this.filterValues.name = result.filter.name;
+        this.filterValues.filtroDislivello = result.filter.filtroDislivello;
+        this.filterValues.filtroLunghezza = result.filter.filtroLunghezza;
+        this.filterValues.filtroDurata = result.filter.filtroDurata;
+        this.filterValues.filtroDifficolta = result.filter.filtroDifficolta;
+        this.filterValues.filtroLuoghi = result.filter.filtroLuoghi;
+        this.filterValues.filtroPeriodi = result.filter.filtroPeriodi;
+        this.dt.updatePaginator()
       }, err => console.log(err));
   }
 
@@ -151,8 +165,8 @@ export class MainComponent implements OnInit {
     this.routeService.saveFilter(filter, session.loginToken)
       .subscribe((result: any) => {
         if (!result.Return) {
-          //TODO: da fixare l'errore
-          //if (result.error == "INCORRECT_LOGIN")
+          if(result.error == "ALREADY_SAVED ROUTE")
+            this.erroreCorrenteFilters = "Esiste già un altro gruppo filtri con lo stesso nome";
           return;
         }
         this.bookmarkedFilters.push(new ConcreteSelectItem(filterName, filterName));

@@ -7,10 +7,14 @@ import 'rxjs/add/operator/mergeMap';
 export class SessionService {
   loginToken: string;
   userSession: UserSession;
-  constructor() { }
+  onSigninCallbacks: Function[];
+  constructor() {
+      this.onSigninCallbacks = [];
+  }
 
   login(username: string, loginToken: string, savedRoutes: RouteDetail[], savedFilters: any[]) {
     this.userSession = new UserSession(username, loginToken, savedRoutes, savedFilters);
+    this.onSigninCallbacks.forEach((func: Function) => func());
     return this.userSession;
   }
 
@@ -24,6 +28,10 @@ export class SessionService {
 
   getLoginToken(): string {
     return this.userSession.loginToken;
+  }
+
+  addOnSigninCallback(callback: Function){
+    this.onSigninCallbacks.push(callback);
   }
 }
 
