@@ -6,9 +6,10 @@ const {
   RouteNotFoundException,
   AlreadySavedRouteException,
   NotExistingFilterException,
+  AlreadyExistingFilterException,
   FailedDatabaseQueryException,
   EmptyDatabaseException,
-  DatabaseScrapingException,
+  DatabaseScrapingException
 } = require('./dbHandler/dbHandlerExceptions.js');
 const BaseResult = require('./code/BaseResult.js');
 const User = require('./code/User.js');
@@ -48,7 +49,8 @@ const LoginResultERRORS = {
   FAILED_DATABASE_QUERY: 'FAILED_DATABASE_QUERY',
   EMPTY_DATABASE: 'EMPTY_DATABASE',
   GENERIC_UNHANDLED_ERROR: 'GENERIC_UNHANDLED_ERROR',
-  DATABASE_SCRAPING_ERROR: 'DATABASE_SCRAPING_ERROR'
+  DATABASE_SCRAPING_ERROR: 'DATABASE_SCRAPING_ERROR',
+  ALREADY_EXISTING_FILTER: 'ALREADY_EXISTING_FILTER'
 }
 
 module.exports = [
@@ -196,6 +198,8 @@ module.exports = [
       }, function onFail(Exception) {
         if (Exception instanceof IncorrectLoginException)
           return result.setError(LoginResultERRORS.INCORRECT_LOGIN);
+        else if (Exception instanceof AlreadyExistingFilterException)
+          return result.setError(LoginResultERRORS.ALREADY_EXISTING_FILTER);
         else
          return result.setError(LoginResultERRORS.GENERIC_UNHANDLED_ERROR);
       });

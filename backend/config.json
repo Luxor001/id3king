@@ -12,6 +12,6 @@
     }
   },
   "security":{
-     "password_min_length": 5
+     "password_min_length": 8
   }
 }

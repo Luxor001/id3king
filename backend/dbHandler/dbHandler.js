@@ -8,10 +8,10 @@ const {
   RouteNotFoundException,
   AlreadySavedRouteException,
   NotExistingFilterException,
+  AlreadyExistingFilterException,
   FailedDatabaseQueryException,
   EmptyDatabaseException,
-  DatabaseScrapingException,
-  AlreadyExistingFilterException
+  DatabaseScrapingException
 } = require('./dbHandlerExceptions.js');
 const Route = require('../code/Route.js');
 const RouteDetail = require('../code/RouteDetail.js');
@@ -81,7 +81,6 @@ module.exports = {
     }).then(function OnCheckIfAlreadySavedRoute(alreadySavedRoute) {
       let sqlInsertOrDeleteRoute;
       if (alreadySavedRoute.length != 0) { // Se la route è già presente, viene eliminata, altrimenti viene creata
-        // throw new AlreadySavedRouteException();
         sqlInsertOrDeleteRoute = 'DELETE FROM `id3king`.`itinerariopreferito` WHERE `IDUtente`=' + database.escape(dbUserId[0].userID) + ' AND `IDPercorso`=' + database.escape(routeId) + ';';
         functionReturnValue = false;
       } else {
