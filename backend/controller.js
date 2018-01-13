@@ -240,24 +240,6 @@ module.exports = {
           }
         });
       }
-    },
-
-    /// API di debug che esegue lo scraping incondizionatamente
-    {
-      method: 'GET',
-      path: '/debugScraper',
-      handler: performScraping
-    },
-    {
-      method: 'GET',
-      path: '/{param*}',
-      handler: {
-        directory: {
-          path: 'app',
-          redirectToSlash: true,
-          index: true
-        }
-      }
     }
   ],
   performScraping: performScraping
