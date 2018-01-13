@@ -25,7 +25,7 @@ server.connections = {
   }
 };
 
-server.route(controller);
+server.route(controller.apis);
 async function startServer(){
   await server.register(Inert);
   await server.start();
