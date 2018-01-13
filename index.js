@@ -14,6 +14,7 @@ try { // Impostazioni di TLS (opzionali)
   console.log("INFO: Certificato e chiave privata caricati correttamente.");
 } catch (ex) {
   console.log("INFO: File della chiave privata e/o del certificato non trovato/i.")
+  console.log("WARNING: File della chiave privata e/o del certificato non trovato/i. TLS non verrà utilizzato.")
 }
 
 const server = new Hapi.Server(config.serverConnection);
@@ -36,11 +37,22 @@ async function startServer(){
     }).start();
   } catch (ex) {
     console.log("WARNING: Errore di sintassi nella specifica cron.");
+  if(config.scraper.cronEnabled) {
+    try { // Cron
+      cron.job(config.scraper.cronFrequency, function() {
+        console.log("INFO: Esecuzione scraping con cron.");
+        controller.performScraping();
+      }).start();
+    } catch (ex) {
+      console.log("WARNING: Errore di sintassi nella specifica cron.");
+    }
   }
   if(config.scraper.forceScrapingOnStartup) { // Forced scraping
     console.log("INFO: Performing forced scraping.");
+    console.log("INFO: Esecuzione scraping forzata.");
     controller.performScraping();
   }
 }
 startServer();
 console.log('Server avviato su:', server.info.uri);
+console.log('INFO: Server avviato su:', server.info.uri);
