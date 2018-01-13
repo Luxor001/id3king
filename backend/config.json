@@ -1,5 +1,6 @@
 {
   "scraper": {
+    "cronEnabled": true,
     "cronFrequency": "0 0 0 1 * *",
     "forceScrapingOnStartup": false
   },
