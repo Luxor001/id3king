@@ -1,4 +1,8 @@
 {
+  "scraper": {
+    "cronFrequency": "0 0 0 1 * *",
+    "forceScrapingOnStartup": false
+  },
   "dbConnection": {
     "host": "localhost",
     "user": "id3king",
@@ -11,7 +15,9 @@
       "cors": true
     }
   },
-  "security":{
-     "password_min_length": 8
+  "security": {
+     "password_min_length": 8,
+     "tlsPrivateKeyPath": "./privatekey.pem",
+     "tlsCertificatePath": "./certificate.pem"
   }
 }
