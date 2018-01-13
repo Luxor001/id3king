@@ -33,7 +33,7 @@ export class MainComponent implements OnInit {
 
   constructor(private routeService: RouteService,
     private loginService: LoginService,
-    private sessionService: SessionService) { }
+    public sessionService: SessionService) { }
 
   @ViewChild('dataTableIstance') dt: DataTable;
   ngOnInit() {

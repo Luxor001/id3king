@@ -232,12 +232,23 @@ module.exports = {
       method: 'GET',
       path: '/debugScraper',
       handler: scrapeAndSave
+    },
+    {
+      method: 'GET',
+      path: '/{param*}',
+      handler: {
+        directory: {
+          path: 'app',
+          redirectToSlash: true,
+          index: true
+        }
+      }
     }
   ],
   scrapeAndSave: scrapeAndSave
 };
 
-function scrapeAndSave(){
+function scrapeAndSave() {
   let result = new GetRoutesResult();
   return scraper.scanSite().then(function(scrapeResults) {
     if (scrapeResults != null) {

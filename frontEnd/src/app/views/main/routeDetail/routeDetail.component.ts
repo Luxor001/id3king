@@ -16,7 +16,7 @@ export class RouteDetailComponent implements OnInit {
   routeDetail: RouteDetail;
 
   constructor(private routeService: RouteService,
-    private sessionService: SessionService) { }
+    public sessionService: SessionService) { }
 
   ngOnInit() {
     this.routeService.getRouteDetails(this.routeSelezionato.id)

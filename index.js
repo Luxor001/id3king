@@ -25,9 +25,9 @@ server.connections = {
   }
 };
 
-server.route(controller.apis);
 async function startServer(){
   await server.register(Inert);
+  server.route(controller.apis);
   await server.start();
   try { // Cron
     cron.job(config.scraper.cronFrequency, function() {

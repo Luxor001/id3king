@@ -12,7 +12,7 @@ export class HeaderComponent {
   modalType: MODALTYPE;
   userSession: UserSession;
 
-  constructor(private sessionService: SessionService) { }
+  constructor(public sessionService: SessionService) { }
   signIn() {
     this.displayModal = true;
     this.modalType = MODALTYPE.LOGIN;
