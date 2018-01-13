@@ -68,7 +68,6 @@ module.exports = {
         }, function onFail(Exception) {
           if (Exception instanceof EmptyDatabaseException)
             return result.setError(LoginResultERRORS.EMPTY_DATABASE);
-          else
           else {
             console.log("ERROR: unhandled exception in 'getRoutes':\n" + Exception);
             return result.setError(LoginResultERRORS.GENERIC_UNHANDLED_ERROR);
@@ -90,7 +89,6 @@ module.exports = {
         }, function onFail(Exception) {
           if (Exception instanceof RouteNotFoundException)
             return result.setError(LoginResultERRORS.ROUTE_NOT_FOUND);
-          else
           else {
             console.log("ERROR: unhandled exception in 'getRouteDetails':\n" + Exception);
             return result.setError(LoginResultERRORS.GENERIC_UNHANDLED_ERROR);
@@ -114,7 +112,6 @@ module.exports = {
             return result.setError(LoginResultERRORS.INCORRECT_LOGIN);
           else if (Exception instanceof AlreadySavedRouteException)
             return result.setError(LoginResultERRORS.ALREADY_SAVED_ROUTE);
-          else
           else {
             console.log("ERROR: unhandled exception in 'saveRoute':\n" + Exception);
             return result.setError(LoginResultERRORS.GENERIC_UNHANDLED_ERROR);
@@ -123,8 +120,6 @@ module.exports = {
       }
     },
 
-    /// API per effettuare la login utente
-    /// cercare come fare per https://hapijs.com/tutorials/auth
     /// API per effettuare la login utente (vedere https://hapijs.com/tutorials/auth)
     {
       method: 'POST',
@@ -141,7 +136,6 @@ module.exports = {
         }, function onFail(Exception) {
           if (Exception instanceof IncorrectLoginException)
             return result.setError(LoginResultERRORS.INCORRECT_LOGIN);
-          else
           else {
             console.log("ERROR: unhandled exception in 'signin':\n" + Exception);
             return result.setError(LoginResultERRORS.GENERIC_UNHANDLED_ERROR);
@@ -193,7 +187,6 @@ module.exports = {
         }, function onFail(Exception) {
           if (Exception instanceof IncorrectLoginException)
             return result.setError(LoginResultERRORS.INCORRECT_LOGIN);
-          else
           else {
             console.log("ERROR: unhandled exception in 'getBookmarkedRoutes':\n" + Exception);
             return result.setError(LoginResultERRORS.GENERIC_UNHANDLED_ERROR);
@@ -218,7 +211,6 @@ module.exports = {
             return result.setError(LoginResultERRORS.INCORRECT_LOGIN);
           else if (Exception instanceof AlreadyExistingFilterException)
             return result.setError(LoginResultERRORS.ALREADY_EXISTING_FILTER);
-          else
           else {
             console.log("ERROR: unhandled exception in 'saveFilter':\n" + Exception);
             return result.setError(LoginResultERRORS.GENERIC_UNHANDLED_ERROR);
@@ -242,21 +234,19 @@ module.exports = {
         }, function onFail(Exception) {
           if (Exception instanceof NotExistingFilterException)
             return result.setError(LoginResultERRORS.NOT_EXISTING_FILTER);
-          else
           else {
             console.log("ERROR: unhandled exception in 'getFilter':\n" + Exception);
             return result.setError(LoginResultERRORS.GENERIC_UNHANDLED_ERROR);
           }
         });
       }
-<<<<<<< HEAD
     },
 
     /// API di debug che esegue lo scraping incondizionatamente
     {
       method: 'GET',
       path: '/debugScraper',
-      handler: scrapeAndSave
+      handler: performScraping
     },
     {
       method: 'GET',
@@ -268,32 +258,23 @@ module.exports = {
           index: true
         }
       }
-=======
->>>>>>> 20e9ac769cadbc97aa0903e6fc5b45ba260b8d0a
     }
   ],
-  scrapeAndSave: scrapeAndSave
   performScraping: performScraping
 };
 
-<<<<<<< HEAD
-function scrapeAndSave() {
-=======
 // Esegue uno scraping e salva i risultati sul database
 function performScraping() {
->>>>>>> 20e9ac769cadbc97aa0903e6fc5b45ba260b8d0a
   let result = new GetRoutesResult();
   return scraper.scanSite().then(function(scrapeResults) {
     if (scrapeResults != null) {
       result.routes = scrapeResults;
-      result.Return = true; // segnaliamo al client che è andato tutto come previsto
       result.Return = true;
       dbHandler.saveScrapeResults(scrapeResults);
     }
     return result;
   }, function onFail(Exception) {
-    // return result.setError(LoginResultERRORS.DATABASE_SCRAPING_ERROR);
-    debugger;
-    console.log(Exception);
+    console.log("ERROR: exception in 'performScraping()':\n" + Exception);
+    return result.setError(LoginResultERRORS.DATABASE_SCRAPING_ERROR);
   });
 }
