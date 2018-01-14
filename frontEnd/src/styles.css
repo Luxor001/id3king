@@ -1,3 +1,16 @@
+@media (max-width: 35em) {
+  .ui-datatable-reflow .ui-datatable-data td {
+    height: 100% !important;
+    min-width: 20em !important;
+    width: 100vw !important;
+    overflow: visible !important;
+    padding-right: 30px !important
+  }
+  .ui-datatable-scrollable-body{
+    width: calc(100% + 15px);
+  }
+}
+
 * {
   font-family: 'Lato', sans-serif;
   font-size: 14px;
@@ -15,18 +28,21 @@ app-main>.ui-widget-header>div {
   display: inline-block;
 }
 
-.tableContainer p-datatable .ui-datatable .ui-datatable-scrollable-body,
-.tableContainer p-datatable .ui-datatable .ui-datatable-scrollable-table-wrapper{
-  min-width: 1000px;
+.tableContainer p-datatable .ui-datatable .ui-datatable-scrollable-body, .tableContainer p-datatable .ui-datatable .ui-datatable-scrollable-table-wrapper {
   height: calc(100vh - 260px) !important;
   max-height: calc(100vh - 200px) !important;
+  overflow-x: hidden;
+}
+
+.ui-datatable-reflow .ui-datatable-data tr.ui-widget-content {
+  width: 100vw !important;
 }
 
 app-main>.ui-widget-header div.toolbar, app-main>.ui-widget-header div.toolbar div {
   float: right;
 }
 
-app-main>.ui-widget-header div.toolbar p-dropdown label{
+app-main>.ui-widget-header div.toolbar p-dropdown label {
   text-align: center;
 }
 
@@ -55,6 +71,10 @@ p-datatable tr {
   border-right: 0 !important;
 }
 
+p-datatable tr td:first-child {
+  overflow: visible !important;
+}
+
 p-datatable thead {
   border-bottom: 1px solid #d4d4d4;
 }
@@ -70,7 +90,7 @@ p-header {
 
 app-header {
   display: block;
-  height: 75px;
+  min-height: 75px;
   border-bottom: 1px solid #eee;
 }
 
