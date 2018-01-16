@@ -240,7 +240,18 @@ module.exports = {
           }
         });
       }
-    }
+    },
+    {
+      method: 'GET',
+      path: '/{param*}',
+      handler: {
+        directory: {
+          path: 'app',
+          redirectToSlash: true,
+          index: true
+        }
+      }
+	}
   ],
   performScraping: performScraping
 };
