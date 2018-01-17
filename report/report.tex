@@ -88,13 +88,34 @@ Il back-end è implementato in Javascript su NodeJS, utilizzando il framework \t
 	\item \textit{scraper}, che scansiona il sito "id3king.it" alla ricerca di nuove informazioni da normalizzare ed aggiungere al database.
 	La normalizzazione è resa necessaria per l'inserimento nel database, in quanto sul sito originale i dati sono inseriti in HTML come stringhe semplici e quindi non normalizzati.
 \end{itemize}
+\subsection{Diagramma delle classi}
 Nel diagramma delle classi è rappresentata la struttura del back-end.
 %TODO: diagramma delle classi
-\\Nel diagramma di sequenza è esplicitato il funzionamento di una generica chiamata proveniente da un client che necessita di accedere ad informazioni presenti nel database.
+\subsection{Diagramma di sequenza}
+Nel diagramma di sequenza è esplicitato il funzionamento di una generica chiamata proveniente da un client che necessita di accedere ad informazioni presenti nel database.
 %TODO: diagramma di sequenza
-\\Il DBMS scelto per l'implementazione è \textit{MariaDB}.
-%TODO: Dati e database (schema relazionale e contatore accessi).
-\\Tramite un file di configurazione (\textit{config.json}) è possibile personalizzare alcuni aspetti del funzionamento dell'applicazione:
+\subsection{Dati e database}
+Il DBMS scelto per l'implementazione è \textit{MariaDB}.
+\\La tabella principale è \textit{Percorso} che, insieme a \textit{Localita}, contiene i dati ottenuti tramite scraping.
+Gli amministratori possono opzionalmente modificare manualmente questi dati qualora le informazioni riportate non fossero corrette: questo può accadere poiché i dati originali non sono normalizzati.
+Di conseguenza, potrebbero occasionalmente presentarsi dati errati o mal formattati.
+Anche per questo motivo, si è scelto di popolare il contenuto di queste tabelle in maniera non distruttiva durante lo scraping automatico.
+\\Ogni volta che i dettagli di uno specifico percorso vengono visualizzati da un utente, il relativo contatore viene incrementato: in questo modo è possibile sapere quali sono gli itinerari più ricercati.
+\\Altro fulcro di archiviazione dei dati è la tabella \textit{Utenti}, che memorizza i dati degli utenti del servizio e funge da identificatore nelle altre tabelle contenenti i dati degli utenti:
+\begin{itemize}
+	\item \textit{ItinerarioPreferito}, che consente ad ogni utente di salvare una serie di percorsi per poterli ritrovare facilmente in seguito;
+	\item \textit{Login}, che memorizza per ogni sessione un token generato casualmente che scade dopo un periodo di tempo configurabile (utile per consentire sessioni multiple);
+	\item \textit{Ricerca}, che consente ad ogni utente di memorizzare una serie di parametri di ricerca in modo da non doverli reimpostare ad ogni accesso.
+\end{itemize}
+Concludono lo schema le tabelle \textit{Difficolta} e \textit{Periodo}, necessarie affinché il database sia in terza forma normale.
+\\In figura \ref{db_schema} è presente lo schema relazionale.
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.45]{DB_schema}
+	\caption{Schema relazionale del database \label{db_schema}}
+\end{figure}
+\subsection{File di configurazione}
+Tramite un file di configurazione (\textit{config.json}) è possibile personalizzare alcuni aspetti del funzionamento dell'applicazione:
 \begin{itemize}
 	\item la frequenza di scraping automatico (tramite \textit{cron});
 	\item i parametri di connessione al DBMS;
