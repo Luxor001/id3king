@@ -35,7 +35,7 @@ I percorsi solitamente utilizzati dagli escursionisti sono interamente mappati s
 Per ogni escursione presente, è possibile scaricarne il tracciato GPS, la tabella dei toponimi e una sezione della cartina del percorso, oltre a molte altre informazioni.
 \\Data la relativa difficoltà di trovare informazioni così dettagliate sui percorsi escursionistici e di una tale entità (allo stato attuale, il sito presenta oltre 890 escursioni documentate su un arco di diciotto anni!), è evidente che il lavoro di questo gruppo sia di enorme rilevanza per tutti gli appassionati di escursionismo.
 \\Tuttavia, allo stato attuale, il sito del gruppo non consente di filtrare a piacimento le escursioni inserite, così come ordinarle secondo un altro criterio oltre a quello della data di inserimento; queste mancanze rendono piuttosto difficoltoso trovare rapidamente l'escursione adatta alle proprie esigenze.
-\\\\A causa di queste mancanze, è nato il progetto \textit{id3king-js}: ottenuto il consenso da parte degli amministratori del sito si è deciso di progettare e sviluppare una web app che esegua lo scraping dell'originale e proponga i dati presenti in maniera maggiormente fruibile e funzionale, ad esempio permettendo una ricerca basata su parametri e la creazione di profili utente per memorizzare dati di interesse.
+\\\\A causa di queste mancanze, è nato il progetto \textit{id3king-js}: ottenuto il consenso da parte degli amministratori del sito, si è deciso di progettare e sviluppare una web app che esegua lo scraping dell'originale e proponga i dati presenti in maniera maggiormente fruibile e funzionale, ad esempio permettendo una ricerca basata su parametri e la creazione di profili utente per memorizzare dati di interesse.
 \\In particolare dovrà essere possibile filtrare e riordinare gli itinerari del sito per consentire una più veloce individuazione di un percorso in base a una certa esigenza.
 Ad esempio, un utente alla ricerca di un percorso non troppo impegnativo potrebbe pensare di filtrare tutti gli itinerari con lunghezza e dislivello inferiori a un certo quantitativo, e magari posti nella zona del lago di Ridracoli (FC).
 \\Le funzionalità offerte dall'applicazione possono essere riassunte con il diagramma dei casi d'uso in figura \ref{use_case_diagram}.
@@ -62,7 +62,12 @@ Adottando una architettura \textit{RESTful}, le comunicazioni I/O dell'applicazi
 \\Il pattern \textit{MVC} (Model View Controller) è stato utilizzato per rendere più gestibili, modulari e riutilizzabili le singole componenti.
 \\Ai fini di questo progetto si è scelto di utilizzare un unico server cloud di tipo \textit{IaaS} (Infrastructure as a Service), fornito da un provider, sul quale saranno installati tutti i servizi necessari al funzionamento dell'applicazione.
 Sono tuttavia possibili configurazioni ridondanti, sia per il server web, sia per il DBMS, al fine di migliorare robustezza, affidabilità e tolleranza ai guasti.
-% TODO: diagramma di deployment
+\\In figura \ref{deployment_diagram} è presente uno schema di deployment di base in cui front-end, back-end e database risiedono sullo stesso server.
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.45]{DeploymentDiagram}
+	\caption{Diagramma di deployment \label{deployment_diagram}}
+\end{figure}
 
 \pagebreak
 \section{Sicurezza}
@@ -71,8 +76,7 @@ Data la natura di rete dell'applicazione e poiché verranno trattati alcuni dati
 	\item Tutte le comunicazioni di rete sono crittografate e autenticate con SSL/TLS per prevenire intercettazioni e attacchi \textit{man-in-the-middle}; cioè è stato reso possibile grazie alla grande flessibilità del framework Hapi, che consente di impostare semplicemente comunicazioni crittografate client-server.
 	\\Pertanto, tutte le comunicazioni client-server avvengono tramite HTTPS e si possono ritenere quindi relativamente sicure.
 	\item Tutte le credenziali degli utenti vengono memorizzate sotto forma di hash con \textit{salt}, grazie alla libreria per NodeJS \textit{bcrypt}.
-	\\Tale libreria utilizza una funzione di hashing omonima che, a differenza delle più popolari \textit{SHA*}, adotta un approccio \textit{slow hash}, molto più adatto in questi contesti di sicurezza.
-	%inserire bibliografia in "più adatta[1]" http://worldcomp-proceedings.com/proc/p2016/ICW3865.pdf
+	\\Tale libreria utilizza una funzione di hashing omonima che, a differenza delle più popolari \textit{SHA*}, adotta un approccio \textit{slow hash}, molto più adatto in questi contesti di sicurezza (a questo proposito, vedere il paper \href{http://worldcomp-proceedings.com/proc/p2016/ICW3865.pdf}{"Implementation and Performance Analysis of PBKDF2, Bcrypt, Scrypt Algorithm"}).
 	\\Pertanto, considerando che le password rielaborate arrivano a sessanta caratteri, si può affermare che la sicurezza delle password salvate sul database sia più che resistente agli attuali metodi di cracking.
 	\item Tutti gli input utente vengono validati per impedire lo sfruttamento di attacchi come \textit{SQL injection} e \textit{buffer overflow}, tramite la dalla libreria di interfacciamento col DB, \textit{mysql}. Inoltre, non sono consentite query SQL multiple per una sola richiesta.
 	\item L'intero codice sorgente dell'applicazione è disponibile (e aperto a modifiche e miglioramenti) su \textit{Github}.
@@ -89,11 +93,19 @@ Il back-end è implementato in Javascript su NodeJS, utilizzando il framework \t
 	La normalizzazione è resa necessaria per l'inserimento nel database, in quanto sul sito originale i dati sono inseriti in HTML come stringhe semplici e quindi non normalizzati.
 \end{itemize}
 \subsection{Diagramma delle classi}
-Nel diagramma delle classi è rappresentata la struttura del back-end.
-%TODO: diagramma delle classi
+Nel diagramma delle classi (figura \ref{class_diagram_backend}) è rappresentata la struttura del back-end.
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.45]{ClassDiagram_Backend}
+	\caption{Diagramma delle classi del backend \label{class_diagram_backend}}
+\end{figure}
 \subsection{Diagramma di sequenza}
-Nel diagramma di sequenza è esplicitato il funzionamento di una generica chiamata proveniente da un client che necessita di accedere ad informazioni presenti nel database.
-%TODO: diagramma di sequenza
+Nel diagramma di sequenza (figura \ref{sequence_diagram}) è esplicitato il funzionamento di una generica chiamata proveniente da un client che necessita di accedere ad informazioni presenti nel database.
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.45]{SequenceDiagram}
+	\caption{Diagramma di sequenza \label{sequence_diagram}}
+\end{figure}
 \subsection{Dati e database}
 Il DBMS scelto per l'implementazione è \textit{MariaDB}.
 \\La tabella principale è \textit{Percorso} che, insieme a \textit{Localita}, contiene i dati ottenuti tramite scraping.
