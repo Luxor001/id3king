@@ -58,7 +58,7 @@
       </ng-template>
     </p-column>
 
-    <p-column field="difficolta" [style]="{'width':'14%'}" header="DIFFICOLTA" [sortable]="true" [filter]="true" filterMatchMode="in">
+    <p-column field="difficolta" [style]="{'width':'9%'}" header="DIFFICOLTA" [sortable]="true" [filter]="true" filterMatchMode="in">
       <ng-template pTemplate="filter" let-col>
         <p-multiSelect [(ngModel)]="filterValues.filtroDifficolta" [options]="filterBounds.difficulties" defaultLabel="Tutte" selectedItemsLabel="{0} Difficoltà" maxSelectedLabels="1" (onChange)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)" styleClass="ui-column-filter"></p-multiSelect>
       </ng-template>
@@ -70,7 +70,7 @@
       </ng-template>
     </p-column>
 
-    <p-column field="titolo" [style]="{'width': '32%', 'max-height': '40px'}" header="DESCRIZIONE">
+    <p-column field="titolo" [style]="{'width': '37%', 'max-height': '40px'}" header="DESCRIZIONE">
       <ng-template let-itinerario="rowData" pTemplate="body">
         <span >{{itinerario.titolo}}</span>
       </ng-template>
