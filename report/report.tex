@@ -138,17 +138,43 @@ Tramite un file di configurazione (\textit{config.json}) è possibile personaliz
 \pagebreak
 
 \section{Front-end}
-Come già anticipato nell'introduzione, il principale obiettivo di questo progetto era quello di rendere disponibile per l'utente una serie considerevole di itinerari da poter filtrare e scegliere a piacimento in base alle proprie esigenze.
+Considerando la grande quantità di dati da visualizzare, la necessità di effettuare richieste client-server e la creazione di un architettura ordinata e ben supportata, gli autori di questo progetto hanno utilizzato \textit{Angular4+} come principale framework di sviluppo.
+\\La struttura dell'applicazione segue scrupolosamente la \textit{style guide} ufficiale di Angular, ad esempio nominando i file con la logica nome-file.tipo.ts e seguendo il \textit{single responsability principle}.
+\\\\I componenti del progetto sono stati suddivisi in maniera gerarchica, in base alla loro funzionalità:
+\begin{itemize}
+	\item \textit{views/main}: contiene la struttura principale della tabella, i template dei filtri da applicare ai dati e il modale di creazione filtro.
+	\\Inoltre, contiene il codice del dettaglio di un itinerario.
+	\item \textit{views/header}: contiene la struttura dell'header dell'applicazione, e tutta la gestione di login/registrazione e il relativo modale.
+\end{itemize}
+Tutta la logica di business è stata inserita all'interno dei singoli services creati appositamente; essendo presente soltanto un modulo Angular, tutti i servizi utilizzati possono essere considerati \textit{singleton}, in quanto inseriti nel \textit{providers} del modulo.
+\\I \textit{services} creati possono essere così riassunti:
+\begin{itemize}
+	\item \textit{LoginService}: fornisce alcuni metodi per effettuare il login e la registrazione dell'utente all'applicazione.
+	\item \textit{RouteService}: contiene tutte le principali operazioni effettuabili sugli itinerari (come il loro scaricamento, la loro registrazione tra i preferiti ecc.), astratti attraverso la classe \textit{Route}.
+	\item \textit{SessionService}: servizio che mantiene e fornisce la sessione utente qualora un utente si sia loggato all'applicazione.
+	\item \textit{UtilityService}: fornisce alcuni metodi di utilità utilizzati comunemente dall'applicazione, come il download o la traduzione di una data nella rispettiva stagione.
+\end{itemize}
+Infine, come peraltro è intuibile dai nomi dei file, si è scelto di adottare \textit{Typescript} come linguaggio di sviluppo dell'applicazione
 %da continuare
 \subsection{Interfaccia utente}
-Il principale obiettivo nello sviluppo del front-end è stato quello di raggiungere una sufficiente usabilità per l'utente finale: ricercare un itinerario in una precisa località, di una sufficiente lunghezza e di una certa difficoltà dovrebbe essere il più semplice e immediato possibile.
-\\Per questo motivo, l'interfaccia dell'applicazione si sviluppa quasi esclusivamente sulla tabella contenente i dati degli itinerari, occupando tutto lo spazio disponibile della finestra utente.
+Il principale obiettivo nello sviluppo del front-end è stato quello di raggiungere una sufficiente usabilità per l'utente finale: ricercare un itinerario in una precisa località, di una sufficiente lunghezza e di una certa difficoltà sarebbe dovuto essere il più semplice e immediato possibile.
+\\Per questo motivo, l'interfaccia dell'applicazione è stata sviluppata quasi esclusivamente sulla tabella contenente i dati degli itinerari, occupando tutto lo spazio disponibile della finestra corrente; questa caratteristica, oltre alla possibilità di visualizzare e filtrare gli itinerari senza effettuare obbligatoriamente un log-in, permette fin da subito di soddisfare le esigenze dell'utente.
 \begin{figure}[h]
 	\centering
-	\includegraphics[scale=0.38]{ui_1.png}
+	\includegraphics[scale=0.35]{ui_1.png}
 	\caption{Interfaccia dell'applicazione \label{ui_1}}
 \end{figure}
-\\Gli itinerari possono poi essere filtrati
+\\Sempre secondo questa logica, si è deciso di inserire i filtri all'interno degli header della tabella, permettendo così di filtrare per:
+\begin{itemize}
+	\item Data (per periodo: Inverno, Primavera, Autunno e Estate)
+	\item Durata di percorrenza
+	\item Lunghezza percorso
+	\item Dislivello cumulato
+	\item Difficoltà nominale
+	\item Luogo (toponimo principale dell'escursione)
+\end{itemize}
+
+\subsection{Diagramma delle classi}
 %inoltre possibile filtrare i dati attraverso i  da essa è possibile infatti sarebbe dovuta focalizzare principalmente sui dati stessi: per questo motivo la tabella di rappresentazione occupa tutto lo spazio disponibile della finestra utente.
 %TODO: Angular in generale, pattern MVC (e altri?), descrizione interfaccia grafica (spiegazione funzioni principali con qualche screenshot).
 \pagebreak
