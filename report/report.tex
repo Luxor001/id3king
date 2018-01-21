@@ -155,7 +155,7 @@ Tutta la logica di business è stata inserita all'interno dei singoli services c
 	\item \textit{UtilityService}: fornisce alcuni metodi di utilità utilizzati comunemente dall'applicazione, come il download o la traduzione di una data nella rispettiva stagione.
 \end{itemize}
 Infine, come peraltro è intuibile dai nomi dei file, si è scelto di adottare \textit{Typescript} come linguaggio di sviluppo dell'applicazione
-%da continuare
+\pagebreak
 \subsection{Interfaccia utente}
 Il principale obiettivo nello sviluppo del front-end è stato quello di raggiungere una sufficiente usabilità per l'utente finale: ricercare un itinerario in una precisa località, di una sufficiente lunghezza e di una certa difficoltà sarebbe dovuto essere il più semplice e immediato possibile.
 \\Per questo motivo, l'interfaccia dell'applicazione è stata sviluppata quasi esclusivamente sulla tabella contenente i dati degli itinerari, occupando tutto lo spazio disponibile della finestra corrente; questa caratteristica, oltre alla possibilità di visualizzare e filtrare gli itinerari senza effettuare obbligatoriamente un log-in, permette fin da subito di soddisfare le esigenze dell'utente.
@@ -164,7 +164,8 @@ Il principale obiettivo nello sviluppo del front-end è stato quello di raggiung
 	\includegraphics[scale=0.35]{ui_1.png}
 	\caption{Interfaccia dell'applicazione \label{ui_1}}
 \end{figure}
-\\Sempre secondo questa logica, si è deciso di inserire i filtri all'interno degli header della tabella, permettendo così di filtrare per:
+\\Seguendo questa logica, qualora un utente voglia approfondire le informazioni di un itinerario, è possibile aprirne il dettaglio sull'apposita freccia a sinistra del campo ID: tale operazione consentirà di visualizzare alcune informazioni aggiuntive e di effettuare alcune azioni, come lo scaricamento della mappa del percorso o della traccia GPS, il salvataggio nei preferiti o l'apertura del link originale dell'itinerario.
+\\I filtri sugli itinerari sono stati inseriti sui campi all'interno degli header della tabella, permettendo così di filtrare comodamente per:
 \begin{itemize}
 	\item Data (per periodo: Inverno, Primavera, Autunno e Estate)
 	\item Durata di percorrenza
@@ -173,10 +174,17 @@ Il principale obiettivo nello sviluppo del front-end è stato quello di raggiung
 	\item Difficoltà nominale
 	\item Luogo (toponimo principale dell'escursione)
 \end{itemize}
-
+Nel lato superiore sinistro dello schermo è stata aggiunta la possibilità di specificare un unico filtro "globale" da applicare agli itinerari.
+\\\\Infine, nel lato superiore destro dello schermo sono stati posizionati dei link per effettuare il login o la registrazione di un utente.
+\\Una volta loggato, nell'area sarà possibile accedere a delle funzionalità avanzate come il salvataggio del gruppo filtri corrente o la visualizzazione dei soli itinerari salvati.
+\pagebreak
 \subsection{Diagramma delle classi}
-%inoltre possibile filtrare i dati attraverso i  da essa è possibile infatti sarebbe dovuta focalizzare principalmente sui dati stessi: per questo motivo la tabella di rappresentazione occupa tutto lo spazio disponibile della finestra utente.
-%TODO: Angular in generale, pattern MVC (e altri?), descrizione interfaccia grafica (spiegazione funzioni principali con qualche screenshot).
+Di seguito viene mostrato il diagramma delle classi (e delle relative dipendenze) del \textit{MainComponent} e di \textit{RouteDetailComponent}.
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.45]{ClassDiagram_Frontend}
+	\caption{Diagramma delle classi di MainComponent e relative dipendenze \label{ClassDiagram_Frontend}}
+\end{figure}
 \pagebreak
 \section{Conclusioni}
 
