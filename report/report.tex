@@ -25,19 +25,19 @@
 
 \setcounter{chapter}{1}
 \section{Introduzione}
-L'escursionismo è un'attività motoria nel quale viene percorso un certo tragitto su sentieri in territori tipicamente agevoli, a scopo ricreativo o di studio.
-\\Essendo un'azione a basso sforzo fisico e molto modulabile nel grado di difficoltà, è una pratica molto diffusa nel mondo e nel nostro paese da persone di tutte le fasce d'età.\\
-I percorsi solitamente sono mappati su apposite cartine topografiche e il loro stato di percorrenza viene mantenuto costantemente da alcuni enti preposti come il \textit{CAI} (Club Alpino Italiano).
-\\Tuttavia, l'escursionismo richiede molta attenzione nella sua pianificazione, in quanto è facile sbagliare la stima della lunghezza della camminata o il suo dislivello.
-\\Molti amatori si ritrovano, loro malgrado, a constatare le difficoltà di un percorso soltanto una volta sul luogo, magari a metà del tragitto.
-\\\\Fortunatamente, alcuni gruppi di appassionati redigono e pubblicano della documentazione sulle escursioni da loro intraprese: il più famoso di essi nella zona emiliano-romagnola è \textit{id3king}.
-\\Il loro sito (www.id3king.it), infatti, viene aggiornato regolarmente, con nuovi spunti  inseriti spesso su base settimanale.
-Per ogni escursione presente, è possibile scaricarne il tracciato GPS, la tabella dei toponimi e una sezione della cartina del percorso, oltre a molte altre informazioni.
-\\Siccome trovare informazioni così dettagliate sui percorsi escursionistici risulta ostico e il sito è particolarmente prolifico (allo stato attuale, presenta oltre 890 tragitti documentati nell'arco di diciotto anni!), è evidente che il lavoro del gruppo sia di enorme rilevanza per tutti gli appassionati di questa attività.
-\\Tuttavia, allo stato attuale, id3king.it non consente di filtrare a piacimento le escursioni inserite, così come ordinarle secondo un altro criterio oltre a quello della data di inserimento; queste mancanze rendono piuttosto complicato trovare rapidamente quella adatta alle proprie esigenze.
-\\\\Alla luce di ciò è nato il progetto \textit{id3king-js}: una volta ottenuto il consenso da parte degli amministratori del sito, si è deciso di progettare e sviluppare una web app che esegua lo scraping dell'originale e proponga i dati presenti in maniera maggiormente fruibile e funzionale, ad esempio permettendo una ricerca basata su parametri e la creazione di profili utente per memorizzare dati di interesse.
+L'escursionismo è un'attività motoria nel quale viene percorso un tragitto su sentieri in territori tipicamente agevoli, a scopo ricreativo o di studio.
+\\Essendo un'azione sforzo fisico variabile in base ai percorsi scelti e molto modulabile nel grado di difficoltà, è una pratica molto diffusa nel mondo e nel nostro paese da persone di tutte le fasce d'età.
+\\Gli itinerari solitamente sono mappati su apposite cartine topografiche e il loro stato di percorrenza viene mantenuto costantemente da alcuni enti preposti come il \textit{CAI} (Club Alpino Italiano).
+\\Tuttavia, l'escursionismo richiede molta attenzione nella sua pianificazione, in quanto è facile sbagliare la stima della lunghezza della camminata o il suo dislivello:
+molti amatori si ritrovano, loro malgrado, a constatare le difficoltà di un percorso soltanto una volta sul luogo, magari a metà del tragitto.
+\\\\Fortunatamente, alcuni gruppi di appassionati redigono e pubblicano documentazione sulle escursioni da loro intraprese: il più famoso di essi nella zona emiliano-romagnola è \textit{id3king}.
+Il loro sito (\url{www.id3king.it}), infatti, viene aggiornato regolarmente con nuovi dati, inseriti spesso su base settimanale.
+Per ogni escursione presente è possibile ottenerne il tracciato GPS, la tabella dei toponimi e una sezione della cartina del percorso, oltre a molte altre indicazioni.
+\\Siccome trovare informazioni così dettagliate sui percorsi escursionistici risulta ostico e il loro sito è particolarmente prolifico (allo stato attuale, presenta oltre 890 tragitti documentati nell'arco di diciotto anni!), è evidente che il lavoro del gruppo sia di enorme rilevanza per tutti gli appassionati di questa attività.
+\\Tuttavia, allo stato attuale, \textit{id3king.it} non consente di filtrare a piacimento le escursioni inserite, così come ordinarle secondo un altro criterio oltre a quello della data di inserimento crescente; queste mancanze rendono piuttosto complicato trovare rapidamente quelle adatte alle proprie esigenze.
+\\\\Alla luce di ciò, è nato il progetto \textbf{id3king-js}: una volta ottenuto il consenso da parte degli amministratori del sito, si è deciso di progettare e sviluppare una web app che esegua lo scraping dell'originale e proponga i dati presenti in maniera maggiormente fruibile e funzionale, ad esempio permettendo una ricerca basata su parametri e la creazione di profili utente per memorizzare dati di interesse.
 \\In particolare dovrà essere possibile filtrare e riordinare gli itinerari del sito per consentire una più veloce individuazione di un percorso in base a una certa esigenza.
-Come un utente alla ricerca di un percorso non troppo impegnativo, il quale potrebbe pensare di filtrare tutti gli itinerari con lunghezza e dislivello inferiori a un certo quantitativo, e magari posti nella zona del lago di Ridracoli (FC).
+Ad esempio, un utente potrebbe essere alla ricerca di un percorso non troppo impegnativo: potrebbe pensare di filtrare tutti gli itinerari con lunghezza e dislivello inferiori a un certo quantitativo e magari situati nella zona del lago di Ridracoli (FC).
 \\Le funzionalità offerte dall'applicazione possono essere riassunte con il diagramma dei casi d'uso in figura \ref{use_case_diagram}.
 \begin{figure}
 	\centering
@@ -45,62 +45,62 @@ Come un utente alla ricerca di un percorso non troppo impegnativo, il quale potr
 	\caption{Diagramma dei casi d'uso \label{use_case_diagram}}
 \end{figure}
 Il sistema dovrà rispettare requisiti di estensibilità, reattività, sicurezza e facilità d'uso per l'utente.
-
 \pagebreak
+
 \section{Architettura}
 Per raggiungere gli obbiettivi preposti, sarà necessario realizzare un'opportuna architettura server, un back-end e un front-end in grado di gestire le sessioni utente e restituire i percorsi presenti sul sito; pertanto, l'architettura del sistema è basata su una soluzione client-server.
 \\Il server, inoltre, si occuperà di effettuare periodicamente lo scraping del sito: i dati estratti verranno riversati in un apposito database relazionale da cui si potrà attingere per ogni richiesta degli utenti.
 \\Riepilogando, l'architettura sarà composta dai seguenti componenti:
 \begin{itemize}
-	\item un insieme di client che ottengono e utilizzano a piacimento i dati degli itinerari, attraverso un interfaccia web semplice e intuitiva;
+	\item un insieme di client che ottengono e utilizzano a piacimento i dati degli itinerari, attraverso un'interfaccia web semplice e intuitiva;
 	\item un server web che risponde alle esigenze dei client fornendo loro itinerari e altre funzionalità ad alto livello;
 	\item un database relazionale in cui mantenere i dati degli utenti e gli itinerari ottenuti tramite scraping.
 \end{itemize}
-Adottando una architettura \textit{RESTful}, le comunicazioni I/O dell'applicazione sono completamente\textit{stateless}, consentendo di implementare facilmente un'architettura scalabile a livelli con nodi di commutazione intermedi.
+Adottando una architettura \textit{RESTful}, le comunicazioni I/O dell'applicazione sono completamente \textit{stateless}, consentendo di implementare facilmente un'architettura scalabile a livelli con nodi di commutazione intermedi.
 \\Inoltre, essendo le comunicazioni basate su HTTP POST e GET, la portabilità dell'applicazione è totale in quanto universalmente compatibile.
 \\In base ai requisiti precedentemente definiti, come framework di sviluppo si è valutato di usare \textit{Node.js}, che prevede l'utilizzo di tecnologie web sia client-side che server-side e consente di utilizzare un modello di comunicazione event-driven, particolarmente utile in un'applicazione di rete.
 \\Il pattern \textit{MVC} (Model View Controller) è stato utilizzato per rendere più gestibili, modulari e riutilizzabili le singole componenti.
 \\Ai fini di questo progetto si è scelto di utilizzare un unico server cloud di tipo \textit{IaaS} (Infrastructure as a Service), fornito da un provider, sul quale saranno installati tutti i servizi necessari al funzionamento dell'applicazione.
-Sono tuttavia possibili configurazioni ridondanti, sia per il server web, sia per il DBMS, al fine di migliorare robustezza, affidabilità e tolleranza ai guasti.
+Sono tuttavia possibili configurazioni ridondanti, sia per il server web, sia per il DBMS, al fine di migliorare prestazioni, robustezza, affidabilità e tolleranza ai guasti.
 \\In figura \ref{deployment_diagram} è presente uno schema di deployment di base in cui front-end, back-end e database risiedono sullo stesso server.
 \begin{figure}
 	\centering
 	\includegraphics[scale=0.45]{DeploymentDiagram}
 	\caption{Diagramma di deployment \label{deployment_diagram}}
 \end{figure}
-
 \pagebreak
+
 \section{Sicurezza}
-Data la natura di rete dell'applicazione e poiché verranno trattati alcuni dati personali degli utenti (come ad esempio le password), è stato opportuno considerare la sicurezza già in fase di progettazione, onde evitare lacune successive difficili da individuare e rimuovere.
+Data la natura di rete dell'applicazione e poiché verranno trattati alcuni dati personali degli utenti (come ad esempio le password), è stato ritenuto opportuno considerare la sicurezza già in fase di progettazione, onde evitare lacune successive difficili da individuare e correggere.
 \begin{itemize}
-	\item Tutte le comunicazioni di rete sono crittografate e autenticate con SSL/TLS per prevenire intercettazioni e attacchi \textit{man-in-the-middle}; cioè è stato reso possibile grazie alla grande flessibilità del framework Hapi, che consente di impostare semplicemente comunicazioni crittografate client-server.
-	\\Pertanto, tutte le comunicazioni client-server avvengono tramite HTTPS e si possono ritenere quindi relativamente sicure.
-	\item Tutte le credenziali degli utenti vengono memorizzate sotto forma di hash con \textit{salt}, grazie alla libreria per NodeJS \textit{bcrypt}.
-	\\Tale libreria utilizza una funzione di hashing omonima che, a differenza delle più popolari \textit{SHA*}, adotta un approccio \textit{slow hash}, molto più adatto in questi contesti di sicurezza (a questo proposito, vedere il paper \href{http://worldcomp-proceedings.com/proc/p2016/ICW3865.pdf}{"Implementation and Performance Analysis of PBKDF2, Bcrypt, Scrypt Algorithm"}).
-	\\Pertanto, considerando che le password rielaborate arrivano a sessanta caratteri, si può affermare che la sicurezza delle password salvate sul database sia più che resistente agli attuali metodi di cracking.
-	\item Tutti gli input utente vengono validati per impedire lo sfruttamento di attacchi come \textit{SQL injection} e \textit{buffer overflow}, tramite la dalla libreria di interfacciamento col DB, \textit{mysql}. Inoltre, non sono consentite query SQL multiple per una sola richiesta.
+	\item Tutte le comunicazioni di rete sono crittografate e autenticate con SSL/TLS per prevenire intercettazioni e attacchi \textit{man-in-the-middle}; ciò è stato reso possibile grazie alla grande flessibilità del framework Hapi, che consente di impostare semplicemente comunicazioni crittografate client-server.
+	Pertanto, tutte le comunicazioni client-server avvengono tramite HTTPS e si possono ritenere quindi relativamente sicure.
+	\item Tutte le credenziali degli utenti vengono memorizzate sotto forma di hash con \textit{salt}, grazie alla libreria per NodeJS \textit{bcrypt}, che utilizza l'omonima funzione di hashing la quale, a differenza delle più popolari \textit{SHA*}, adotta un approccio \textit{slow hash}, molto più adatto in questi contesti di sicurezza (a questo proposito, vedere il paper \href{http://worldcomp-proceedings.com/proc/p2016/ICW3865.pdf}{"Implementation and Performance Analysis of PBKDF2, Bcrypt, Scrypt Algorithm"}).
+	Pertanto, considerando che le password rielaborate arrivano a sessanta caratteri, si può affermare che la sicurezza delle password salvate sul database sia più che resistente agli attuali metodi di cracking.
+	\item Tutti gli input utente vengono validati per impedire lo sfruttamento di attacchi come \textit{SQL injection} e \textit{buffer overflow}, tramite la libreria di interfacciamento col DB, \textit{mysql}. Inoltre, non sono consentite query SQL multiple per una sola richiesta.
 	\item L'intero codice sorgente dell'applicazione è disponibile (e aperto a modifiche e miglioramenti) su \textit{Github}.
-	\\Eventuali \textit{exploit} nel codice diventerebbero perciò trasparenti alla comunità e, pertanto, prontamente segnalati.
+	Perciò, eventuali \textit{exploit} nel codice sarebbero trasparenti alla comunità e più facilmente segnalabili e correggibili.
 \end{itemize}
 \pagebreak
 
 \section{Back-end}
-Il back-end è implementato in Javascript ES6 su NodeJS, utilizzando il framework \textit{Hapi}, nel rispetto del pattern MVC.
-\\Un controller si occupa di interfacciarsi con i client, fungendo da mediatore con le funzioni più a basso livello, delegate ad apposite classi:
+Il back-end è implementato in Javascript ES6 su NodeJS, utilizzando il framework \textit{Hapi}.
+\\Si è deciso di utilizzare un design modulare, in modo da rendere i componenti maggiormente riutilizzabili e più semplici da testare.
+Un controller si occupa di interfacciarsi con i client, fungendo da mediatore con le funzioni più a basso livello, delegate ad apposite classi:
 \begin{itemize}
-	\item \textit{dbHandler}, che si occupa della comunicazione con il database e fornisce intefacce ad alto livello per eseguire operazioni complesse;
-	\item \textit{scraper}, che scansiona il sito "id3king.it" alla ricerca di nuove informazioni da normalizzare ed aggiungere al database.
-	\\Tale operazione è resa necessaria per l'inserimento nel database, in quanto sul sito originale i dati sono inseriti in HTML come stringhe semplici e quindi non normalizzati.
+	\item \textit{dbHandler}, che si occupa della comunicazione con il database e fornisce interfacce ad alto livello per eseguire operazioni complesse;
+	\item \textit{scraper}, che scansiona il sito \textit{id3king.it} alla ricerca di nuove informazioni da normalizzare ed aggiungere al database.
 \end{itemize}
-\subsection{Diagramma delle classi}
+Durante lo scraping vengono eseguite numerose manipolazioni dei dati grezzi: sul sito originale sono inseriti in HTML come stringhe semplici e quindi non normalizzati.
+Questa è una condizione necessaria per l'inserimento nel database e per consentire il filtraggio dei percorsi in base ai loro attributi.
+\subsection{Diagrammi delle classi e di sequenza}
 Nel diagramma delle classi (figura \ref{class_diagram_backend}) è rappresentata la struttura del back-end.
 \begin{figure}
 	\centering
 	\includegraphics[scale=0.45]{ClassDiagram_Backend}
 	\caption{Diagramma delle classi del backend \label{class_diagram_backend}}
 \end{figure}
-\subsection{Diagramma di sequenza}
-Nel diagramma di sequenza (figura \ref{sequence_diagram}) è esplicitato il funzionamento di una generica chiamata proveniente da un client che necessita di accedere ad informazioni presenti nel database.
+\\Nel diagramma di sequenza (figura \ref{sequence_diagram}) è esplicitato il funzionamento di una generica chiamata proveniente da un client che necessita di accedere ad informazioni presenti nel database.
 \begin{figure}
 	\centering
 	\includegraphics[scale=0.45]{SequenceDiagram}
@@ -112,12 +112,12 @@ Il DBMS scelto per l'implementazione è \textit{MariaDB}.
 Gli amministratori possono opzionalmente modificare manualmente tali dati qualora le informazioni riportate non fossero corrette: questo può accadere poiché i dati originali non sono normalizzati.
 Di conseguenza, potrebbero occasionalmente presentarsi dati errati o mal formattati.
 Anche per questo motivo, si è scelto di popolare il contenuto di queste tabelle in maniera non distruttiva durante lo scraping automatico.
-\\Ogni volta che i dettagli di uno specifico percorso vengono visualizzati da un utente, il relativo contatore viene incrementato: così è possibile sapere quali sono gli itinerari più ricercati.
-\\Altro fulcro di archiviazione dei dati è la tabella \textit{Utenti}, che memorizza  degli utenti del servizio e funge da identificatore nelle altre tabelle contenenti i dati degli utenti:
+\\Ogni volta che i dettagli di uno specifico percorso vengono visualizzati da un utente, il relativo contatore viene incrementato: è possibile sapere quali sono gli itinerari più ricercati.
+\\Altro fulcro del database è la tabella \textit{Utenti}, che memorizza i dati dei fruitori del servizio e funge da identificatore nelle altre tabelle contenenti le preferenze degli utenti:
 \begin{itemize}
 	\item \textit{ItinerarioPreferito}, che consente ad ogni utente di salvare una serie di percorsi per poterli ritrovare facilmente in seguito;
 	\item \textit{Login}, che memorizza per ogni sessione un token generato casualmente che scade dopo un periodo di tempo configurabile (utile per consentire sessioni multiple);
-	\item \textit{Ricerca}, che consente ad ogni utente di memorizzare una serie di parametri di ricerca in modo da non doverli reimpostare ad ogni accesso.
+	\item \textit{Ricerca}, che consente ad ogni utente di ricordare una serie di parametri di ricerca in modo da non doverli reimpostare ad ogni accesso.
 \end{itemize}
 Concludono lo schema le tabelle \textit{Difficolta} e \textit{Periodo}, necessarie affinché il database sia in terza forma normale.
 \\In figura \ref{db_schema} è presente lo schema relazionale.
@@ -139,44 +139,44 @@ Tramite un file di configurazione (\textit{config.json}) è possibile personaliz
 
 \section{Front-end}
 Considerando la grande quantità di dati da visualizzare, la necessità di effettuare richieste client-server e la creazione di un architettura ordinata e ben supportata, gli autori di questo progetto hanno utilizzato \textit{Angular4+} come principale framework di sviluppo.
-\\La struttura dell'applicazione segue scrupolosamente la \textit{style guide} ufficiale di Angular, ad esempio nominando i file con la logica nome-file.tipo.ts e seguendo il \textit{single responsability principle}.
+\\La struttura dell'applicazione segue scrupolosamente la \textit{style guide} ufficiale di Angular, ad esempio nominando i file con la logica "nome-file.tipo.ts" e seguendo il \textit{single responsibility principle}.
 \\\\I componenti del progetto sono stati suddivisi in maniera gerarchica, in base alla loro funzionalità:
 \begin{itemize}
-	\item \textit{views/main}: contiene la struttura principale della tabella, i template dei filtri da applicare ai dati e il modale di creazione filtro.
-	\\Inoltre, contiene il codice del dettaglio di un itinerario.
-	\item \textit{views/header}: definisce la struttura dell'header dell'applicazione, e tutta la gestione di login/registrazione e il relativo modale.
+	\item \textit{views/main}: contiene la struttura principale della tabella, i template dei filtri da applicare ai dati, il modale di creazione filtro e il codice del dettaglio di un itinerario;
+	\item \textit{views/header}: definisce la struttura dell'header dell'applicazione e tutta la gestione di login/registrazione e il relativo modale.
 \end{itemize}
 Tutta la logica di business è stata inserita all'interno dei singoli \textit{services} creati appositamente a tale scopo; essendo presente soltanto un modulo Angular, tutti i servizi utilizzati possono essere considerati \textit{singleton}, in quanto aggiunti nel \textit{providers} del modulo.
 \\I \textit{services} progettati possono essere così riassunti:
 \begin{itemize}
-	\item \textit{LoginService}: fornisce alcuni metodi per effettuare il login e la registrazione dell'utente all'applicazione.
-	\item \textit{RouteService}: contiene tutte le principali operazioni effettuabili sugli itinerari (come il loro scaricamento, la loro registrazione tra i preferiti ecc.), astratti attraverso la classe \textit{Route}.
-	\item \textit{SessionService}: servizio che mantiene e fornisce la sessione utente qualora un utente si sia loggato all'applicazione.
-	\item \textit{UtilityService}: fornisce alcuni metodi di utilità utilizzati comunemente dall'applicazione, come il download o la traduzione di una data nella rispettiva stagione.
+	\item \textit{LoginService}: fornisce alcuni metodi per effettuare il login e la registrazione dell'utente all'applicazione;
+	\item \textit{RouteService}: contiene tutte le principali operazioni effettuabili sugli itinerari (come il loro scaricamento, la registrazione tra i preferiti ecc.), astratti attraverso la classe \textit{Route};
+	\item \textit{SessionService}: servizio che mantiene e fornisce la sessione utente qualora un utente si sia autenticato sull'applicazione;
+	\item \textit{UtilityService}: fornisce alcuni metodi di utilità utilizzati comunemente, come il download o la traduzione di una data nella rispettiva stagione.
 \end{itemize}
-Infine, come peraltro è intuibile dai nomi dei file, si è scelto di adottare \textit{Typescript} come linguaggio di sviluppo dell'applicazione.
+Infine, come è intuibile dai nomi dei file, si è scelto di adottare \textit{Typescript} come linguaggio di sviluppo dell'applicazione.
 \pagebreak
 \subsection{Interfaccia utente}
-Il principale obiettivo nello sviluppo del front-end è stato quello di raggiungere una sufficiente usabilità per l'utente finale: ricercare un itinerario in una precisa località, di una sufficiente lunghezza e di una certa difficoltà sarebbe dovuto essere il più semplice e immediato possibile.
-\\Per questo motivo, l'interfaccia dell'applicazione è stata sviluppata quasi esclusivamente sulla tabella contenente i dati degli itinerari, occupando tutto lo spazio disponibile della finestra corrente; questa caratteristica, oltre alla possibilità di visualizzare e filtrare gli itinerari senza effettuare obbligatoriamente un log-in, permette fin da subito di soddisfare le esigenze dell'utente.
+Il principale obiettivo nello sviluppo del front-end è stato quello di raggiungere una sufficiente usabilità per l'utente finale: ricercare un itinerario in una precisa località, di una sufficiente lunghezza e di una certa difficoltà dovrebbe essere il più semplice ed immediato possibile.
+\\Per questo motivo, l'interfaccia dell'applicazione è stata sviluppata quasi esclusivamente sulla tabella contenente i dati degli itinerari, occupando tutto lo spazio disponibile della finestra (figura \ref{ui_1}).
+Questa caratteristica, oltre alla possibilità di visualizzare e filtrare gli itinerari senza effettuare obbligatoriamente un log-in, permette fin da subito di soddisfare le esigenze dell'utente.
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.35]{ui_1.png}
 	\caption{Interfaccia dell'applicazione \label{ui_1}}
 \end{figure}
-\\Seguendo questa logica, qualora un utente voglia approfondire le informazioni di un itinerario, è possibile aprirne il dettaglio sull'apposita freccia a sinistra del campo ID: tale operazione consentirà di visualizzare alcune informazioni aggiuntive e di effettuare alcune azioni, come lo scaricamento della mappa del percorso o della traccia GPS, il salvataggio nei preferiti o l'apertura del link originale dell'itinerario.
+\\Seguendo questa logica, qualora l'utente voglia approfondire le informazioni di un itinerario, è possibile aprirne il dettaglio cliccando sull'apposita freccia a sinistra del campo ID: tale operazione consentirà di visualizzare dati aggiuntivi e di effettuare alcune azioni, come lo scaricamento della mappa del percorso o della traccia GPS, il salvataggio nei preferiti o l'apertura del link originale dell'itinerario.
 \\I filtri sui campi degli itinerari sono stati inseriti all'interno degli header della tabella, permettendo così di filtrare comodamente per:
 \begin{itemize}
-	\item Data (per periodo: Inverno, Primavera, Autunno e Estate)
-	\item Durata di percorrenza
-	\item Lunghezza percorso
-	\item Dislivello cumulato
-	\item Difficoltà nominale
-	\item Luogo (toponimo principale dell'escursione)
+	\item data (per periodo: inverno, primavera, autunno e estate);
+	\item durata di percorrenza;
+	\item lunghezza percorso;
+	\item dislivello cumulato;
+	\item difficoltà nominale;
+	\item luogo (toponimo principale dell'escursione).
 \end{itemize}
 Nel lato superiore sinistro dello schermo è stata aggiunta la possibilità di specificare un unico filtro "globale" da applicare agli itinerari.
-\\\\Infine, nel lato superiore destro dello schermo sono stati posizionati dei link per effettuare il login o la registrazione di un utente.
-\\Una volta loggato, nell'area sarà possibile accedere a delle funzionalità avanzate come il salvataggio del gruppo filtri corrente o la visualizzazione dei soli percorsi salvati.
+\\\\Infine, nel lato superiore destro dello schermo, sono stati posizionati dei link per effettuare il login o la registrazione di un utente.
+\\Una volta eseguita l'autenticazione, nell'area sarà possibile accedere a funzionalità avanzate come il salvataggio del gruppo filtri corrente o la visualizzazione dei soli percorsi salvati.
 \pagebreak
 \subsection{Diagramma delle classi}
 Di seguito viene mostrato il diagramma delle classi (e delle relative dipendenze) del \textit{MainComponent} e di \textit{RouteDetailComponent}.
@@ -186,6 +186,7 @@ Di seguito viene mostrato il diagramma delle classi (e delle relative dipendenze
 	\caption{Diagramma delle classi di MainComponent e relative dipendenze \label{ClassDiagram_Frontend}}
 \end{figure}
 \pagebreak
+
 \section{Conclusioni}
 
 
