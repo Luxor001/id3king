@@ -3,13 +3,13 @@
   <form #f="ngForm" novalidate>
 
     <label for="username">Username</label>
-    <input type="text" class="form-control" id="username" required name="username" [(ngModel)]="user.username" minlength="5" #username="ngModel" tabindex="1">
+    <input type="text" class="form-control" id="username" required name="username" [(ngModel)]="user.username" minlength="5" autofocus="autofocus" #username="ngModel" tabindex="1">
     <small [hidden]="modalType == MODALTYPEENUM.LOGIN || (username.valid || (username.pristine && !f.submitted))">
      L'username deve essere almeno di 5 caratteri
    </small>
 
     <label>Password</label>
-    <input type="password" class="form-control" id="password" required name="password" [(ngModel)]="user.password" minlength="5" autocapitalize="off" autocorrect="off" autofocus="autofocus" #password="ngModel" tabindex="2">
+    <input type="password" class="form-control" id="password" required name="password" [(ngModel)]="user.password" minlength="5" autocapitalize="off" autocorrect="off" #password="ngModel" tabindex="2">
     <small [hidden]="modalType == MODALTYPEENUM.LOGIN || (password.valid || (password.pristine && !f.submitted))">
       La password deve essere di almeno 5 caratteri
     </small>

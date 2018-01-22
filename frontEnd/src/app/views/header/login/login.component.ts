@@ -3,7 +3,7 @@ import { UserLogin } from '@shared/userlogin.model'
 import { LoginService } from '@shared/login.service'
 import { SessionService, UserSession } from '@shared/session.service';
 //import { UserSession } from '@shared/usersession.model'
-const PASSWORD_MIN_LENGTH_ERROR = "La password deve essere di almeno 5 caratteri";
+const INCORRECT_PASSWORD_LENGTH = "La password deve essere di almeno 8 caratteri";
 const PASSWORD_NOT_MATCHING_ERROR = "Le password non corrispondono"
 const USER_ALREADY_EXIST_ERROR = "Nome utente non disponibile"
 const INCORRECT_LOGIN_ERROR = "Nome utente o password non corretti"
@@ -45,8 +45,8 @@ export class LoginComponent {
     this.loginService.signUp(userCredentials).subscribe(
       (result: any) => {
         if (!result.Return) {
-          if (result.error == "PASSWORD_MIN_LENGTH")
-            this.erroreCorrente = PASSWORD_MIN_LENGTH_ERROR;
+          if (result.error == "INCORRECT_PASSWORD_LENGTH")
+            this.erroreCorrente = INCORRECT_PASSWORD_LENGTH;
           if (result.error == "PASSWORD_NOT_MATCHING")
             this.erroreCorrente = PASSWORD_NOT_MATCHING_ERROR;
           if (result.error == "USER_ALREADY_EXIST")
@@ -61,6 +61,7 @@ export class LoginComponent {
   }
 
   closeModal() {
+    this.user = new UserLogin('', '', '');
     this.erroreCorrente = "";
     this.displayModal = false;
     this.modalClosed.emit(this.sessionService.getSession());

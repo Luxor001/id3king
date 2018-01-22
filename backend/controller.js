@@ -159,7 +159,7 @@ module.exports = {
           });
         }, function onFail(Exception) {
           if (Exception instanceof IncorrectPasswordLengthException)
-            return result.setError(LoginResultERRORS.PASSWORD_MIN_LENGTH);
+            return result.setError(LoginResultERRORS.INCORRECT_PASSWORD_LENGTH);
           else if (Exception instanceof PasswordsNotEqualsException)
             return result.setError(LoginResultERRORS.PASSWORD_NOT_MATCHING);
           else if (Exception instanceof UsernameAlreadyExistException)

@@ -45,7 +45,6 @@ module.exports = {
 
   getRouteDetails: function(routeId) {
     // Ottenimento dei dettagli su uno specifico percorso
-    // routeId = 2017; // Percorso di test
     let results;
     const sql = `SELECT p.ID,p.Nome,p.DataInizio,p.Durata,p.Lunghezza,p.Dislivello,d.Valore,l.Denominazione,p.Descrizione,p.URL,p.MapURL,p.TrackURL,p.ContatoreAccessi
                  FROM Percorso p
@@ -67,86 +66,93 @@ module.exports = {
   },
 
   saveRoute: function(routeId, loginToken) {
-    // routeId = 400; // Percorso di test
-    // loginToken = "aaaaaaaabbbbbbbbccccccccdddddddd"; // Token di test
-    let functionReturnValue;
-    const sqlGetUserId = 'SELECT userID FROM login WHERE logintoken=' + database.escape(loginToken) + ';';
-    let dbUserId = null;
-    return executeQuery(sqlGetUserId).then(function OnGetUserId(dbUserIdParam) {
-      if (dbUserIdParam == null) // Il token non esiste
-        throw new IncorrectLoginException();
-      dbUserId = dbUserIdParam;
-      const sqlCheckIfAlreadySavedRoute = 'SELECT * FROM itinerariopreferito WHERE IDUtente=' + database.escape(dbUserId[0].userID) + ' AND IDPercorso=' + database.escape(routeId) + ';';
-      return executeQuery(sqlCheckIfAlreadySavedRoute);
-    }).then(function OnCheckIfAlreadySavedRoute(alreadySavedRoute) {
-      let sqlInsertOrDeleteRoute;
-      if (alreadySavedRoute.length != 0) { // Se la route è già presente, viene eliminata, altrimenti viene creata
-        sqlInsertOrDeleteRoute = 'DELETE FROM `id3king`.`itinerariopreferito` WHERE `IDUtente`=' + database.escape(dbUserId[0].userID) + ' AND `IDPercorso`=' + database.escape(routeId) + ';';
-        functionReturnValue = false;
-      } else {
-        sqlInsertOrDeleteRoute = 'INSERT INTO `id3king`.`itinerariopreferito` (`IDUtente`, `IDPercorso`) VALUES (' + database.escape(dbUserId[0].userID) + ', ' + database.escape(routeId) + ');';
-        functionReturnValue = true;
-      }
-      return executeQuery(sqlInsertOrDeleteRoute);
-    }).then(function OnInsertRoute(result) {
-      if (result.affectedRows != 1)
-        throw new IncorrectLoginException(); // Errore durante l'inserimento del token nel database
-      return functionReturnValue;
-    });
+    try {
+      let functionReturnValue;
+      const sqlGetUserId = 'SELECT userID FROM login WHERE logintoken=' + database.escape(loginToken) + ';';
+      let dbUserId = null;
+      return executeQuery(sqlGetUserId).then(function OnGetUserId(dbUserIdParam) {
+        if (dbUserIdParam == null) // Il token non esiste
+          throw new IncorrectLoginException();
+        dbUserId = dbUserIdParam;
+        const sqlCheckIfAlreadySavedRoute = 'SELECT * FROM itinerariopreferito WHERE IDUtente=' + database.escape(dbUserId[0].userID) + ' AND IDPercorso=' + database.escape(routeId) + ';';
+        return executeQuery(sqlCheckIfAlreadySavedRoute);
+      }).then(function OnCheckIfAlreadySavedRoute(alreadySavedRoute) {
+        let sqlInsertOrDeleteRoute;
+        if (alreadySavedRoute.length != 0) { // Se la route è già presente, viene eliminata, altrimenti viene creata
+          sqlInsertOrDeleteRoute = 'DELETE FROM `id3king`.`itinerariopreferito` WHERE `IDUtente`=' + database.escape(dbUserId[0].userID) + ' AND `IDPercorso`=' + database.escape(routeId) + ';';
+          functionReturnValue = false;
+        } else {
+          sqlInsertOrDeleteRoute = 'INSERT INTO `id3king`.`itinerariopreferito` (`IDUtente`, `IDPercorso`) VALUES (' + database.escape(dbUserId[0].userID) + ', ' + database.escape(routeId) + ');';
+          functionReturnValue = true;
+        }
+        return executeQuery(sqlInsertOrDeleteRoute);
+      }).then(function OnInsertRoute(result) {
+        if (result.affectedRows != 1)
+          throw new IncorrectLoginException(); // Errore durante l'inserimento del token nel database
+        return functionReturnValue;
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
   },
 
   signin: signin,
 
   signup: function(userLogin) {
-    //userLogin = new UserLogin("test", "prova", "prova"); // Utente di test
-    if (userLogin.password == null || userLogin.password.length < config.security.password_min_length)
-      throw new IncorrectPasswordLengthException();
-    if (userLogin.passwordConfirm != userLogin.password)
-      throw new PasswordsNotEqualsException();
-    const sqlCheckUserAlreadyExists = 'SELECT ID FROM Utenti WHERE username=' + database.escape(userLogin.username) + ';';
-    return executeQuery(sqlCheckUserAlreadyExists).then(function(userId) {
-      if (userId.length != 0) // L'utente esiste già
-        throw new UsernameAlreadyExistException();
-      var saltRounds = Math.floor(Math.random() * 10) + 1;
-      return Bcrypt.hash(userLogin.password, saltRounds);
-    }).then(function OnHashedPassword(hashedPassword) {
-      // Salvare nel database il nuovo utente
-      const sqlAddUser = 'INSERT INTO `id3king`.`utenti` (`username`, `password`) VALUES (' + database.escape(userLogin.username) + ', ' + database.escape(hashedPassword) + ');';
-      return executeQuery(sqlAddUser);
-    }).then(function(result) {
-      if (result.affectedRows != 1)
-        throw new IncorrectLoginException(); // Errore durante l'inserimento del nuovo utente nel database
-      // Generazione token, salvataggio sul database e restituzione al client
-      return signin(userLogin);
-    });
+    try {
+      if (userLogin.password == null || userLogin.password.length < config.security.password_min_length)
+        throw new IncorrectPasswordLengthException();
+      if (userLogin.passwordConfirm != userLogin.password)
+        throw new PasswordsNotEqualsException();
+      const sqlCheckUserAlreadyExists = 'SELECT ID FROM Utenti WHERE username=' + database.escape(userLogin.username) + ';';
+      return executeQuery(sqlCheckUserAlreadyExists).then(function(userId) {
+        if (userId.length != 0) // L'utente esiste già
+          throw new UsernameAlreadyExistException();
+        var saltRounds = Math.floor(Math.random() * 10) + 1;
+        return Bcrypt.hash(userLogin.password, saltRounds);
+      }).then(function OnHashedPassword(hashedPassword) {
+        // Salvare nel database il nuovo utente
+        const sqlAddUser = 'INSERT INTO `id3king`.`utenti` (`username`, `password`) VALUES (' + database.escape(userLogin.username) + ', ' + database.escape(hashedPassword) + ');';
+        return executeQuery(sqlAddUser);
+      }).then(function(result) {
+        if (result.affectedRows != 1)
+          throw new IncorrectLoginException(); // Errore durante l'inserimento del nuovo utente nel database
+        // Generazione token, salvataggio sul database e restituzione al client
+        return signin(userLogin);
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
   },
 
   saveFilter: function(filter, user) {
-    // filter = new Filter("ricercaprova", 10000, 30000, 1000, 2, 500, null); // Filtro di test
-    // user = new User("test", null, null, null); // Utente di test
-    let userId;
-    const sqlGetUserId = 'SELECT ID FROM Utenti WHERE username=' + database.escape(user.username) + ';'; // Id dell'utente, da ricavare a partire dall'username
-    return executeQuery(sqlGetUserId).then(function OnGetUserId(dbUserId) {
-      if (dbUserId == null)
-        throw new IncorrectLoginException();
-      userId = dbUserId[0].ID;
-      const sqlCheckIfAlreadySavedFilter = 'SELECT IDUtente FROM ricerca WHERE IDUtente=' + userId + ' AND NomeRicerca=' + database.escape(filter.name) + ';';
-      return executeQuery(sqlCheckIfAlreadySavedFilter);
-    }).then(function OnCheckedIfAlreadySavedFilter(checkResults) {
-      if (checkResults.length != 0)
-        throw new AlreadyExistingFilterException();
-      const sqlAddFilterToDb = `INSERT INTO \`id3king\`.\`ricerca\` (\`IDUtente\`, \`NomeRicerca\`, \`DislivelloMassimo\`, \`LunghezzaMassima\`, \`DurataMassima\`, \`Localita\`, \`Difficolta\`, \`Periodo\`)
+    try {
+      let userId;
+      const sqlGetUserId = 'SELECT ID FROM Utenti WHERE username=' + database.escape(user.username) + ';'; // Id dell'utente, da ricavare a partire dall'username
+      return executeQuery(sqlGetUserId).then(function OnGetUserId(dbUserId) {
+        if (dbUserId == null)
+          throw new IncorrectLoginException();
+        userId = dbUserId[0].ID;
+        const sqlCheckIfAlreadySavedFilter = 'SELECT IDUtente FROM ricerca WHERE IDUtente=' + userId + ' AND NomeRicerca=' + database.escape(filter.name) + ';';
+        return executeQuery(sqlCheckIfAlreadySavedFilter);
+      }).then(function OnCheckedIfAlreadySavedFilter(checkResults) {
+        if (checkResults.length != 0)
+          throw new AlreadyExistingFilterException();
+        const sqlAddFilterToDb = `INSERT INTO \`id3king\`.\`ricerca\` (\`IDUtente\`, \`NomeRicerca\`, \`DislivelloMassimo\`, \`LunghezzaMassima\`, \`DurataMassima\`, \`Localita\`, \`Difficolta\`, \`Periodo\`)
                                 VALUES (${userId},
                                 ${database.escape(filter.name)}, ${database.escape(filter.filtroDislivello)}, ${database.escape(filter.filtroLunghezza)}, ${database.escape(filter.filtroDurata)},
                                 ${database.escape(!filter.filtroLuoghi || filter.filtroLuoghi.length == 0 ? null : filter.filtroLuoghi)},
                                 ${database.escape(!filter.filtroDifficolta || filter.filtroDifficolta.length == 0 ? null : filter.filtroDifficolta)},
                                 ${database.escape(!filter.filtroPeriodi || filter.filtroPeriodi.length == 0 ? null : filter.filtroPeriodi)});`;
-      return executeQuery(sqlAddFilterToDb);
-    }).then(function OnInsertedFilter(result) {
-      if (result.affectedRows != 1)
-        throw new IncorrectLoginException(); // Errore durante l'inserimento del token nel database
-      return true;
-    });
+        return executeQuery(sqlAddFilterToDb);
+      }).then(function OnInsertedFilter(result) {
+        if (result.affectedRows != 1)
+          throw new IncorrectLoginException(); // Errore durante l'inserimento del token nel database
+        return true;
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
   },
 
   getUserInfo: getUserInfo,
@@ -262,26 +268,29 @@ function executeQuery(querySQL) {
 }
 
 function signin(userLogin) {
-  // userLogin = new UserLogin("test", "prova", "prova"); // Utente di test
-  let dbUserId;
-  const sqlGetPassword = 'SELECT ID,password FROM utenti WHERE username=' + database.escape(userLogin.username) + ';'; // Ricavare la password dell'utente in base all'username fornito
-  return executeQuery(sqlGetPassword).then(function(dbCredentials) {
-    if (dbCredentials == null || !dbCredentials.length)
-      throw new IncorrectLoginException(); // L'utente non esiste
-    dbUserId = dbCredentials[0].ID;
-    return Bcrypt.compare(userLogin.password, dbCredentials[0].password);
-  }).then(function OnComparePassword(compareResult) {
-    if (!compareResult)
-      throw new IncorrectLoginException(); // La password inserita non coincide con quella nel database
-    // Se il login ha avuto successo, generare un token, salvarlo sul database e restituirlo al client
-    let loginToken = randtoken.generate(32);
-    var insertSql = 'INSERT INTO Login (`userId`, `logintoken`) VALUES (?, ?);';
-    var insertsInsert = [dbUserId, loginToken];
-    insertSql = database.format(insertSql, insertsInsert);
-    return executeQuery(insertSql).then(function(result) {
-      if (result.affectedRows != 1)
-        throw new IncorrectLoginException(); // Errore durante l'inserimento del token nel database
-      return loginToken;
+  try {
+    let dbUserId;
+    const sqlGetPassword = 'SELECT ID,password FROM utenti WHERE username=' + database.escape(userLogin.username) + ';'; // Ricavare la password dell'utente in base all'username fornito
+    return executeQuery(sqlGetPassword).then(function(dbCredentials) {
+      if (dbCredentials == null || !dbCredentials.length)
+        throw new IncorrectLoginException(); // L'utente non esiste
+      dbUserId = dbCredentials[0].ID;
+      return Bcrypt.compare(userLogin.password, dbCredentials[0].password);
+    }).then(function OnComparePassword(compareResult) {
+      if (!compareResult)
+        throw new IncorrectLoginException(); // La password inserita non coincide con quella nel database
+      // Se il login ha avuto successo, generare un token, salvarlo sul database e restituirlo al client
+      let loginToken = randtoken.generate(32);
+      var insertSql = 'INSERT INTO Login (`userId`, `logintoken`) VALUES (?, ?);';
+      var insertsInsert = [dbUserId, loginToken];
+      insertSql = database.format(insertSql, insertsInsert);
+      return executeQuery(insertSql).then(function(result) {
+        if (result.affectedRows != 1)
+          throw new IncorrectLoginException(); // Errore durante l'inserimento del token nel database
+        return loginToken;
+      });
     });
-  });
+  } catch (e) {
+    return Promise.reject(e);
+  }
 }
