@@ -4,3 +4,4 @@ db_id3king.sqlite3
 debug.log
 frontEnd/package-lock.json
 package-lock.json
+*.pem

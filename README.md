@@ -7,10 +7,13 @@ An AngularJS version of www.id3king.it, capable of filters for displayed data an
 Download [NodeJS](https://nodejs.org) and install in your system.
 
 * Clone the repo (or simply download the provided .zip file).
-* Do a 'npm install' in the root directory to download all the required dependencies.
+* Do a 'npm install' in the root and in the 'frontEnd' directory to download all the required dependencies.
+* Modify 'appBaseUrl' in [app.config.ts](frontEnd/src/app/config/app.config.ts) to point to the server where the backend is located.
+* Build the frontend running 'ng build --prod' in the frontend directory.
 * Import the [Database](id3king.sql) into a MySQL compatible RDBMS.
-* Modify the [Configuration File](backend/config.json) to set database credentials and security options.
-* Start the server with 'node index' and then connect to http://localhost:8081.
+* Modify the [Configuration File](backend/config.json) to set database credentials and other options.
+* (Optional) If it is the first run and the database is empty, it can be populated now by temporarliy setting 'forceScrapingOnStartup' in the 'config.json' file.
+* Start the server with 'node index' and then connect to the service.
 
 ## Author
 
