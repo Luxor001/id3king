@@ -184,9 +184,8 @@ login-modal p-footer button:first-child:hover, .bookmarkFilterModal p-footer but
 body {
   height: 100vh;
   overflow: hidden;
-  padding-left: 15px;
-  padding-right: 15px;
-  padding-top: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
   margin: 0;
 }
 
