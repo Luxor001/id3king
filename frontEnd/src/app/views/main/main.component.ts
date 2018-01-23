@@ -132,20 +132,19 @@ export class MainComponent implements OnInit {
 
     this.routeService.getFilter(filterName, session.loginToken)
       .subscribe((result: any) => {
-        if (!result.Return) {
-          //TODO: da fixare l'errore
-          //if (result.error == "INCORRECT_LOGIN")
+        if (!result.Return)
           return;
-        }
 
         this.filterValues = new Filter();
         this.filterValues.name = result.filter.name;
         this.filterValues.filtroDislivello = result.filter.filtroDislivello;
         this.filterValues.filtroLunghezza = result.filter.filtroLunghezza;
         this.filterValues.filtroDurata = result.filter.filtroDurata;
-        this.filterValues.filtroDifficolta = result.filter.filtroDifficolta;
-        this.filterValues.filtroLuoghi = result.filter.filtroLuoghi;
-        this.filterValues.filtroPeriodi = result.filter.filtroPeriodi;
+        //TEMPORARY FIX: may the lord forgive me
+        this.filterValues.filtroDifficolta = result.filter.filtroDifficolta ? [].concat(result.filter.filtroDifficolta) : null;
+        this.filterValues.filtroLuoghi = result.filter.filtroLuoghi ? [].concat(result.filter.filtroLuoghi) : null;
+        this.filterValues.filtroPeriodi = result.filter.filtroPeriodi ? [].concat(result.filter.filtroPeriodi) : null;
+      //END OF TEMPORARY FIX
         this.applyFiltersToTable();
       }, err => console.log(err));
   }
@@ -154,19 +153,29 @@ export class MainComponent implements OnInit {
     let session = this.sessionService.getSession();
     if (!session)
       return;
-    if(filterName == '')
+    if (filterName == '')
       this.erroreCorrenteFilters = "Non può essere salvato un gruppo filtro con nome vuoto";
     if (this.filterValues.isEmpty())
       this.erroreCorrenteFilters = "Nessun filtro impostato";
-    if(this.erroreCorrenteFilters != '')
+    if (this.erroreCorrenteFilters != '')
       return;
 
-    let filter = $.extend({}, this.filterValues);
+    let filter = <any>$.extend({}, this.filterValues);
+
     filter.name = filterName;
+
+    //TEMPORARY FIX: may the lord forgive me
+    if (filter.filtroDifficolta != null && filter.filtroDifficolta.length)
+      filter.filtroDifficolta = filter.filtroDifficolta[0];
+    if (filter.filtroLuoghi != null && filter.filtroLuoghi.length)
+      filter.filtroLuoghi = filter.filtroLuoghi[0];
+    if (filter.filtroPeriodi != null && filter.filtroPeriodi.length)
+      filter.filtroPeriodi = filter.filtroPeriodi[0];
+    //END OF TEMPORARY FIX
     this.routeService.saveFilter(filter, session.loginToken)
       .subscribe((result: any) => {
         if (!result.Return) {
-          if(result.error == "ALREADY_SAVED ROUTE")
+          if (result.error == "ALREADY_SAVED ROUTE")
             this.erroreCorrenteFilters = "Esiste già un altro gruppo filtri con lo stesso nome";
           return;
         }
@@ -187,7 +196,7 @@ export class MainComponent implements OnInit {
   }
 
   // purtroppo non c'è modo altro modo per effettuare un refresh manuale della tabella
-  applyFiltersToTable(){
+  applyFiltersToTable() {
     this.dt.filter(this.filterValues.filtroPeriodi, 'periodo', 'in')
     this.dt.filter(this.filterValues.filtroDurata, 'durata', 'atMost');
     this.dt.filter(this.filterValues.filtroLunghezza, 'lunghezza', 'atMost')
@@ -196,7 +205,7 @@ export class MainComponent implements OnInit {
     this.dt.filter(this.filterValues.filtroLuoghi, 'luogo', 'in')
   }
 
-  roundFiltroLunghezza(filtroLunghezza:number):number{
+  roundFiltroLunghezza(filtroLunghezza: number): number {
     return Math.floor(filtroLunghezza);
   }
 }

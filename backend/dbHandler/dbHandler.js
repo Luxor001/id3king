@@ -138,12 +138,14 @@ module.exports = {
       }).then(function OnCheckedIfAlreadySavedFilter(checkResults) {
         if (checkResults.length != 0)
           throw new AlreadyExistingFilterException();
+          //TEMPORARY FIX: may the lord forgive me
         const sqlAddFilterToDb = `INSERT INTO \`id3king\`.\`ricerca\` (\`IDUtente\`, \`NomeRicerca\`, \`DislivelloMassimo\`, \`LunghezzaMassima\`, \`DurataMassima\`, \`Localita\`, \`Difficolta\`, \`Periodo\`)
                                 VALUES (${userId},
                                 ${database.escape(filter.name)}, ${database.escape(filter.filtroDislivello)}, ${database.escape(filter.filtroLunghezza)}, ${database.escape(filter.filtroDurata)},
-                                ${database.escape(!filter.filtroLuoghi || filter.filtroLuoghi.length == 0 ? null : filter.filtroLuoghi)},
-                                ${database.escape(!filter.filtroDifficolta || filter.filtroDifficolta.length == 0 ? null : filter.filtroDifficolta)},
-                                ${database.escape(!filter.filtroPeriodi || filter.filtroPeriodi.length == 0 ? null : filter.filtroPeriodi)});`;
+                                (SELECT ID FROM localita where Denominazione = ${database.escape(!filter.filtroLuoghi || filter.filtroLuoghi.length == 0 ? null : filter.filtroLuoghi)}),
+                                (SELECT ID FROM difficolta where Valore = ${database.escape(!filter.filtroDifficolta || filter.filtroDifficolta.lesngth == 0 ? null : filter.filtroDifficolta)}),
+                                (SELECT ID FROM periodo where Stagione = ${database.escape(!filter.filtroPeriodi || filter.filtroPeriodi.length == 0 ? null : filter.filtroPeriodi)}));`;
+                              //END OF TEMPORARY FIX
         return executeQuery(sqlAddFilterToDb);
       }).then(function OnInsertedFilter(result) {
         if (result.affectedRows != 1)
@@ -167,7 +169,7 @@ module.exports = {
     return executeQuery(sqlGetFilter).then(function OnGetFilter(filter) {
       if (filter.length != 1)
         throw new NotExistingFilterException();
-      return new Filter(filter[0].NomeRicerca, filter[0].DislivelloMassimo, filter[0].LunghezzaMassima, filter[0].DurataMassima, filter[0].Difficolta, filter[0].Localita, filter[0].Periodo);
+      return new Filter(filter[0].NomeRicerca, filter[0].DislivelloMassimo, filter[0].LunghezzaMassima, filter[0].DurataMassima, filter[0].Valore, filter[0].Denominazione, filter[0].Stagione);
     });
   },
 
