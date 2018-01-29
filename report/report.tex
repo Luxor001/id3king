@@ -35,6 +35,7 @@ Il loro sito (\url{www.id3king.it}), infatti, viene aggiornato regolarmente con 
 Per ogni escursione presente è possibile ottenerne il tracciato GPS, la tabella dei toponimi e una sezione della cartina del percorso, oltre a molte altre indicazioni.
 \\Siccome trovare informazioni così dettagliate sui percorsi escursionistici risulta ostico e il loro sito è particolarmente prolifico (allo stato attuale, presenta oltre 890 tragitti documentati nell'arco di diciotto anni!), è evidente che il lavoro del gruppo sia di enorme rilevanza per tutti gli appassionati di questa attività.
 \\Tuttavia, allo stato attuale, \textit{id3king.it} non consente di filtrare a piacimento le escursioni inserite, così come ordinarle secondo un altro criterio oltre a quello della data di inserimento crescente; queste mancanze rendono piuttosto complicato trovare rapidamente quelle adatte alle proprie esigenze.
+Inoltre, il sito non è pensato per essere fruibile da dispositivi mobili.
 \\\\Alla luce di ciò, è nato il progetto \textbf{id3king-js}: una volta ottenuto il consenso da parte degli amministratori del sito, si è deciso di progettare e sviluppare una web app che esegua lo scraping dell'originale e proponga i dati presenti in maniera maggiormente fruibile e funzionale, ad esempio permettendo una ricerca basata su parametri e la creazione di profili utente per memorizzare dati di interesse.
 \\In particolare dovrà essere possibile filtrare e riordinare gli itinerari del sito per consentire una più veloce individuazione di un percorso in base a una certa esigenza.
 Ad esempio, un utente potrebbe essere alla ricerca di un percorso non troppo impegnativo: potrebbe pensare di filtrare tutti gli itinerari con lunghezza e dislivello inferiori a un certo quantitativo e magari situati nella zona del lago di Ridracoli (FC).
@@ -91,17 +92,15 @@ Un controller si occupa di interfacciarsi con i client, fungendo da mediatore co
 	\item \textit{dbHandler}, che si occupa della comunicazione con il database e fornisce interfacce ad alto livello per eseguire operazioni complesse;
 	\item \textit{scraper}, che scansiona il sito \textit{id3king.it} alla ricerca di nuove informazioni da normalizzare ed aggiungere al database.
 \end{itemize}
-Durante lo scraping vengono eseguite numerose manipolazioni dei dati grezzi: sul sito originale sono inseriti in HTML come stringhe semplici e quindi non normalizzati.
-Questa è una condizione necessaria per l'inserimento nel database e per consentire il filtraggio dei percorsi in base ai loro attributi.
 \subsection{Diagrammi delle classi e di sequenza}
 Nel diagramma delle classi (figura \ref{class_diagram_backend}) è rappresentata la struttura del back-end.
-\begin{figure}
+\begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.45]{ClassDiagram_Backend}
 	\caption{Diagramma delle classi del backend \label{class_diagram_backend}}
 \end{figure}
 \\Nel diagramma di sequenza (figura \ref{sequence_diagram}) è esplicitato il funzionamento di una generica chiamata proveniente da un client che necessita di accedere ad informazioni presenti nel database.
-\begin{figure}
+\begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.45]{SequenceDiagram}
 	\caption{Diagramma di sequenza \label{sequence_diagram}}
@@ -121,11 +120,27 @@ Anche per questo motivo, si è scelto di popolare il contenuto di queste tabelle
 \end{itemize}
 Concludono lo schema le tabelle \textit{Difficolta} e \textit{Periodo}, necessarie affinché il database sia in terza forma normale.
 \\In figura \ref{db_schema} è presente lo schema relazionale.
-\begin{figure}
+\begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.45]{DB_schema}
 	\caption{Schema relazionale del database \label{db_schema}}
 \end{figure}
+\subsection{Scraper}
+Il processo di scraping merita un approfondimento.
+Durante tale operazione, vengono eseguite numerose manipolazioni dei dati grezzi: sul sito originale sono inseriti in HTML come stringhe semplici e quindi non normalizzati.
+\\La loro normalizzazione è condizione necessaria per l'inserimento nel database e per consentire il filtraggio dei percorsi in base ai loro attributi.
+Si tratta di una procedura complessa e quasi completamente automatizzata.
+Sebbene sia pensata per risolvere automaticamente i conflitti nell'interpretazione dei risultati, talvolta questo non è possibile, in quanto su \textit{id3king.it} i dati vengono caricati a mano e senza controlli lato software, il che porta inevitabilmente alla generazione di errori non prevedibili e quindi non risolvibili automaticamente.
+\\Sperimentalmente si è osservato come tali conflitti costituiscano una ridottissima percentuale sul totale dei dati inseriti.
+Di conseguenza, si è valutato di caricare i dati sul database in maniera incrementale e non distruttiva, lasciando vuoti i valori dei campi con conflitti.
+La loro risoluzione può essere opzionalmente eseguita manualmente dagli amministratori di \textit{id3king-js}.
+In caso contrario, semplicemente i dati relativi ad alcuni percorsi non saranno del tutto completi, pur rimanendo fruibili in parte.
+\subsection{Gestione errori}
+Poiché l'implementazione di questo progetto non è banale a causa delle molte funzioni e interazioni presenti nei componenti, si è reso necessario inserire un efficace sistema di gestione degli errori, che inevitabilmente si possono verificare durante l'esecuzione.
+Si è quindi deciso di sfruttare la modularità dei componenti in modo da gestire le eccezioni a più livelli.
+\\Il codice è stato sviluppato cercando di evitare la generazione di errori non risolvibili: le routine contengono istruzioni in grado di prevenire errori e, quando possibile, di risolverli automaticamente, in maniera trasparente all'utente.
+Per quando non è possibile (a causa di input errati dell'utente o di errori temporanei nella connessione o nel server), sono state definite eccezioni personalizzate, che vengono lanciate dai singoli metodi di \textit{dbHandler}, per poi essere intercettate e gestite opportunamente dal controller, che le restituisce al client come parte del risultato della query effettuata, sotto forma di stringa testuale contenuta in un apposito campo della classe.
+Questa verrà interpretata dal front-end, il quale mostrerà all'utente un messaggio di errore opportuno.
 \subsection{File di configurazione}
 Tramite un file di configurazione (\textit{config.json}) è possibile personalizzare alcuni aspetti del funzionamento dell'applicazione:
 \begin{itemize}
@@ -189,7 +204,10 @@ Di seguito viene mostrato il diagramma delle classi (e delle relative dipendenze
 \pagebreak
 
 \section{Conclusioni}
-
+Nell'ambito di questo progetto abbiamo avuto modo di approfondire la conoscenza di alcune tecnologie web nell'ambito della realizzazione di web app, oltre all'impiego di metodologie finalizzate a fornire un'esperienza d'uso dell'utente di qualità su molteplici dispositivi.
+\\Riteniamo che l'obiettivo prefissato di fornire una migliore esperienza d'uso per \textit{id3king.it} sia stato raggiunto.
+\\La vita di questo progetto, tuttavia, non si esaurisce con l'esame di "Applicazioni e Servizi Web", poiché verrà portato avanti introducendo nuove funzionalità e ottimizzazioni.
+\\\\Il codice del progetto è disponibile su \textit{Github} all'indirizzo \url{https://github.com/Luxor002/id3king-JS/} ed è aperto a contributi e suggerimenti, grazie alla licenza \textit{GNU AGPL v3} con cui è rilasciato.
 
 \end{document}
 \endinput
