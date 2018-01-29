@@ -1,8 +1,8 @@
 <!-- da inserire tutto il template per la tabella principale -->
 <div class="ui-widget-header" style="padding:4px 10px;border-bottom: 0 none; text-align:left">
   <div>
-    <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
-    <input #globalFilter type="text" pInputText size="50" placeholder="Ricerca itinerario">
+    <i class="fa fa-search"></i>
+    <input #globalFilter class="searchItineario" type="text" pInputText size="50" placeholder="Ricerca itinerario">
   </div>
   <div *ngIf="sessionService.getSession()" class="toolbar">
     <div>

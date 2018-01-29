@@ -7,8 +7,43 @@
     padding-right: 30px !important
   }
   .ui-datatable-scrollable-body{
-    width: calc(100% + 15px);
+    width: calc(100% + 10px);
   }
+  app-header {
+    min-height: 90px;
+  }
+  .ui-widget-content {
+    border:none !important;
+  }
+
+  .ui-datatable-data > tr.ui-widget-content > td:first-child{
+      border-top: 1px solid lightgray !important;
+      margin-top:10px;
+      padding-top:5px;
+  }
+  .ui-datatable-data > tr:first-child > td:first-child{
+      border-top:none !important;
+  }
+  .tr.ui-expanded-row-content > td{
+    padding-top:10px;
+  }
+
+  .tableContainer p-datatable .ui-datatable .ui-datatable-scrollable-body, .tableContainer p-datatable .ui-datatable .ui-datatable-scrollable-table-wrapper{
+    height: calc(100vh) !important;
+  }
+  route-detail section .tailInfo{
+    margin-left: 0 !important;
+  }
+}
+@media (min-width: 35em) {
+  .tableContainer p-datatable .ui-datatable .ui-datatable-scrollable-body, .tableContainer p-datatable .ui-datatable .ui-datatable-scrollable-table-wrapper {
+    height: calc(100vh - 260px) !important;
+  }
+}
+
+.tableContainer p-datatable .ui-datatable .ui-datatable-scrollable-body, .tableContainer p-datatable .ui-datatable .ui-datatable-scrollable-table-wrapper{
+  max-height: calc(100vh - 200px) !important;
+  overflow-x: hidden;
 }
 
 * {
@@ -20,18 +55,8 @@ h1 {
   font-size: 36px;
 }
 
-app-main>.ui-widget-header {
-  overflow: hidden;
-}
-
 app-main>.ui-widget-header>div {
   display: inline-block;
-}
-
-.tableContainer p-datatable .ui-datatable .ui-datatable-scrollable-body, .tableContainer p-datatable .ui-datatable .ui-datatable-scrollable-table-wrapper {
-  height: calc(100vh - 260px) !important;
-  max-height: calc(100vh - 200px) !important;
-  overflow-x: hidden;
 }
 
 .ui-datatable-reflow .ui-datatable-data tr.ui-widget-content {
@@ -116,6 +141,9 @@ app-header .title>h1 {
 app-header .caption {
   font-size: 16px;
   font-style: italic;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 app-header .login {
@@ -270,70 +298,9 @@ route-detail section .tailInfo span:first-child {
   color: #373a3c !important;
 }
 
-.w0 {
-  width: 0px !important;
-  min-width: 0px !important;
-}
-
-.w5 {
-  width: 20px !important;
-  min-width: 20px !important;
-}
-
-.w10 {
-  width: 40px !important;
-  min-width: 40px !important;
-}
-
-.w15 {
-  width: 60px !important;
-  min-width: 60px !important;
-}
-
-.w18 {
-  width: 72px !important;
-  min-width: 72px !important;
-}
-
-.w20 {
-  width: 80px !important;
-  min-width: 80px !important;
-}
-
-.w25 {
-  width: 100px !important;
-  min-width: 100px !important;
-}
-
 .w30 {
   width: 120px !important;
   min-width: 120px !important;
-}
-
-.w35 {
-  width: 140px !important;
-  min-width: 140px !important;
-}
-
-.w40 {
-  width: 160px !important;
-  min-width: 160px !important;
-}
-
-.w45 {
-  width: 180px !important;
-  min-width: 180px !important;
-}
-
-.w50 {
-  width: 200px !important;
-  min-width: 200px !important;
-}
-
-.w100 {
-  width: 400px !important;
-  max-width: 400px !important;
-  min-width: 400px !important;
 }
 
 .bold {
@@ -348,4 +315,15 @@ route-detail section .tailInfo span:first-child {
 
 .link:hover {
   opacity: 0.7;
+}
+
+.fa-search{
+  float: left;
+  display: block;
+  margin-top: 4px;
+  margin-right: 4px;
+}
+input.searchItineario{
+  max-width: 360px;
+  width: calc(100% - 30px) !important;
 }
