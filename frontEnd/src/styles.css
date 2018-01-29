@@ -34,10 +34,25 @@
   route-detail section .tailInfo{
     margin-left: 0 !important;
   }
+  .fa-filter {
+    visibility: visible;
+  }
 }
-@media (min-width: 35em) {
+
+@media (min-width: 35em) and (max-width: 90em){
   .tableContainer p-datatable .ui-datatable .ui-datatable-scrollable-body, .tableContainer p-datatable .ui-datatable .ui-datatable-scrollable-table-wrapper {
-    height: calc(100vh - 260px) !important;
+    height: calc(100vh - 270px) !important;
+  }
+}
+
+@media (min-width: 90em) {
+  .tableContainer p-datatable .ui-datatable .ui-datatable-scrollable-body, .tableContainer p-datatable .ui-datatable .ui-datatable-scrollable-table-wrapper {
+    height: calc(100vh - 255px) !important;
+  }
+}
+@media (min-width: 50em) {
+  .fa-filter {
+    visibility: hidden;
   }
 }
 
@@ -56,7 +71,10 @@ h1 {
 }
 
 app-main>.ui-widget-header>div {
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+
 }
 
 .ui-datatable-reflow .ui-datatable-data tr.ui-widget-content {
@@ -320,10 +338,41 @@ route-detail section .tailInfo span:first-child {
 .fa-search{
   float: left;
   display: block;
-  margin-top: 4px;
   margin-right: 4px;
+}
+.fa-filter {
+  font-size: 18px !important;
+  color: gray;
+  float:right;
+  vertical-align: middle;
+  padding-left: 5px;
 }
 input.searchItineario{
   max-width: 360px;
-  width: calc(100% - 30px) !important;
+  width: calc(100% - 45px) !important;
+}
+
+.ui-widget-header{
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom: 0 none;
+  text-align:left
+}
+
+p-dialog.filterSelector .ui-dialog-content{
+  margin-left: auto;
+  margin-right: auto;
+}
+p-dialog.filterSelector .ui-dialog-content > div{
+  padding-left: 30px;
+  padding-right: 30px;
+}
+p-dialog.filterSelector .ui-dialog-content > div > div{
+  width: 100%;
+}
+
+p-dialog.filterSelector .ui-dialog-content > div h3{
+  margin-bottom: 5px;
 }

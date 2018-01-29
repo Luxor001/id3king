@@ -22,6 +22,7 @@ export class MainComponent implements OnInit {
   private defaultBookmarkedFilter = new ConcreteSelectItem({}, 'Salva come nuovo gruppo filtri');
   bookmarkedFilters: ConcreteSelectItem[];
   bookmarkedFilterSelected: string;
+  filterSelectorModal = false;
   bookmarkedFilterModal = false;
 
   bookmarkedRoutes: boolean;
@@ -47,7 +48,6 @@ export class MainComponent implements OnInit {
       },
       err => console.log(err));
 
-    //UtilityService.resizeToParent($('.tableContainer'), -42);
     this.sessionService.addOnSigninCallback(() => {
       this.bookmarkedFilters = [this.defaultBookmarkedFilter];
       let session = this.sessionService.getSession();
@@ -207,6 +207,10 @@ export class MainComponent implements OnInit {
 
   roundFiltroLunghezza(filtroLunghezza: number): number {
     return Math.floor(filtroLunghezza);
+  }
+
+  openFilterSelector() {
+    this.filterSelectorModal = true;
   }
 }
 
