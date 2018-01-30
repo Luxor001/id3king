@@ -28,6 +28,7 @@ export class MainComponent implements OnInit {
   bookmarkedRoutes: boolean;
 
   filterValues = new Filter();
+  filterValuesSelector = new Filter();
   filterBounds = new FilterBounds();
   erroreCorrenteFilters: string;
   tableMessage = "Caricamento itinerari in corso...";
@@ -211,6 +212,12 @@ export class MainComponent implements OnInit {
 
   openFilterSelector() {
     this.filterSelectorModal = true;
+    this.filterValuesSelector = $.extend({}, this.filterValues);
+  }
+  saveFilterValuesSelector() {
+    this.filterValues = this.filterValuesSelector;
+    this.filterSelectorModal = false;
+    this.applyFiltersToTable();
   }
 }
 

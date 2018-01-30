@@ -30,9 +30,11 @@
       </ng-template>
     </p-column>
 
-    <p-column field="durata" [style]="{'width':'7%'}" header="DURATA {{filterValues.filtroDurata == null ? '' : (filterValues.filtroDurata | time)}}" [sortable]="true" [filter]="true" filterMatchMode="atMost">
+    <p-column field="durata" [style]="{'width':'7%'}" header="DURATA" [sortable]="true" [filter]="true" filterMatchMode="atMost">
       <ng-template pTemplate="filter" let-col>
-        <i class="fa fa-close" (click)="filterValues.filtroDurata=null;dataTableIstance.filter(null,col.field,col.filterMatchMode)"></i>
+        <div class="filterTemplate">
+          {{filterValues.filtroDurata == null ? '' : (filterValues.filtroDurata | time)}}
+          <i class="fa fa-close" (click)="filterValues.filtroDurata=null;dataTableIstance.filter(null,col.field,col.filterMatchMode)"></i></div>
         <p-slider [(ngModel)]="filterValues.filtroDurata" [min]="filterBounds.minDuration" [max]="filterBounds.maxDuration" (onSlideEnd)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)"></p-slider>
       </ng-template>
       <ng-template let-itinerario="rowData" pTemplate="body">
@@ -40,9 +42,12 @@
       </ng-template>
     </p-column>
 
-    <p-column field="lunghezza" [style]="{'width':'9%'}" header="LUNGHEZZA {{filterValues.filtroLunghezza == null ? '' : roundFiltroLunghezza(filterValues.filtroLunghezza/1000) +'km'}}" [sortable]="true" [filter]="true" filterMatchMode="atMost">
+    <p-column field="lunghezza" [style]="{'width':'9%'}" header="LUNGHEZZA" [sortable]="true" [filter]="true" filterMatchMode="atMost">
       <ng-template pTemplate="filter" let-col>
-        <i class="fa fa-close" (click)="filterValues.filtroLunghezza=null;dataTableIstance.filter(null,col.field,col.filterMatchMode)"></i>
+        <div class="filterTemplate">
+          {{filterValues.filtroLunghezza == null ? '' : roundFiltroLunghezza(filterValues.filtroLunghezza/1000) +'km'}}
+          <i class="fa fa-close" (click)="filterValues.filtroLunghezza=null;dataTableIstance.filter(null,col.field,col.filterMatchMode)"></i>
+        </div>
         <p-slider [(ngModel)]="filterValues.filtroLunghezza" [min]="filterBounds.minRouteLength" [max]="filterBounds.maxRouteLength" (onSlideEnd)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)"></p-slider>
       </ng-template>
       <ng-template let-itinerario="rowData" pTemplate="body">
@@ -50,9 +55,12 @@
       </ng-template>
     </p-column>
 
-    <p-column field="dislivello" [style]="{'width':'9%'}" header=" DISLIVELLO {{filterValues.filtroDislivello == null ? '' : filterValues.filtroDislivello+'m'}}" [sortable]="true" [filter]="true" filterMatchMode="atMost">
+    <p-column field="dislivello" [style]="{'width':'9%'}" header=" DISLIVELLO" [sortable]="true" [filter]="true" filterMatchMode="atMost">
       <ng-template pTemplate="filter" let-col>
-        <i class="fa fa-close" (click)="filterValues.filtroDislivello=null;dataTableIstance.filter(null,col.field,col.filterMatchMode)"></i>
+        <div class="filterTemplate">
+          {{filterValues.filtroDislivello == null ? '' : filterValues.filtroDislivello+'m'}}
+          <i class="fa fa-close" (click)="filterValues.filtroDislivello=null;dataTableIstance.filter(null,col.field,col.filterMatchMode)"></i>
+        </div>
         <p-slider [(ngModel)]="filterValues.filtroDislivello" [min]="filterBounds.minElevation" [max]="filterBounds.maxElevation" (onSlideEnd)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)"></p-slider>
       </ng-template>
       <ng-template let-itinerario="rowData" pTemplate="body">
@@ -103,33 +111,41 @@
   <div>
 
     <div>
-      <h3 class="first">Periodi: {{val1}}</h3>
-      <p-multiSelect [(ngModel)]="filterValues.filtroPeriodi" [style]="{'width':'100%'}" [options]="filterBounds.periods" defaultLabel="Tutti" selectedItemsLabel="{0} Periodi" maxSelectedLabels="1" (onChange)="dataTableIstance.filter($event.value,'periodo',col.filterMatchMode)"
-        styleClass="ui-column-filter"></p-multiSelect>
+      <h3 class="first">Periodi: </h3>
+      <p-multiSelect [(ngModel)]="filterValuesSelector.filtroPeriodi" [style]="{'width':'100%'}" [options]="filterBounds.periods" defaultLabel="Tutti" selectedItemsLabel="{0} Periodi" maxSelectedLabels="3" styleClass="ui-column-filter"></p-multiSelect>
     </div>
     <div>
-      <h3 class="first">Difficolta: {{val1}}</h3>
-      <p-multiSelect [(ngModel)]="filterValues.filtroDifficolta" [style]="{'width':'100%'}" [options]="filterBounds.difficulties" defaultLabel="Tutte" selectedItemsLabel="{0} Difficoltà" maxSelectedLabels="1" (onChange)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)"></p-multiSelect>
+      <h3 class="first">Difficolta:</h3>
+      <p-multiSelect [(ngModel)]="filterValuesSelector.filtroDifficolta" [style]="{'width':'100%'}" [options]="filterBounds.difficulties" defaultLabel="Tutte" selectedItemsLabel="{0} Difficoltà" maxSelectedLabels="6"></p-multiSelect>
     </div>
     <div>
-      <h3 class="first">Luoghi: {{val1}}</h3>
-      <p-multiSelect [(ngModel)]="filterValues.filtroLuoghi" [style]="{'width':'100%'}" [options]="filterBounds.places" defaultLabel="Tutti" selectedItemsLabel="{0} Periodi" maxSelectedLabels="1" (onChange)="dataTableIstance.filter($event.value,'periodo',col.filterMatchMode)"></p-multiSelect>
+      <h3 class="first">Luoghi:</h3>
+      <p-multiSelect [(ngModel)]="filterValuesSelector.filtroLuoghi" [style]="{'width':'100%'}" [options]="filterBounds.places" defaultLabel="Tutti" selectedItemsLabel="{0} Luoghi" maxSelectedLabels="1"></p-multiSelect>
     </div>
     <div>
-      <h3 class="first">Durata: {{val1}}</h3>
-      <p-slider [(ngModel)]="filterValues.filtroDurata" [style]="{'width':'80%'}" [min]="filterBounds.minDuration" [max]="filterBounds.maxDuration" (onSlideEnd)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)"></p-slider>
+      <h3 class="first">
+        Durata: {{filterValuesSelector.filtroDurata == null ? '' : (filterValuesSelector.filtroDurata | time)}}
+        <i class="fa fa-close" *ngIf="filterValuesSelector.filtroDurata != null" (click)="filterValuesSelector.filtroDurata=null"></i>
+       </h3>
+      <p-slider [(ngModel)]="filterValuesSelector.filtroDurata" [style]="{'width':'80%'}" [min]="filterBounds.minDuration" [max]="filterBounds.maxDuration"></p-slider>
     </div>
     <div>
-      <h3 class="first">Lunghezza: {{val1}}</h3>
-      <p-slider [(ngModel)]="filterValues.filtroLunghezza" [style]="{'width':'80%'}" [min]="filterBounds.minRouteLength" [max]="filterBounds.maxRouteLength" (onSlideEnd)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)"></p-slider>
+      <h3 class="first">
+        Lunghezza: {{filterValuesSelector.filtroLunghezza == null ? '' : roundFiltroLunghezza(filterValuesSelector.filtroLunghezza/1000) +'km'}}
+        <i class="fa fa-close" *ngIf="filterValuesSelector.filtroLunghezza != null" (click)="filterValuesSelector.filtroLunghezza=null"></i>
+      </h3>
+      <p-slider [(ngModel)]="filterValuesSelector.filtroLunghezza" [style]="{'width':'80%'}" [min]="filterBounds.minRouteLength" [max]="filterBounds.maxRouteLength"></p-slider>
     </div>
     <div>
-      <h3 class="first">Dislivello: {{val1}}</h3>
-      <p-slider [(ngModel)]="filterValues.filtroDislivello" [style]="{'width':'80%'}" [min]="filterBounds.minElevation" [max]="filterBounds.maxElevation" (onSlideEnd)="dataTableIstance.filter($event.value,col.field,col.filterMatchMode)"></p-slider>
+      <h3 class="first">
+        Dislivello: {{filterValuesSelector.filtroDislivello == null ? '' : filterValuesSelector.filtroDislivello+'m'}}
+        <i class="fa fa-close" *ngIf="filterValuesSelector.filtroDislivello != null" (click)="filterValuesSelector.filtroDislivello=null"></i>
+      </h3>
+      <p-slider [(ngModel)]="filterValuesSelector.filtroDislivello" [style]="{'width':'80%'}" [min]="filterBounds.minElevation" [max]="filterBounds.maxElevation"></p-slider>
     </div>
   </div>
   <p-footer>
-    <button type="button" pButton (click)="saveNewFilter(filterName.value)" label="Applica" tabindex="1"></button>
+    <button type="button" pButton (click)="saveFilterValuesSelector()" label="Applica" tabindex="1"></button>
     <button type="button" pButton (click)="filterSelectorModal = false" label="Annulla" tabindex="2"></button>
   </p-footer>
 </p-dialog>
