@@ -60,6 +60,11 @@
     display: none;
   }
 }
+@media (min-width: 50em) and (max-width: 90em){
+  .tableContainer p-datatable .ui-datatable .ui-datatable-scrollable-body, .tableContainer p-datatable .ui-datatable .ui-datatable-scrollable-table-wrapper {
+    height: calc(100vh - 270px) !important;
+  }
+}
 
 .tableContainer p-datatable .ui-datatable .ui-datatable-scrollable-body, .tableContainer p-datatable .ui-datatable .ui-datatable-scrollable-table-wrapper{
   max-height: calc(100vh - 200px) !important;
@@ -104,7 +109,7 @@ p-datatable th {
   border: 0 !important;
 }
 
-p-datatable .ui-widget-header, p-datatable th {
+p-datatable .ui-widget-header {
   overflow: visible !important;
 }
 
@@ -381,4 +386,17 @@ p-dialog.filterSelector .ui-dialog-content > div > div{
 p-dialog.filterSelector .ui-dialog-content > div h3{
   margin-bottom: 5px;
   margin-top: 10px !important;
+}
+
+th .ui-column-title{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+th {
+  overflow: hidden !important;
+}
+.filterTemplate {
+  white-space: nowrap;
 }
