@@ -111,16 +111,16 @@
   <div>
 
     <div>
+      <h3 class="first">Luoghi:</h3>
+      <p-multiSelect [(ngModel)]="filterValuesSelector.filtroLuoghi" scrollHeight="150px" [panelStyle]="{maxWidth:'230px'}" [style]="{'width':'100%'}" [options]="filterBounds.places" defaultLabel="Tutti" selectedItemsLabel="{0} Luoghi" maxSelectedLabels="1"></p-multiSelect>
+    </div>
+    <div>
       <h3 class="first">Periodi: </h3>
-      <p-multiSelect [(ngModel)]="filterValuesSelector.filtroPeriodi" [style]="{'width':'100%'}" [options]="filterBounds.periods" defaultLabel="Tutti" selectedItemsLabel="{0} Periodi" maxSelectedLabels="3" styleClass="ui-column-filter"></p-multiSelect>
+      <p-multiSelect [(ngModel)]="filterValuesSelector.filtroPeriodi" [style]="{'width':'100%'}" scrollHeight="150px" [panelStyle]="{maxWidth:'230px'}" [options]="filterBounds.periods" defaultLabel="Tutti" selectedItemsLabel="{0} Periodi" maxSelectedLabels="3" styleClass="ui-column-filter"></p-multiSelect>
     </div>
     <div>
       <h3 class="first">Difficolta:</h3>
-      <p-multiSelect [(ngModel)]="filterValuesSelector.filtroDifficolta" [style]="{'width':'100%'}" [options]="filterBounds.difficulties" defaultLabel="Tutte" selectedItemsLabel="{0} Difficoltà" maxSelectedLabels="6"></p-multiSelect>
-    </div>
-    <div>
-      <h3 class="first">Luoghi:</h3>
-      <p-multiSelect [(ngModel)]="filterValuesSelector.filtroLuoghi" [style]="{'width':'100%'}" [options]="filterBounds.places" defaultLabel="Tutti" selectedItemsLabel="{0} Luoghi" maxSelectedLabels="1"></p-multiSelect>
+      <p-multiSelect [(ngModel)]="filterValuesSelector.filtroDifficolta" [style]="{'width':'100%'}" scrollHeight="70px" [panelStyle]="{maxWidth:'230px'}" [options]="filterBounds.difficulties" defaultLabel="Tutte" selectedItemsLabel="{0} Difficoltà" maxSelectedLabels="6"></p-multiSelect>
     </div>
     <div>
       <h3 class="first">
