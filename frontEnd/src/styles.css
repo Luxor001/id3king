@@ -6,32 +6,30 @@
     overflow: visible !important;
     padding-right: 30px !important
   }
-  .ui-datatable-scrollable-body{
+  .ui-datatable-scrollable-body {
     width: calc(100% + 10px);
   }
   app-header {
     min-height: 90px;
   }
   .ui-widget-content {
-    border:none !important;
+    border: none !important;
   }
-
-  .ui-datatable-data > tr.ui-widget-content > td:first-child{
-      border-top: 1px solid lightgray !important;
-      margin-top:10px;
-      padding-top:5px;
+  .ui-datatable-data>tr.ui-widget-content>td:first-child {
+    border-top: 1px solid lightgray !important;
+    margin-top: 10px;
+    padding-top: 5px;
   }
-  .ui-datatable-data > tr:first-child > td:first-child{
-      border-top:none !important;
+  .ui-datatable-data>tr:first-child>td:first-child {
+    border-top: none !important;
   }
-  .tr.ui-expanded-row-content > td{
-    padding-top:10px;
+  .tr.ui-expanded-row-content>td {
+    padding-top: 10px;
   }
-
-  .tableContainer p-datatable .ui-datatable .ui-datatable-scrollable-body, .tableContainer p-datatable .ui-datatable .ui-datatable-scrollable-table-wrapper{
+  .tableContainer p-datatable .ui-datatable .ui-datatable-scrollable-body, .tableContainer p-datatable .ui-datatable .ui-datatable-scrollable-table-wrapper {
     height: calc(100vh) !important;
   }
-  route-detail section .tailInfo{
+  route-detail section .tailInfo {
     margin-left: 0 !important;
   }
   .fa-filter {
@@ -39,34 +37,27 @@
   }
 }
 
-@media (min-width: 35em) and (max-width: 50em){
+@media (min-width: 35em) and (max-width: 50em) {
   .tableContainer p-datatable .ui-datatable .ui-datatable-scrollable-body, .tableContainer p-datatable .ui-datatable .ui-datatable-scrollable-table-wrapper {
     height: calc(100vh - 245px) !important;
   }
 }
+@media (max-width:50em) {
+  .filterTemplate, th p-slider, th p-multiselect {
+    display: none;
+  }
+}
 
 @media (min-width: 50em) {
   .tableContainer p-datatable .ui-datatable .ui-datatable-scrollable-body, .tableContainer p-datatable .ui-datatable .ui-datatable-scrollable-table-wrapper {
-    height: calc(100vh - 255px) !important;
+    height: calc(100vh - 270px) !important;
   }
-}
-@media (min-width: 50em) {
   .fa-filter {
     visibility: hidden;
   }
 }
-@media (max-width:50em){
-  .filterTemplate, th p-slider, th p-multiselect{
-    display: none;
-  }
-}
-@media (min-width: 50em) and (max-width: 90em){
-  .tableContainer p-datatable .ui-datatable .ui-datatable-scrollable-body, .tableContainer p-datatable .ui-datatable .ui-datatable-scrollable-table-wrapper {
-    height: calc(100vh - 270px) !important;
-  }
-}
 
-.tableContainer p-datatable .ui-datatable .ui-datatable-scrollable-body, .tableContainer p-datatable .ui-datatable .ui-datatable-scrollable-table-wrapper{
+.tableContainer p-datatable .ui-datatable .ui-datatable-scrollable-body, .tableContainer p-datatable .ui-datatable .ui-datatable-scrollable-table-wrapper {
   max-height: calc(100vh - 200px) !important;
   overflow-x: hidden;
 }
@@ -84,7 +75,6 @@ app-main>.ui-widget-header>div {
   display: flex;
   align-items: center;
   justify-content: left;
-
 }
 
 .ui-datatable-reflow .ui-datatable-data tr.ui-widget-content {
@@ -231,7 +221,7 @@ login-modal p-footer button:first-child, .bookmarkFilterModal p-footer button:fi
   color: #fff !important;
 }
 
-login-modal p-footer button:first-child:hover, .bookmarkFilterModal p-footer button:first-child:hover, p-dialog.filterSelector .ui-dialog-footer button:first-child:hover  {
+login-modal p-footer button:first-child:hover, .bookmarkFilterModal p-footer button:first-child:hover, p-dialog.filterSelector .ui-dialog-footer button:first-child:hover {
   background-color: #4cae4c !important;
   border-color: #5cb85c !important;
   color: #fff !important;
@@ -345,50 +335,54 @@ route-detail section .tailInfo span:first-child {
   opacity: 0.7;
 }
 
-.fa-search{
+.fa-search {
   float: left;
   display: block;
   margin-right: 4px;
 }
+
 .fa-filter {
   font-size: 18px !important;
   color: gray;
-  float:right;
+  float: right;
   vertical-align: middle;
   padding-left: 5px;
 }
-input.searchItineario{
+
+input.searchItineario {
   max-width: 360px;
   width: calc(100% - 45px) !important;
 }
 
-.ui-widget-header{
+.ui-widget-header {
   padding-left: 10px;
   padding-right: 10px;
   padding-top: 4px;
   padding-bottom: 4px;
   border-bottom: 0 none;
-  text-align:left
+  text-align: left
 }
 
-p-dialog.filterSelector .ui-dialog-content{
+p-dialog.filterSelector .ui-dialog-content {
   margin-left: auto;
   margin-right: auto;
 }
-p-dialog.filterSelector .ui-dialog-content > div{
+
+p-dialog.filterSelector .ui-dialog-content>div {
   padding-left: 30px;
   padding-right: 30px;
 }
-p-dialog.filterSelector .ui-dialog-content > div > div{
+
+p-dialog.filterSelector .ui-dialog-content>div>div {
   width: 100%;
 }
 
-p-dialog.filterSelector .ui-dialog-content > div h3{
+p-dialog.filterSelector .ui-dialog-content>div h3 {
   margin-bottom: 5px;
   margin-top: 10px !important;
 }
 
-th .ui-column-title{
+th .ui-column-title {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -398,6 +392,7 @@ th .ui-column-title{
 th {
   overflow: visible !important;
 }
+
 .filterTemplate {
   white-space: nowrap;
 }
