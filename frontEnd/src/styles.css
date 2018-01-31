@@ -392,10 +392,11 @@ th .ui-column-title{
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: block;
 }
 
 th {
-  overflow: hidden !important;
+  overflow: visible !important;
 }
 .filterTemplate {
   white-space: nowrap;
