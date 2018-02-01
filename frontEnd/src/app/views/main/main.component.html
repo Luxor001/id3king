@@ -93,7 +93,7 @@
   </p-dataTable>
 </div>
 
-<p-dialog class="bookmarkFilterModal" #name header="Nuovo filtro" [draggable]="false" modal="modal" [responsive]="true" [(visible)]="bookmarkedFilterModal">
+<p-dialog class="bookmarkFilterModal" #name header="Nuovo filtro" [draggable]="false" [resizable]="false" modal="modal" [responsive]="true" [(visible)]="bookmarkedFilterModal">
 
   <label for="bookmarkedFilterName">Nome filtro</label>
   <input type="text" class="form-control" id="bookmarkedFilterName" required name="username" minlength="1" #filterName tabindex="1">
@@ -107,7 +107,7 @@
 </p-dialog>
 
 
-<p-dialog class="filterSelector" [(visible)]="filterSelectorModal" header="Filtri Itinerari" [draggable]="true" modal="modal" [responsive]="false">
+<p-dialog class="filterSelector" [resizable]="false" [(visible)]="filterSelectorModal" header="Filtri Itinerari" [draggable]="true" modal="modal" [responsive]="false">
   <div>
 
     <div>

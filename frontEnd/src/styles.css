@@ -81,12 +81,20 @@ app-main>.ui-widget-header>div {
   width: 100vw !important;
 }
 
-app-main>.ui-widget-header div.toolbar, app-main>.ui-widget-header div.toolbar div {
-  float: right;
+app-main>.ui-widget-header div.toolbar{
+  position: absolute;
+  right: 5px;
+  top:2px;
+}
+app-main>.ui-widget-header div.toolbar > div {
+  height: 30px !important;
 }
 
 app-main>.ui-widget-header div.toolbar p-dropdown label {
   text-align: center;
+}
+app-main > .ui-widget-header {
+  position: relative !important;
 }
 
 p-datatable tbody {
@@ -317,8 +325,8 @@ route-detail section .tailInfo span:first-child {
 }
 
 .w30 {
-  width: 120px !important;
-  min-width: 120px !important;
+  width: 100px !important;
+  min-width: 100px !important;
 }
 
 .bold {
@@ -351,7 +359,8 @@ route-detail section .tailInfo span:first-child {
 
 input.searchItineario {
   max-width: 360px;
-  width: calc(100% - 45px) !important;
+  width: calc(100% - 150px) !important;
+  min-width: 50px !important;
 }
 
 .ui-widget-header {
