@@ -4,7 +4,7 @@ An AngularJS version of www.id3king.it, capable of filters for displayed data an
 
 ## Getting Started
 
-Download [NodeJS](https://nodejs.org) and install in your system.
+Download [NodeJS](https://nodejs.org) and install it in your system.
 
 * Clone the repo (or simply download the provided .zip file).
 * Do a 'npm install' in the root and in the 'frontEnd' directory to download all the required dependencies.
